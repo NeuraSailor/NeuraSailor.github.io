@@ -1,0 +1,13 @@
+---
+layout: archive
+title: "我的影评"
+permalink: /movieReview/
+author_profile: true
+---
+
+{% include base_path %}
+
+# to link the documents under _movi folder
+{% for post in site.movieReview reversed %}
+  {% include archive-single.html %}
+{% endfor %}

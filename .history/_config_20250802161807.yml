@@ -295,10 +295,10 @@ defaults:
       author_profile: true
       share: true
       comments: true
-  # _bookReview
+  # _movieReview
   - scope:  
       path: ""
-      type: bookReview
+      type: movieReview
     values:
       layout: single
       author_profile: true

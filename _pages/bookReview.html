@@ -1,0 +1,13 @@
+---
+layout: archive
+title: "我的书评"
+permalink: /bookReview/
+author_profile: true
+---
+
+{% include base_path %}
+
+# to link the documents under _bookReview folder
+{% for post in site.bookReview reversed %}
+  {% include archive-single.html %}
+{% endfor %}

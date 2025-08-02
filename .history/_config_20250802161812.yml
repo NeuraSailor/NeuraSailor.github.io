@@ -298,7 +298,7 @@ defaults:
   # _bookReview
   - scope:  
       path: ""
-      type: bookReview
+      type: movieReview
     values:
       layout: single
       author_profile: true

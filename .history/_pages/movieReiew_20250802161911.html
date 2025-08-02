@@ -1,0 +1,13 @@
+---
+layout: archive
+title: ""
+permalink: /people/
+author_profile: true
+---
+
+{% include base_path %}
+
+# to link the documents under _people folder
+{% for post in site.people reversed %}
+  {% include archive-single.html %}
+{% endfor %}

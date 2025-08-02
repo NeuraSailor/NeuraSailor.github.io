@@ -32,8 +32,4 @@ main:
   # - title: "Guide"
   #   url: /markdown/
 
-  - title: "我的书评"
-    url: /bookReview/
-
-  - title: "我的影评"
-    url: /movieReview/
+  

@@ -288,22 +288,7 @@ defaults:
       share: true
   # _movieReview
   - scope:  
-      path: ""
-      type: movieReview
-    values:
-      layout: single
-      author_profile: true
-      share: true
-      comments: true
-  # _bookReview
-  - scope:  
-      path: ""
-      type: bookReview
-    values:
-      layout: single
-      author_profile: true
-      share: true
-      comments: true  
+      path
 
 
 # Sass/SCSS
