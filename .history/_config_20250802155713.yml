@@ -251,7 +251,7 @@ defaults:
     values:
       layout: single
       author_profile: true
-  # _lectureNotes
+  # _teaching
   - scope:
       path: ""
       type: lectureNotes

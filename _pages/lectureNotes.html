@@ -1,0 +1,12 @@
+---
+layout: archive
+title: "课程笔记"
+permalink: /lectureNotes/
+author_profile: true
+---
+
+{% include base_path %}
+
+{% for post in site.lectureNotes reversed %}
+  {% include archive-single.html %}
+{% endfor %}
