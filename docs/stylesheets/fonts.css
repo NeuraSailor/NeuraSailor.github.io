@@ -1,0 +1,15 @@
+/* 直接导入霞鹜文楷字体 CSS */
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-regular.css');
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-bold.css');
+
+/* 应用到正文和标题 */
+body, .md-content__body,
+.md-typeset h1, .md-typeset h2, .md-typeset h3,
+.md-typeset h4, .md-typeset h5, .md-typeset h6 {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif !important;
+}
+
+/* 应用到侧边栏 */
+.md-nav, .md-sidebar {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', sans-serif !important;
+}

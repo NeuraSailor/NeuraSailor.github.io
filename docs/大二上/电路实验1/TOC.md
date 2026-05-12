@@ -1,0 +1,33 @@
+![assets/09764c9a2a08628f62b9b726dc0a6d3f_MD5.jpg](../../assets/09764c9a2a08628f62b9b726dc0a6d3f_MD5.jpg)
+
+电路 + 模拟。实验导论（入门，广接触）
+
+## 教学安排
+
+![assets/bcbd4ec50a1ab009f4ae349a5f1e4f05_MD5.jpg](../../assets/bcbd4ec50a1ab009f4ae349a5f1e4f05_MD5.jpg)
+
+![assets/32e4b7266ad02bb05598d0e180f56cab_MD5.jpg](../../assets/32e4b7266ad02bb05598d0e180f56cab_MD5.jpg)
+
+## 成绩
+
+平时报告 25%+ 操作分 30%+ 总结与体会 20%+ 理论测验 25%
+
+##  作业
+
+期末 3000 字实验体会
+
+## 资源
+
+![assets/7e8cb7374c2add8f9942911cf168bc30_MD5.jpg](../../assets/7e8cb7374c2add8f9942911cf168bc30_MD5.jpg)
+
+## 课程
+
+[预备](预备)
+
+[实验报告要求](实验报告要求)
+
+[二极管](二极管)
+
+[数字电路基础](数字电路基础)
+
+[误差与数据处理](误差与数据处理)
