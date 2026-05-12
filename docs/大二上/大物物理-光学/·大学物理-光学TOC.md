@@ -5,14 +5,14 @@
 3.
 [薄膜干涉](薄膜干涉)
 4.
-!!! note "-"
-缺级级次：k= $\frac{d}{a}的倍数$；
-单缝暗纹：$a\sin\theta=k_{1}\lambda$
-多缝主极大：$d\sin\theta=k_{2}\lambda$
-相邻主极大间有 n-1 个极小
-分辨本领：$R=\frac{\lambda}{\delta\lambda}=N\cdot k$
-缺级（主极大的级）：$k=\frac{d}{a}的倍数$
-
+> [!note]-
+> 缺级级次：k= $\frac{d}{a}的倍数$；
+> 单缝暗纹：$a\sin\theta=k_{1}\lambda$
+> 多缝主极大：$d\sin\theta=k_{2}\lambda$
+> 相邻主极大间有 n-1 个极小
+> 分辨本领：$R=\frac{\lambda}{\delta\lambda}=N\cdot k$
+> 缺级（主极大的级）：$k=\frac{d}{a}的倍数$
+>
 [衍射](衍射)
 [光栅衍射](光栅衍射)
 [分辨本领](分辨本领)

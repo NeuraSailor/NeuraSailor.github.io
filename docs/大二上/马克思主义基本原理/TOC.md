@@ -1,6 +1,6 @@
 ## 给分
-!!! note "-"
-
+> [!note]-
+>
 ![assets/12e172b6cd3ab9eb3f991b078d6fcf05_MD5.jpg](../../assets/12e172b6cd3ab9eb3f991b078d6fcf05_MD5.jpg)
 ![assets/72f264099440c080382e621a2227415e_MD5.jpg](../../assets/72f264099440c080382e621a2227415e_MD5.jpg)
 ![assets/208193504ab663a2e6e483cdacc7a47b_MD5.jpg](../../assets/208193504ab663a2e6e483cdacc7a47b_MD5.jpg)

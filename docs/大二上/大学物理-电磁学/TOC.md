@@ -1,7 +1,7 @@
-!!! abstract
-![assets/a1d57a2d15022bc50e6814766f6a8f20_MD5.jpg](../../assets/a1d57a2d15022bc50e6814766f6a8f20_MD5.jpg)
-方向，先设正方向（线圈右手螺旋与磁场一致）
-
+> [!abstract]
+> ![assets/a1d57a2d15022bc50e6814766f6a8f20_MD5.jpg](../../assets/a1d57a2d15022bc50e6814766f6a8f20_MD5.jpg)
+> 方向，先设正方向（线圈右手螺旋与磁场一致）
+>
 [考核标准](考核标准)
 
 ## 笔记

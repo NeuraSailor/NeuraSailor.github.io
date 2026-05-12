@@ -10624,18 +10624,18 @@ Ao,An, Bn取傅里叶值时, <span class="arithmatex">\(\int_{-T/2}^{T/2}( f(x) 
 <p>内偏导<span class="arithmatex">\(\partial u/\partial x\)</span>等存在</p>
 <p>链式法则：<span class="arithmatex">\(\frac{\partial z}{\partial x} = \frac{\partial z}{\partial u} \cdot \frac{\partial u}{\partial x} + \frac{\partial z}{\partial v} \cdot \frac{\partial v}{\partial x}\)</span></p>
 <p>通过画变量图，直观简化过程</p>
-<div class="admonition important">
+<div class="admonition tip">
 <p class="admonition-title">深化理解：注意等式左边的偏导是以x为自变量求偏导【即视y为常量】</p>
-</div>
 <p>而：右边偏导视u（若U=x，则形式上为x）为中间变量【即视v为常量】</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Important</p>
 <ul>
 <li>莱布尼兹法则（含积分）上下限</li>
 </ul>
 <p><span class="arithmatex">\(I(x) = \int_{a(x)}^{b(x)} g(t)dt\)</span></p>
 <p><span class="arithmatex">\(\frac{dI}{dx} = g(b(x)) \cdot b'(x) - g(a(x)) \cdot a'(x)\)</span></p>
+</div>
 <h3 id="_34">全微分<a class="headerlink" href="#_34" title="点击此处可置顶内容">&para;</a></h3>
 <p>可微条件：对充分小的<span class="arithmatex">\(\Delta x,\Delta y\)</span>,都有<span class="arithmatex">\(\Delta z=A\Delta x+B\Delta y+o(\rho)\)</span>,<span class="arithmatex">\(\rho\to{0}\)</span><br />
 本质：函数在某点附近可以用一个线性映射（即线性函数）来<strong>很好地近似</strong><br />
@@ -10696,9 +10696,8 @@ Ao,An, Bn取傅里叶值时, <span class="arithmatex">\(\int_{-T/2}^{T/2}( f(x) 
 <p><span class="arithmatex">\(\frac{\partial u}{\partial x} = -\frac{1}{J} \cdot \frac{\partial(F, G)}{\partial(x, v)}\)</span>=<span class="arithmatex">\(-\frac{\partial(F, G)}{\partial(x, v)}/\frac{\partial(F, G)}{\partial(u, v)}\)</span></p>
 </li>
 </ul>
-<div class="admonition important">
+<div class="admonition tip">
 <p class="admonition-title">Important</p>
-</div>
 <ul>
 <li>一阶全微分形式不变性</li>
 </ul>
@@ -10710,6 +10709,7 @@ Ao,An, Bn取傅里叶值时, <span class="arithmatex">\(\int_{-T/2}^{T/2}( f(x) 
 <p>这时，利用全微分展开式：<span class="arithmatex">\(dz=Adx+Bdy=F_x’dx+F_y’dy\)</span>,即可求得<span class="arithmatex">\(F_x’=A\)</span>……</p>
 <p>优势：<mark>一口气求出所有偏导数</mark>；变量越多，变量关系越复杂，优越性越大</p>
 <p>【可知：对等式两端求微分，求偏导都是可行的的方法】</p>
+</div>
 <h2 id="_36">泰勒展开<a class="headerlink" href="#_36" title="点击此处可置顶内容">&para;</a></h2>
 <p><span class="arithmatex">\(\Delta x=x-x_0\)</span>,<span class="arithmatex">\(\Delta y=y-y_0\)</span></p>
 <p><span class="arithmatex">\(f(x,y)=f(x_0,y_0)+(\frac {\partial}{\partial x}\Delta x+\frac {\partial}{\partial y}\Delta y)f(x_0,y_0)+\frac{1}{2!}(\frac {\partial}{\partial x}\Delta x+\frac {\partial}{\partial y}\Delta y)^2f(x_0,y_0)+...+R_n(x,y)\)</span></p>

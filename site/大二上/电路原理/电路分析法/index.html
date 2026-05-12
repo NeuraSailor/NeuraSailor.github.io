@@ -9832,7 +9832,7 @@
 <div style="margin-top: -30px; font-size: 0.75em; opacity: 0.7;">
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10h-2a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8zm6.78 1a.7.7 0 0 0-.48.2l-1.22 1.21 2.5 2.5L20.8 5.7c.26-.26.26-.7 0-.95L19.25 3.2c-.13-.13-.3-.2-.47-.2m-2.41 2.12L9 12.5V15h2.5l7.37-7.38z"/></svg></span> 约 646 个字 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 17H7V3h14m0-2H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2M3 5H1v16a2 2 0 0 0 2 2h16v-2H3m12.96-10.71-2.75 3.54-1.96-2.36L8.5 15h11z"/></svg></span> 2 张图片 <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20c4.42 0 8-3.58 8-8s-3.58-8-8-8-8 3.58-8 8 3.58 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10C6.47 22 2 17.5 2 12S6.5 2 12 2m.5 11H11V7h1.5v4.26l3.7-2.13.75 1.3z"/></svg></span> 预计阅读时间 3 分钟</p>
 </div>
-<p><img alt="线性无关的KCL与KVL" src="线性无关的KCL与KVL" /></p>
+<p><img alt="线性无关的KCL与KVL" src="../%E7%AC%94%E8%AE%B0/%E4%B8%80.%E7%94%B5%E8%B7%AF%E5%8F%8A%E5%85%B6%E6%A8%A1%E5%9E%8B%E5%8C%96/%E7%BA%BF%E6%80%A7%E6%97%A0%E5%85%B3%E7%9A%84KCL%E4%B8%8EKVL/" /></p>
 <p>n 节点，b 支路。</p>
 <p>树支个数 n-1，连支 b-n+1</p>
 <table>
@@ -9866,21 +9866,21 @@
 </tbody>
 </table>
 <p>目的：尽可能减少方程数（1. 使各方程独立 2. 减少未知数个数）</p>
-<div class="admonition note">
-<p class="admonition-title">- 例题</p>
-</div>
+<details class="note">
+<summary>例题</summary>
 <p><img alt="assets/d6609772957633082b3515989a8285e0_MD5.png" src="../../../assets/d6609772957633082b3515989a8285e0_MD5.png" /></p>
+</details>
 <h2 id="_1">概念<a class="headerlink" href="#_1" title="点击此处可置顶内容">&para;</a></h2>
 <h3 id="kvl">寻找独立 KVL：单连支回路/网孔<a class="headerlink" href="#kvl" title="点击此处可置顶内容">&para;</a></h3>
 <h3 id="kcl">寻找独立 KCL：单树支割集<a class="headerlink" href="#kcl" title="点击此处可置顶内容">&para;</a></h3>
 <div class="admonition abstract">
 <p class="admonition-title">减少方程数</p>
-</div>
 <ol>
 <li>使用超节点避免电压电流源</li>
 <li>将纯电压源接地减少 KCL</li>
 <li>将纯电流源放在连支减少 KVL</li>
 </ol>
+</div>
 <h2 id="_2">支路电流法<a class="headerlink" href="#_2" title="点击此处可置顶内容">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">技巧</p>
@@ -9890,10 +9890,10 @@
 <h2 id="_3">回路电流法<a class="headerlink" href="#_3" title="点击此处可置顶内容">&para;</a></h2>
 <div class="admonition info">
 <p class="admonition-title">适用场景</p>
-</div>
 <p>回路数小于节点数</p>
 <p>先选择网孔电流法。<br />
 若电流源在中间支路，选用回路电流法。（因为此时用网孔必然引入电流源两端电压）</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">技巧</p>
 </div>
@@ -9915,9 +9915,9 @@
 <h2 id="_4">节点电压<a class="headerlink" href="#_4" title="点击此处可置顶内容">&para;</a></h2>
 <div class="admonition info">
 <p class="admonition-title">适用场景</p>
-</div>
 <p>节点数小于回路数<br />
 当电路中存在纯电压源支路时，选取该支路一节点为参考节点</p>
+</div>
 <p>方程：电压差向外送的电流 = 源（电流源与电压源）送进节点的电流，电压源正号指向主节点时取正。</p>
 <p>公式如下：</p>
 <p>$$</p>

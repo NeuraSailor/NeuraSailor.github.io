@@ -92,6 +92,7 @@ plugins:
       separator: '[\s\u200b\-]'
   - callouts:
       aliases: true
+  - ezlinks
 
 extra_javascript:
   - javascripts/mathjax.js

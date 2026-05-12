@@ -9829,9 +9829,8 @@
 <h2 id="_2">定义<a class="headerlink" href="#_2" title="点击此处可置顶内容">&para;</a></h2>
 <p><mark><span class="arithmatex">\(\begin{aligned} &amp;P(X \leq x, Y \leq y) = P(X \leq x) P(Y \leq y) \quad \text{即} \\ &amp;F(x,y) = F_X(x) F_Y(y) \end{aligned}\)</span></mark></p>
 <p>且 <span class="arithmatex">\(f(x,y) = f_X(x) f_Y(y)\)</span></p>
-<div class="admonition note">
-<p class="admonition-title">- 解释</p>
-</div>
+<details class="note">
+<summary>解释</summary>
 <p>这是一个非常核心的概率论问题。我们来从定义出发，严谨地解释：<br />
 为什么当连续型随机变量 <span class="arithmatex">\(X\)</span> 和 <span class="arithmatex">\(Y\)</span> 独立时，其联合概率密度 function 满足<br />
 [<br />
@@ -9899,6 +9898,7 @@ P(X = x, Y = y) = P(X = x) P(Y = y)<br />
 <p>总结<br />
 因为独立性意味着联合分布 function 可分解为边缘分布 function 的乘积，而对连续型变量，密度 function 是分布 function 的二阶混合偏导，导数运算保持乘积结构，从而得到联合密度等于边缘密度的乘积。</p>
 <p>这就是数学上严格且直观的解释。</p>
+</details>
 <h2 id="_3">判别<a class="headerlink" href="#_3" title="点击此处可置顶内容">&para;</a></h2>
 <ol>
 <li>离散型：<br />
@@ -9912,7 +9912,6 @@ P(X = x, Y = y) = P(X = x) P(Y = y)<br />
 <h3 id="_5">卷积公式/半成品公式<a class="headerlink" href="#_5" title="点击此处可置顶内容">&para;</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-</div>
 <p>已知 <span class="arithmatex">\(f(x,y), Z = X+Y\)</span>, 求 <span class="arithmatex">\(f_Z(z)\)</span> 步骤</p>
 <p><span class="arithmatex">\(f_Z(z) = \int_{-\infty}^{+\infty} f(x, z-x) dx \overset{XY 独立}{=} \int_{-\infty}^{+\infty} f_X(x) f_Y(z-x) dx\)</span></p>
 <ol>
@@ -9926,20 +9925,21 @@ P(X = x, Y = y) = P(X = x) P(Y = y)<br />
 <p>根据 z 分段，在各段上对 x 求积分</p>
 </li>
 </ol>
-<div class="admonition note">
-<p class="admonition-title">- 理解</p>
 </div>
+<details class="note">
+<summary>理解</summary>
 <p>要得到 <span class="arithmatex">\(Z = X+Y\)</span> 在值 <span class="arithmatex">\(z\)</span> 处的密度，需要把所有满足 <span class="arithmatex">\(x+y=z\)</span> 的联合密度 <span class="arithmatex">\(f(x,y)\)</span> 沿着这条直线</p>
+</details>
 <p>"加起来"。</p>
 <p><span class="arithmatex">\(\boxed{f_Z(z) = \int_{-\infty}^{+\infty} f(x, z-x) dx}\)</span></p>
 <p><span class="arithmatex">\(f_X * f_Y = \int_{-\infty}^{+\infty} f_X(x) f_Y(z-x) dx = \int_{-\infty}^{+\infty} f_X(z-y) f_Y(y) dy\)</span></p>
 <p>特殊的：对正态分布：<span class="arithmatex">\(\begin{aligned} &amp;\text{设 } X,Y \text{ 相互独立}, X \sim N(\mu_1, \sigma_1^2), Y \sim N(\mu_2, \sigma_2^2), \text{则} \\ &amp;Z = cX + dY \sim N(c\mu_1 + d\mu_2, c^2 \sigma_1^2 + d^2 \sigma_2^2) \end{aligned}\)</span></p>
-<div class="admonition note">
-<p class="admonition-title">-</p>
-</div>
+<details class="note">
+<summary>Note</summary>
+</details>
 <p><img alt="assets/ee0018852cef57db9d94ef3f04494d26_MD5.jpg" src="../../../assets/ee0018852cef57db9d94ef3f04494d26_MD5.jpg" /></p>
 <p><img alt="assets/ba567f7c53926705a6414bd4c5c09a9d_MD5.jpg" src="../../../assets/ba567f7c53926705a6414bd4c5c09a9d_MD5.jpg" /></p>
-<p><a href="最小最大分布">最小最大分布</a></p>
+<p><a href="../%E6%9C%80%E5%B0%8F%E6%9C%80%E5%A4%A7%E5%88%86%E5%B8%83/">最小最大分布</a></p>
 
 
 

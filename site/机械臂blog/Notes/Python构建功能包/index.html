@@ -9896,11 +9896,11 @@
 <p><code>setup. bash</code> 补全路径</p>
 <h4 id="_1">创建新的功能包<a class="headerlink" href="#_1" title="点击此处可置顶内容">&para;</a></h4>
 <p><code>ros2 pkg create demo_python_pkg --build-type ament_python --license Apache-2.0</code>  </p>
-<div class="admonition note">
-<p class="admonition-title">-</p>
-</div>
-<p>使用 ROS 2 命令行工具，创建一个名为 demo_python_pkg 的 Python 软件包，使用 ament_python 构建系统进行构建，并采用 Apache-2.0 许可协议。<br />
-<img alt="" src="https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909121952000.png" /><br />
+<details class="note">
+<summary>Note</summary>
+<p>使用 ROS 2 命令行工具，创建一个名为 demo_python_pkg 的 Python 软件包，使用 ament_python 构建系统进行构建，并采用 Apache-2.0 许可协议。</p>
+</details>
+<p><img alt="" src="https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909121952000.png" /><br />
 ⚠️upload failed, check dev console<br />
 ⚠️upload failed, check dev console<br />
 ⚠️upload failed, check dev console</p>
@@ -9931,10 +9931,9 @@ from rclpy.node import Node  </p>
 <p>功能包依赖 rclpy</p>
 <h4 id="_4">构建功能包<a class="headerlink" href="#_4" title="点击此处可置顶内容">&para;</a></h4>
 <p><code>colcon build</code></p>
-<div class="admonition note">
-<p class="admonition-title">-</p>
-</div>
-<p><code>colcon build</code> 命令是 <strong>Colcon 构建工具</strong> 的主要命令，用于<strong>编译和构建你的 ROS (机器人操作系统) 或者其他基于 CMake 的项目</strong>。</p>
+<blockquote>
+<p>[!note]-<br />
+<code>colcon build</code> 命令是 <strong>Colcon 构建工具</strong> 的主要命令，用于<strong>编译和构建你的 ROS (机器人操作系统) 或者其他基于 CMake 的项目</strong>。</p>
 <p>简单来说，它做以下事情：</p>
 <ul>
 <li><strong>找到你的所有软件包 (package):</strong>  Colcon 会扫描你的工作空间，寻找包含 <code>CMakeLists.txt</code> 的文件夹，这些文件夹被认为是软件包。</li>
@@ -9948,6 +9947,7 @@ from rclpy.node import Node  </p>
 <p>假设你有一个 ROS 工作空间，里面有两个软件包 <code>package_A</code> 和 <code>package_B</code>， 并且 <code>package_B</code> 依赖于 <code>package_A</code>。 运行 <code>colcon build</code> 后， Colcon 会先构建 <code>package_A</code>， 然后构建 <code>package_B</code>， 确保它们都正确编译和安装。</p>
 <p>Python 中只是对文件拷贝并加上一层包装<br />
 新生成 3 个文件夹 build (构建过程中间文件)/install（构建结果文件夹）/log</p>
+</blockquote>
 <p><img alt="1757404332138_d.png" src="https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909155400994.png" width="300" /></p>
 <p><strong>注意注意，进行到这里，install 文件为最终单独有用的文件</strong>  把 install 文件复制给别人，别人就可以直接运行功能包了<br />
 Install 文件内部：<br />

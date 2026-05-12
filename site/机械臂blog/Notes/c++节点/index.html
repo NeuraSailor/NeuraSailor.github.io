@@ -9804,9 +9804,8 @@
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nb">target_include_directories</span><span class="p">(</span><span class="s">ros2_cpp_node</span><span class="w"> </span><span class="s">PUBLIC</span><span class="w"> </span><span class="o">${</span><span class="nv">rclcpp_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span><span class="w"> </span><span class="c">#头文件路径包含（）</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">ros2_cpp_node</span><span class="w"> </span><span class="o">${</span><span class="nv">rclcpp_LIBRARIES</span><span class="o">}</span><span class="p">)</span><span class="w"> </span><span class="c">#库文件链接</span>
 </span></code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">-</p>
-</div>
+<details class="note">
+<summary>Note</summary>
 <p>“依赖查找”这主要完成以下几件事：</p>
 <ol>
 <li><strong><code>find_package(rclcpp REQUIRED)</code></strong>：</li>
@@ -9838,15 +9837,15 @@
 <li><code>message(STATUS ${rclcpp_INCLUDE_DIRS})</code>: 告诉你这种积木的零件（头文件）放在哪里。</li>
 <li><code>message(STATUS ${rclcpp_LIBRARIES})</code>: 告诉你这种积木的整体（库文件）是什么，你需要用这些整体才能把积木搭起来。</li>
 </ul>
+</details>
 <p><code>cmake .</code></p>
-<div class="admonition note">
-<p class="admonition-title">-</p>
-</div>
+<details class="note">
+<summary>Note</summary>
 <p>cmake . 的作用是读取当前目录中的 <code>CMakeLists.txt</code> 文件，该文件定义了项目的构建配置，然后生成适合系统的构建文件（如 Makefile 或 Visual Studio 工程文件），以便后续编译项目</p>
+</details>
 <p><code>make</code></p>
-<div class="admonition note">
-<p class="admonition-title">-</p>
-</div>
+<details class="note">
+<summary>Note</summary>
 <p>简单来说，make 的作用就是:</p>
 <p>读取 Makefile: 分析项目构建的规则和依赖关系。<br />
 检查文件时间戳: 确定哪些文件需要重新构建（即源文件被修改后，依赖它的目标文件也需要重新构建）。<br />
@@ -9857,6 +9856,7 @@
 墙壁需要用到哪些积木。<br />
 如何把屋顶、墙壁、地基组装起来。<br />
 make 就像你，它根据拼装说明书，一步一步地把房子拼好。 如果你后来改动了其中一块积木（比如把地基换成了更结实的积木），make 会发现需要重新拼装地基，并且会更新整个房子，确保它是最新的。</p>
+</details>
 <p>从而，生成节点可执行文件 <code>ros2_cpp_node</code>, 命令 <code>./ros2_cpp_node</code> 以运行  </p>
 <p>通过 <code>ros2 node list</code>, 可以显示该节点  </p>
 
