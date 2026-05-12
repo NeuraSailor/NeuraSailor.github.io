@@ -1,6 +1,6 @@
 创建实例：
 
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909212509866.png){: width=500 }
+![|500](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909212509866.png)
 
 继承：
 

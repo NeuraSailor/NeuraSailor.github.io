@@ -1,14 +1,14 @@
-> [!tip]
-从零创建
-
-包中 `__init__  ` 同级编写节点
-
-`setup. py ` 中声明，指向 main 函数
-
-构建功能包，只剩 install
-
-`setup. bash` 补全路径
-
+> [!summary]
+> 从零创建  
+> 
+> 包中 `__init__  ` 同级编写节点  
+> 
+> `setup. py ` 中声明，指向 main 函数   
+> 
+> 构建功能包，只剩 install   
+> 
+> `setup. bash` 补全路径
+>  
 
 #### 创建新的功能包  
 
@@ -23,13 +23,13 @@
 
 创建完成，生成文件如图：
 
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909151703489.png){: width=250 }  
+![|250](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909151703489.png)  
 
 #### 编写功能包  
 
 ##### 创建节点 `python_node.py`
 
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909153643924.png){: width=375 }
+![|375](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909153643924.png)
 
 内容如下：
 
@@ -50,13 +50,13 @@ def main(): 
 ##### 声明  
 
 在 setup. Py 中声明  
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909154500438.png){: width=725 }
+![|725](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909154500438.png)
 
 ' 节点名 = 功能包名. 节点名. 函数名 '
 
 在功能包清单文件 package. Xml 中添加依赖 (非必要)
 
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909155049638.png){: width=725 }
+![|725](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909155049638.png)
 
 功能包依赖 rclpy
 
@@ -73,7 +73,7 @@ def main(): 
 > * **解决依赖关系:** 它会分析你的软件包之间的依赖关系，确保按照正确的顺序构建它们。
 > * **编译代码:**  它会使用 CMake 和你的编译器 (例如 GCC 或者 Clang) 来编译你的 C++, Python 或其他语言的代码。
 > * **安装文件:**  它会将编译后的文件 (例如可执行文件、库、Python 模块) 安装到你指定的位置。
->
+> 
 > **总结:**
 >
 > `colcon build` 就是 **构建和安装你所有 ROS 项目中的代码**，让它们可以运行。 类似与 `make` 命令，但更强大，能够处理复杂的项目结构和依赖关系。
@@ -81,15 +81,15 @@ def main(): 
 > **举个例子:**
 >
 > 假设你有一个 ROS 工作空间，里面有两个软件包 `package_A` 和 `package_B`， 并且 `package_B` 依赖于 `package_A`。 运行 `colcon build` 后， Colcon 会先构建 `package_A`， 然后构建 `package_B`， 确保它们都正确编译和安装。
->
+
 Python 中只是对文件拷贝并加上一层包装  
 新生成 3 个文件夹 build (构建过程中间文件)/install（构建结果文件夹）/log
 
-![1757404332138_d.png](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909155400994.png){: width=300 }
+![1757404332138_d.png|300](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909155400994.png)
 
 **注意注意，进行到这里，install 文件为最终单独有用的文件**  把 install 文件复制给别人，别人就可以直接运行功能包了  
 Install 文件内部：  
-![1757405100466_d.png](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909160503404.png){: width=300 }
+![1757405100466_d.png|300](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909160503404.png)
 
 可执行文件 python_node 中运行的 main () 函数为 install 文件夹下 python_node. py 中的 main 函数，而非构建功能包前 demo_python_pkg 下的  中的 main 函数  
 

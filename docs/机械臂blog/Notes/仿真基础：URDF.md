@@ -52,4 +52,4 @@
 命令：
 `urdf_to_graphviz first_robot.urdf`  
 生成 PDF 如图：  
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250911212218830.png){: width=175 }
+![|175](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250911212218830.png)

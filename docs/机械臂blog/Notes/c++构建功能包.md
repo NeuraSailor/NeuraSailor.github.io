@@ -1,26 +1,26 @@
-> [!tip]
-从零创建
-
-包中 `src` 下编写节点
-
-**`CMakeLists. txt` 中声明：添加可执行文件，找到并包含头文件库文件，移动可执行文件到 `install` 下**
-
-构建功能包
-
-`setup. bash` 补全路径
+> [!summary]
+> 从零创建   
+> 
+> 包中 `src` 下编写节点  
+> 
+> **`CMakeLists. txt` 中声明：添加可执行文件，找到并包含头文件库文件，移动可执行文件到 `install` 下**    
+> 
+> 构建功能包  
+> 
+> `setup. bash` 补全路径
 
 #### 创建新的功能包  
 
 `ros2 run create --build-type ament_cmake --liscence Apache-2.0 demo_cpp_pkg `  
 结果：  ****
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909191856932.png){: width=200 }  
+![|200](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909191856932.png)  
 
 #### 编写功能包（编写节点与声明）
 
 在 src 下创建节点 `cpp_node.cpp`  
-![](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909192137077.png){: width=250 }
+![|250](https://gitee.com/zjuwzy/obsidian_picture/raw/master/20250909192137077.png)
 
-内容直接用 [c++节点#节点内容](c++节点#节点内容)
+内容直接用 [[c++节点#节点内容]]
 
 ##### 声明  
 
