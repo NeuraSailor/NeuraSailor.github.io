@@ -28,9 +28,8 @@ theme:
         name: Switch to light mode
 
     features:
-      - navigation.instant*****55
+      - navigation.instant
       - navigation.sections
-      - navigation.expand
       - toc.integrate
       - search.suggest
       - search.highlight
@@ -96,12 +95,12 @@ plugins:
 
 extra_javascript:
   - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - https://unpkg.com/mermaid/dist/mermaid.min.js
 
 extra_css:
   - stylesheets/fonts.css
+  - stylesheets/phycat.css
 
 extra:
   social:

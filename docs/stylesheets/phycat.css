@@ -1,0 +1,446 @@
+/* ============================================================
+   Phycat Theme CSS for MkDocs Material
+   Adapted from the Phycat Obsidian theme
+   ============================================================ */
+
+/* --- 1. CSS Custom Properties --- */
+
+:root {
+    /* Light mode (sakura/桜) */
+    --phy-primary: #ff7096;
+    --phy-secondary: #bd93f9;
+    --phy-bg: #fff7fa;
+    --phy-text: #1c1719;
+    --phy-text-secondary: #3f3a3b;
+    --phy-border: color-mix(in srgb, #ff7096, transparent 60%);
+    --phy-glow: rgba(255, 112, 150, 0.5);
+    --phy-hover-bg: rgba(255, 112, 150, 0.08);
+    --phy-code-bg: #F2EFF9;
+    --phy-table-bg: rgba(255, 247, 250, 0.6);
+    --phy-table-th-bg: rgba(255, 112, 150, 0.08);
+    --phy-table-row-hover: rgba(255, 112, 150, 0.04);
+    --phy-table-cell-hover: rgba(255, 112, 150, 0.08);
+    --phy-letter-spacing: 1px;
+    --phy-line-height: 2.2;
+    --phy-h1-size: 1.618em;
+    --phy-h2-size: 1.462em;
+    --phy-h3-size: 1.318em;
+}
+
+[data-md-color-scheme="slate"] {
+    /* Dark mode (vampire) */
+    --phy-primary: #ff5555;
+    --phy-secondary: #bd93f9;
+    --phy-bg: #282a36;
+    --phy-text: #f8f8f2;
+    --phy-text-secondary: #d0d0d0;
+    --phy-border: #44475a;
+    --phy-glow: rgba(255, 85, 85, 0.6);
+    --phy-hover-bg: rgba(255, 85, 85, 0.1);
+    --phy-code-bg: rgba(30, 30, 40, 0.8);
+    --phy-table-bg: rgba(40, 42, 54, 0.6);
+    --phy-table-th-bg: rgba(255, 85, 85, 0.1);
+    --phy-table-row-hover: rgba(255, 85, 85, 0.06);
+    --phy-table-cell-hover: rgba(255, 85, 85, 0.12);
+}
+
+/* --- 2. Typography --- */
+
+.md-typeset {
+    letter-spacing: var(--phy-letter-spacing);
+    line-height: var(--phy-line-height);
+}
+
+.md-typeset p,
+.md-typeset li {
+    color: var(--phy-text-secondary);
+}
+
+/* --- 3. Strong / Bold --- */
+
+.md-typeset strong {
+    color: var(--phy-primary);
+    font-weight: bold;
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.5, 1.5, 0.5, 1), color 0.2s ease;
+}
+
+.md-typeset strong:hover {
+    transform: translateY(-2px) scale(1.03);
+    color: var(--phy-primary);
+}
+
+[data-md-color-scheme="slate"] .md-typeset strong:hover {
+    transform: translateY(-2px) scale(1.1);
+    text-shadow: 0 0 10px var(--phy-glow);
+}
+
+/* --- 4. Emphasis / Italic --- */
+
+.md-typeset em {
+    color: var(--phy-secondary);
+    padding: 0 3px 0 0;
+}
+
+/* --- 5. Headings --- */
+
+/* h1: centered with animated underline */
+.md-typeset h1 {
+    font-size: var(--phy-h1-size);
+    text-align: center;
+    position: relative;
+    margin-bottom: 0.8em;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.md-typeset h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 3px;
+    background: var(--phy-primary);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.md-typeset h1:hover {
+    color: var(--phy-primary);
+    transform: translateY(-2px);
+}
+
+.md-typeset h1:hover::after {
+    width: 100%;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1:hover {
+    text-shadow: 0 0 8px var(--phy-glow);
+}
+
+/* h2: twin pillars - left border accent */
+.md-typeset h2 {
+    font-size: var(--phy-h2-size);
+    position: relative;
+    padding-left: 16px;
+    border-left: 3px solid var(--phy-primary);
+    transition: all 0.3s ease;
+}
+
+.md-typeset h2:hover {
+    color: var(--phy-primary);
+    border-left-width: 5px;
+    padding-left: 20px;
+}
+
+/* h3: decorative diamond dot */
+.md-typeset h3 {
+    font-size: var(--phy-h3-size);
+    position: relative;
+    padding-left: 14px;
+}
+
+.md-typeset h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--phy-primary);
+    background: transparent;
+}
+
+.md-typeset h3:hover::before {
+    background: var(--phy-primary);
+    box-shadow: 0 0 6px var(--phy-glow);
+}
+
+/* h4, h5, h6: colored with fading opacity */
+.md-typeset h4 { color: var(--phy-primary); opacity: 0.9; }
+.md-typeset h5 { color: var(--phy-primary); opacity: 0.8; }
+.md-typeset h6 { color: var(--phy-primary); opacity: 0.7; }
+
+/* --- 6. Links --- */
+
+.md-typeset a {
+    color: var(--phy-primary);
+    text-decoration: none;
+    background: linear-gradient(to right, var(--phy-primary), var(--phy-primary)) no-repeat;
+    background-size: 0% 1.5px;
+    background-position: 0% 100%;
+    transition: background-size 0.3s ease, color 0.3s ease;
+}
+
+.md-typeset a:hover {
+    background-size: 100% 1.5px;
+    color: var(--phy-primary);
+}
+
+/* --- 7. Blockquotes --- */
+
+.md-typeset blockquote {
+    position: relative;
+    margin: 20px 0;
+    padding: 18px 20px 18px 48px;
+    color: var(--phy-text-secondary);
+    border: 1px solid var(--phy-border);
+    border-left: none;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    background-color: var(--phy-hover-bg);
+    line-height: 1.8;
+}
+
+/* Light mode decorative emoji */
+.md-typeset blockquote::before {
+    content: '✨';
+    position: absolute;
+    left: 14px;
+    top: 18px;
+    font-size: 20px;
+    line-height: 1;
+    transform: rotate(30deg);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Dark mode decorative emoji */
+[data-md-color-scheme="slate"] .md-typeset blockquote::before {
+    content: '💡';
+    filter: grayscale(1);
+    opacity: 0.8;
+}
+
+.md-typeset blockquote:hover {
+    border-color: var(--phy-primary);
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px rgba(255, 112, 150, 0.1);
+}
+
+.md-typeset blockquote:hover::before {
+    transform: rotate(0deg);
+}
+
+[data-md-color-scheme="slate"] .md-typeset blockquote:hover {
+    box-shadow: 0 0 15px rgba(255, 85, 85, 0.2),
+                inset 0 0 10px rgba(255, 85, 85, 0.05);
+}
+
+[data-md-color-scheme="slate"] .md-typeset blockquote:hover::before {
+    filter: grayscale(0);
+    opacity: 1;
+    text-shadow: 0 0 10px var(--phy-glow);
+}
+
+/* --- 8. Tables --- */
+
+.md-typeset table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100%;
+    margin: 1.5em 0;
+    border: 1px solid var(--phy-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--phy-table-bg);
+    line-height: 1.8;
+}
+
+.md-typeset table th,
+.md-typeset table td {
+    padding: 10px 15px;
+    border-right: 1px solid var(--phy-border);
+    border-bottom: 1px solid var(--phy-border);
+    transition: all 0.2s ease;
+}
+
+.md-typeset table th:last-child,
+.md-typeset table td:last-child {
+    border-right: none !important;
+}
+
+.md-typeset table tr:last-child td {
+    border-bottom: none !important;
+}
+
+.md-typeset table th {
+    background-color: var(--phy-table-th-bg) !important;
+    color: var(--phy-primary);
+    font-weight: bold;
+}
+
+.md-typeset table tbody tr:hover td {
+    background-color: var(--phy-table-row-hover);
+}
+
+.md-typeset table tbody td:hover {
+    background-color: var(--phy-table-cell-hover);
+    box-shadow: inset 0 0 0 1px var(--phy-primary);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table tbody td:hover {
+    text-shadow: 0 0 8px var(--phy-glow);
+}
+
+/* --- 9. Code --- */
+
+.md-typeset code {
+    color: var(--phy-primary);
+}
+
+.md-typeset pre {
+    border-radius: 8px;
+    border: 1px solid var(--phy-border);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.md-typeset pre:hover {
+    border-color: var(--phy-primary) !important;
+    box-shadow: 0 4px 12px rgba(255, 112, 150, 0.15);
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre:hover {
+    box-shadow: 0 4px 12px rgba(255, 85, 85, 0.25);
+}
+
+/* --- 10. Horizontal Rules --- */
+
+.md-typeset hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--phy-primary), transparent);
+    position: relative;
+    overflow: visible;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.md-typeset hr::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--phy-primary);
+    background-color: var(--md-default-bg-color, #fff);
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+[data-md-color-scheme="slate"] .md-typeset hr::after {
+    background-color: var(--phy-bg);
+}
+
+.md-typeset hr:hover {
+    opacity: 1;
+}
+
+.md-typeset hr:hover::after {
+    background-color: var(--phy-primary);
+    box-shadow: 0 0 10px var(--phy-glow);
+    transform: translate(-50%, -50%) rotate(225deg) scale(1.5);
+}
+
+/* --- 11. Lists --- */
+
+.md-typeset ul > li::marker {
+    color: var(--phy-primary);
+}
+
+.md-typeset ol > li::marker {
+    color: var(--phy-primary);
+}
+
+.md-typeset ul ul > li::marker {
+    color: var(--phy-secondary);
+}
+
+.md-typeset ul ul ul > li::marker {
+    color: var(--phy-primary);
+    opacity: 0.7;
+}
+
+/* --- 12. Admonitions / Callouts --- */
+
+.md-typeset .admonition {
+    border-radius: 12px;
+    border: 1px solid var(--phy-border);
+    background-color: var(--phy-hover-bg);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease;
+}
+
+/* Emoji watermark behind admonition content */
+.md-typeset .admonition::after {
+    content: '✨';
+    position: absolute;
+    right: -10px;
+    bottom: -15px;
+    font-size: 80px;
+    line-height: 1;
+    opacity: 0.08;
+    transform: rotate(-15deg);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.md-typeset .admonition:hover::after {
+    transform: rotate(0deg) scale(1.1);
+    opacity: 0.15;
+    right: 5px;
+    bottom: -5px;
+}
+
+.md-typeset .admonition-title {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9em;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition-title {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- 13. Task Lists --- */
+
+.md-typeset .task-list-indicator:checked {
+    background-color: var(--phy-primary) !important;
+    border-color: var(--phy-primary) !important;
+}
+
+.md-typeset .task-list-item--checked {
+    opacity: 0.7;
+    text-decoration: line-through;
+    text-decoration-color: var(--phy-text-secondary);
+}
+
+/* --- 14. Navigation / Sidebar --- */
+
+/* Active nav item */
+.md-nav__item .md-nav__link--active {
+    color: var(--phy-primary);
+}
+
+.md-nav__link:hover {
+    color: var(--phy-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-thumb {
+    background: var(--phy-primary);
+    opacity: 0.5;
+    border-radius: 4px;
+}
