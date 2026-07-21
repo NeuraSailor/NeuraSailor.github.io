@@ -6,31 +6,34 @@ edit_uri: ""
 
 theme:
     name: 'material'
+    custom_dir: overrides
     language: zh
     palette:
 
-    # Light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: brown   
-      accent: indigo
+    # Light mode — manual toggle
+    - scheme: default
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
+        icon: material/weather-night
+        name: 切换到暗色模式
 
-    # Dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: black
-      accent: blue
+    # Dark mode — manual toggle
+    - scheme: slate
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
+        icon: material/weather-sunny
+        name: 切换到亮色模式
 
     features:
       - navigation.instant
+      - navigation.tracking
       - navigation.sections
-      - toc.integrate
+      - navigation.expand
+      - navigation.indexes
+      - navigation.top
+      - toc.follow
       - search.suggest
       - search.highlight
       - content.code.copy
@@ -88,28 +91,33 @@ plugins:
         - zh
         - en
         - ja
-      separator: '[\s\u200b\-]'
+      separator: '[\s​\-]'
   - callouts:
       aliases: true
   - ezlinks
 
+exclude_docs: |
+  .obsidian/*
+  .claude/*
+
 extra_javascript:
   - javascripts/mathjax.js
+  - javascripts/extra.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - https://unpkg.com/mermaid/dist/mermaid.min.js
 
 extra_css:
   - stylesheets/fonts.css
-  - stylesheets/phycat.css
+  - stylesheets/hogwarts.css
 
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/NeuraSailor
   fonts:
-    - name: LXGW WenKai
+    - name: ZCOOL XiaoWei
       styles: normal
-      url: https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css
+      url: https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap
     - name: Noto Serif SC
       styles: [400, 600, 700]
       weights: [400, 600, 700]

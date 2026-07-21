@@ -1,0 +1,828 @@
+/* ============================================================
+   Hogwarts Theme CSS for MkDocs Material
+   霍格沃茨魔法世界主题 —— 深海军蓝 + 暗金 + 奶油色
+   ============================================================ */
+
+/* ============================================================
+   1. CSS Custom Properties (Design Tokens)
+   ============================================================ */
+
+:root,
+[data-md-color-scheme="default"] {
+    /* Light mode — 霍格沃茨图书馆白天 */
+    --hw-bg-deep: #0a0a2e;
+    --hw-bg-surface: #f5f0e8;
+    --hw-bg-warm: #faf5ed;
+    --hw-accent: #d4a855;
+    --hw-accent-glow: #f0d060;
+    --hw-accent-dim: #b8922e;
+    --hw-text: #e8d5b0;
+    --hw-text-dark: #2a2230;
+    --hw-text-body: #3d3530;
+    --hw-text-muted: #8a8070;
+    --hw-border: rgba(212, 168, 85, 0.25);
+    --hw-border-light: rgba(212, 168, 85, 0.12);
+    --hw-card-bg: rgba(245, 240, 232, 0.85);
+    --hw-code-bg: #1e1e36;
+    --hw-code-text: #e8d5b0;
+    --hw-nav-bg: #0a0a2e;
+    --hw-nav-text: #d4a855;
+    --hw-gradient-hero: linear-gradient(180deg, #060620 0%, #0a0a2e 40%, #0d1b3e 100%);
+
+    /* Override MkDocs Material variables */
+    --md-default-bg-color: #f5f0e8;
+    --md-default-fg-color: #3d3530;
+    --md-default-fg-color--light: #8a8070;
+    --md-default-fg-color--lighter: #b0a595;
+    --md-default-fg-color--lightest: #d5cec0;
+    --md-primary-fg-color: #0a0a2e;
+    --md-primary-fg-color--light: #1a1a4e;
+    --md-primary-fg-color--dark: #060620;
+    --md-primary-bg-color: #e8d5b0;
+    --md-primary-bg-color--light: #f5f0e8;
+    --md-accent-fg-color: #d4a855;
+    --md-accent-fg-color--transparent: rgba(212, 168, 85, 0.1);
+    --md-accent-bg-color: #d4a855;
+    --md-accent-bg-color--light: #f0d060;
+    --md-typeset-a-color: #b8922e;
+    --md-typeset-mark-color: rgba(212, 168, 85, 0.3);
+    --md-code-bg-color: #1e1e36;
+    --md-code-fg-color: #e8d5b0;
+    --md-code-hl-color: rgba(212, 168, 85, 0.2);
+    --md-code-hl-number-color: #f0d060;
+    --md-code-hl-special-color: #e8d5b0;
+    --md-code-hl-function-color: #d4a855;
+    --md-code-hl-constant-color: #f0d060;
+    --md-code-hl-keyword-color: #bd93f9;
+    --md-code-hl-string-color: #87CEEB;
+    --md-code-hl-name-color: #e8d5b0;
+    --md-code-hl-operator-color: #d4a855;
+    --md-code-hl-punctuation-color: #b0a595;
+    --md-code-hl-comment-color: #6a6a8a;
+    --md-code-hl-generic-color: #e8d5b0;
+    --md-code-hl-variable-color: #e8d5b0;
+    --md-admonition-fg-color: #3d3530;
+    --md-admonition-bg-color: #f5f0e8;
+    --md-footer-bg-color: #0a0a2e;
+    --md-footer-bg-color--dark: #060620;
+    --md-footer-fg-color: #e8d5b0;
+    --md-footer-fg-color--light: #b0a595;
+    --md-footer-fg-color--lighter: #8a8070;
+}
+
+[data-md-color-scheme="slate"] {
+    /* Dark mode — 暖暗色，烛光下的密室 */
+    --hw-bg-deep: #1a1a2e;
+    --hw-bg-surface: #242438;
+    --hw-bg-warm: #2a2a3e;
+    --hw-accent: #d4a855;
+    --hw-accent-glow: #f0d060;
+    --hw-accent-dim: #b8922e;
+    --hw-text: #e0d0b0;
+    --hw-text-dark: #e0d0b0;
+    --hw-text-body: #d0c0a0;
+    --hw-text-muted: #a09880;
+    --hw-border: rgba(212, 168, 85, 0.2);
+    --hw-border-light: rgba(212, 168, 85, 0.1);
+    --hw-card-bg: rgba(36, 36, 56, 0.85);
+    --hw-code-bg: #1e1e36;
+    --hw-code-text: #e0d0b0;
+    --hw-nav-bg: #1a1a2e;
+    --hw-nav-text: #d4a855;
+    --hw-gradient-hero: linear-gradient(180deg, #12122a 0%, #1a1a2e 40%, #1e1e3a 100%);
+
+    /* Override MkDocs Material variables */
+    --md-default-bg-color: #1a1a2e;
+    --md-default-fg-color: #d0c0a0;
+    --md-default-fg-color--light: #a09880;
+    --md-default-fg-color--lighter: #706858;
+    --md-default-fg-color--lightest: #484050;
+    --md-primary-fg-color: #1a1a2e;
+    --md-primary-fg-color--light: #2a2a4e;
+    --md-primary-fg-color--dark: #0e0e20;
+    --md-primary-bg-color: #e0d0b0;
+    --md-primary-bg-color--light: #242438;
+    --md-accent-fg-color: #d4a855;
+    --md-accent-fg-color--transparent: rgba(212, 168, 85, 0.1);
+    --md-accent-bg-color: #d4a855;
+    --md-accent-bg-color--light: #f0d060;
+    --md-typeset-a-color: #d4a855;
+    --md-typeset-mark-color: rgba(212, 168, 85, 0.25);
+    --md-code-bg-color: #1e1e36;
+    --md-code-fg-color: #e0d0b0;
+    --md-code-hl-color: rgba(212, 168, 85, 0.15);
+    --md-code-hl-number-color: #f0d060;
+    --md-code-hl-special-color: #e0d0b0;
+    --md-code-hl-function-color: #d4a855;
+    --md-code-hl-constant-color: #f0d060;
+    --md-code-hl-keyword-color: #bd93f9;
+    --md-code-hl-string-color: #87CEEB;
+    --md-code-hl-name-color: #e0d0b0;
+    --md-code-hl-operator-color: #d4a855;
+    --md-code-hl-punctuation-color: #a09880;
+    --md-code-hl-comment-color: #6a6a8a;
+    --md-code-hl-generic-color: #e0d0b0;
+    --md-code-hl-variable-color: #e0d0b0;
+    --md-admonition-fg-color: #d0c0a0;
+    --md-admonition-bg-color: #242438;
+    --md-footer-bg-color: #12122a;
+    --md-footer-bg-color--dark: #0e0e20;
+    --md-footer-fg-color: #e0d0b0;
+    --md-footer-fg-color--light: #a09880;
+    --md-footer-fg-color--lighter: #706858;
+}
+
+/* ============================================================
+   2. Top Gradient Decorative Bar
+   ============================================================ */
+
+/* Insert gradient bar via header pseudo-element */
+.md-header {
+    border-top: 4px solid transparent;
+    border-image: linear-gradient(90deg, #d4a855, #7B68EE, #87CEEB, #d4a855) 1;
+}
+
+/* ============================================================
+   3. Reading Progress Bar
+   ============================================================ */
+
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    z-index: 10000;
+    background: transparent;
+    pointer-events: none;
+}
+
+.reading-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #d4a855, #f0d060, #b8922e);
+    transition: width 0.1s linear;
+    box-shadow: 0 0 6px rgba(212, 168, 85, 0.5);
+}
+
+/* ============================================================
+   4. Typography
+   ============================================================ */
+
+.md-typeset {
+    line-height: 2;
+    color: var(--md-default-fg-color);
+}
+
+/* h1: centered with golden underline decoration */
+.md-typeset h1 {
+    font-size: 1.618em;
+    text-align: center;
+    position: relative;
+    margin-bottom: 0.8em;
+    color: var(--md-default-fg-color);
+    transition: color 0.3s ease;
+}
+
+.md-typeset h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--hw-accent), transparent);
+    border-radius: 1px;
+    transition: width 0.3s ease, box-shadow 0.3s ease;
+}
+
+.md-typeset h1:hover::after {
+    width: 100%;
+    box-shadow: 0 0 8px rgba(212, 168, 85, 0.4);
+}
+
+/* h2: left golden vertical bar */
+.md-typeset h2 {
+    font-size: 1.462em;
+    position: relative;
+    padding-left: 16px;
+    border-left: 3px solid var(--hw-accent);
+    transition: all 0.3s ease;
+    color: var(--md-default-fg-color);
+}
+
+.md-typeset h2:hover {
+    border-left-width: 5px;
+    padding-left: 20px;
+    border-left-color: var(--hw-accent-glow);
+}
+
+/* h3: left golden diamond ◆ */
+.md-typeset h3 {
+    font-size: 1.318em;
+    position: relative;
+    padding-left: 18px;
+    color: var(--md-default-fg-color);
+}
+
+.md-typeset h3::before {
+    content: '\25C6';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--hw-accent);
+    font-size: 0.6em;
+    transition: all 0.3s ease;
+}
+
+.md-typeset h3:hover::before {
+    color: var(--hw-accent-glow);
+    text-shadow: 0 0 6px rgba(212, 168, 85, 0.5);
+}
+
+/* h4, h5, h6: golden tint with fading opacity */
+.md-typeset h4 { color: var(--hw-accent); opacity: 0.9; }
+.md-typeset h5 { color: var(--hw-accent); opacity: 0.8; }
+.md-typeset h6 { color: var(--hw-accent); opacity: 0.7; }
+
+/* Links */
+.md-typeset a {
+    color: var(--md-typeset-a-color);
+    text-decoration: none;
+    background: linear-gradient(to right, var(--hw-accent), var(--hw-accent)) no-repeat;
+    background-size: 0% 1.5px;
+    background-position: 0% 100%;
+    transition: background-size 0.3s ease, color 0.3s ease;
+}
+
+.md-typeset a:hover {
+    background-size: 100% 1.5px;
+    color: var(--hw-accent-glow);
+}
+
+/* Strong / Bold */
+.md-typeset strong {
+    color: var(--hw-accent);
+    font-weight: bold;
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.5, 1.5, 0.5, 1), color 0.2s ease;
+}
+
+.md-typeset strong:hover {
+    transform: translateY(-2px) scale(1.03);
+    color: var(--hw-accent-glow);
+}
+
+/* Emphasis / Italic */
+.md-typeset em {
+    color: var(--hw-text-muted);
+    padding: 0 3px 0 0;
+}
+
+/* ============================================================
+   5. Navigation Header Bar
+   ============================================================ */
+
+.md-header {
+    background-color: var(--hw-nav-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.md-header[data-md-color-scheme="slate"] {
+    background-color: #1a1a2e;
+}
+
+.md-header__title {
+    color: var(--hw-nav-text);
+    font-weight: 600;
+}
+
+/* Navigation tabs */
+.md-tabs {
+    background-color: rgba(10, 10, 46, 0.95);
+}
+
+.md-tabs__link {
+    color: var(--hw-text);
+    opacity: 0.8;
+}
+
+.md-tabs__link--active,
+.md-tabs__link:hover {
+    color: var(--hw-accent);
+    opacity: 1;
+}
+
+/* ============================================================
+   6. Sidebar
+   ============================================================ */
+
+.md-sidebar {
+    background-color: transparent;
+}
+
+.md-sidebar--primary {
+    background-color: var(--hw-nav-bg);
+}
+
+.md-nav__title {
+    color: var(--hw-nav-text);
+    font-weight: 600;
+}
+
+.md-nav__link {
+    color: var(--hw-text);
+    transition: color 0.2s ease;
+}
+
+.md-nav__link:hover {
+    color: var(--hw-accent);
+}
+
+.md-nav__link--active {
+    color: var(--hw-accent) !important;
+    font-weight: 600;
+}
+
+.md-nav__item--active > .md-nav__link {
+    color: var(--hw-accent);
+}
+
+.md-nav__item .md-nav__item .md-nav__link {
+    padding-left: 1.2rem;
+    font-size: 0.9em;
+    color: var(--hw-text-muted);
+}
+
+.md-nav__item .md-nav__item .md-nav__link:hover {
+    color: var(--hw-accent);
+}
+
+/* Sidebar scrollbar */
+.md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
+    background: var(--hw-accent);
+    opacity: 0.4;
+    border-radius: 4px;
+}
+
+.md-sidebar__scrollwrap::-webkit-scrollbar-track {
+    background: rgba(10, 10, 46, 0.3);
+}
+
+/* ============================================================
+   7. Sidebar Toggle Button (Custom)
+   ============================================================ */
+
+.sidebar-toggle-btn {
+    position: fixed;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9998;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--hw-accent);
+    background: var(--hw-nav-bg);
+    color: var(--hw-accent);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0.85;
+}
+
+.sidebar-toggle-btn:hover {
+    opacity: 1;
+    border-color: var(--hw-accent-glow);
+    color: var(--hw-accent-glow);
+    box-shadow: 0 2px 20px rgba(212, 168, 85, 0.3);
+    transform: translateY(-50%) scale(1.08);
+}
+
+/* Sidebar hidden state */
+body.sidebar-hidden .md-sidebar--primary {
+    display: none;
+}
+
+body.sidebar-hidden .md-content {
+    margin-left: 0;
+    max-width: 100%;
+}
+
+/* ============================================================
+   8. Blockquotes
+   ============================================================ */
+
+.md-typeset blockquote {
+    position: relative;
+    margin: 20px 0;
+    padding: 18px 20px 18px 20px;
+    color: var(--md-default-fg-color);
+    border: 1px solid var(--hw-border);
+    border-left: 3px solid var(--hw-accent);
+    border-radius: 0 8px 8px 0;
+    background: var(--hw-border-light);
+    transition: all 0.3s ease;
+    line-height: 1.8;
+}
+
+.md-typeset blockquote:hover {
+    border-left-color: var(--hw-accent-glow);
+    border-left-width: 4px;
+    box-shadow: 0 4px 16px rgba(212, 168, 85, 0.08);
+}
+
+/* ============================================================
+   9. Tables
+   ============================================================ */
+
+.md-typeset table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100%;
+    margin: 1.5em 0;
+    border: 1px solid var(--hw-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--hw-bg-warm);
+    line-height: 1.8;
+}
+
+.md-typeset table th,
+.md-typeset table td {
+    padding: 10px 15px;
+    border-right: 1px solid var(--hw-border-light);
+    border-bottom: 1px solid var(--hw-border-light);
+    transition: background-color 0.2s ease;
+}
+
+.md-typeset table th:last-child,
+.md-typeset table td:last-child {
+    border-right: none !important;
+}
+
+.md-typeset table tr:last-child td {
+    border-bottom: none !important;
+}
+
+.md-typeset table th {
+    background-color: rgba(212, 168, 85, 0.15) !important;
+    color: var(--hw-accent-dim);
+    font-weight: bold;
+}
+
+.md-typeset table tbody tr:nth-child(even) {
+    background-color: rgba(212, 168, 85, 0.04);
+}
+
+.md-typeset table tbody tr:hover td {
+    background-color: rgba(212, 168, 85, 0.08);
+}
+
+/* ============================================================
+   10. Code Blocks
+   ============================================================ */
+
+.md-typeset code {
+    color: var(--hw-accent);
+    background: var(--hw-code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.md-typeset pre {
+    border-radius: 8px;
+    border: 1px solid var(--hw-border);
+    background: var(--hw-code-bg);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.md-typeset pre:hover {
+    border-color: var(--hw-accent) !important;
+    box-shadow: 0 4px 16px rgba(212, 168, 85, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre:hover {
+    box-shadow: 0 4px 16px rgba(212, 168, 85, 0.2);
+}
+
+.md-typeset pre > code {
+    color: var(--hw-code-text);
+    background: transparent;
+    padding: 0;
+}
+
+/* ============================================================
+   11. Horizontal Rules
+   ============================================================ */
+
+.md-typeset hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--hw-accent), transparent);
+    position: relative;
+    overflow: visible;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    margin: 2em 0;
+}
+
+.md-typeset hr::after {
+    content: '\2726';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--hw-accent);
+    font-size: 0.8em;
+    background: var(--md-default-bg-color);
+    padding: 0 8px;
+    transition: all 0.3s ease;
+}
+
+.md-typeset hr:hover {
+    opacity: 0.8;
+}
+
+.md-typeset hr:hover::after {
+    color: var(--hw-accent-glow);
+    text-shadow: 0 0 8px rgba(212, 168, 85, 0.4);
+}
+
+/* ============================================================
+   12. Lists
+   ============================================================ */
+
+.md-typeset ul > li::marker {
+    color: var(--hw-accent);
+}
+
+.md-typeset ol > li::marker {
+    color: var(--hw-accent);
+}
+
+.md-typeset ul ul > li::marker {
+    color: var(--hw-text-muted);
+}
+
+.md-typeset ul ul ul > li::marker {
+    color: var(--hw-accent);
+    opacity: 0.7;
+}
+
+/* ============================================================
+   13. Admonitions / Callouts (魔法书风格)
+   ============================================================ */
+
+.md-typeset .admonition,
+.md-typeset details {
+    border-radius: 12px;
+    border: 1px solid var(--hw-border);
+    background-color: var(--hw-bg-warm);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.md-typeset .admonition:hover,
+.md-typeset details:hover {
+    border-color: var(--hw-accent);
+    box-shadow: 0 4px 20px rgba(212, 168, 85, 0.12);
+}
+
+.md-typeset .admonition > .admonition-title,
+.md-typeset details > summary {
+    background-color: rgba(212, 168, 85, 0.08) !important;
+    border-left: 3px solid var(--hw-accent) !important;
+    color: var(--hw-accent-dim);
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 0;
+}
+
+.md-typeset .admonition > .admonition-title::before,
+.md-typeset details > summary::before {
+    color: var(--hw-accent);
+}
+
+/* Callout type-specific styling */
+.md-typeset .note > .admonition-title,
+.md-typeset details.note > summary {
+    border-left-color: #5b8ec4 !important;
+    background-color: rgba(91, 142, 196, 0.08) !important;
+}
+
+.md-typeset .warning > .admonition-title,
+.md-typeset details.warning > summary {
+    border-left-color: #d4a855 !important;
+    background-color: rgba(212, 168, 85, 0.08) !important;
+}
+
+.md-typeset .tip > .admonition-title,
+.md-typeset details.tip > summary {
+    border-left-color: #4a9e6e !important;
+    background-color: rgba(74, 158, 110, 0.08) !important;
+}
+
+.md-typeset .danger > .admonition-title,
+.md-typeset details.danger > summary {
+    border-left-color: #c4544a !important;
+    background-color: rgba(196, 84, 74, 0.08) !important;
+}
+
+.md-typeset .example > .admonition-title,
+.md-typeset details.example > summary {
+    border-left-color: #7B68EE !important;
+    background-color: rgba(123, 104, 238, 0.08) !important;
+}
+
+.md-typeset .quote > .admonition-title,
+.md-typeset details.quote > summary {
+    border-left-color: #87CEEB !important;
+    background-color: rgba(135, 206, 235, 0.08) !important;
+}
+
+.md-typeset .abstract > .admonition-title,
+.md-typeset details.abstract > summary {
+    border-left-color: #9b8fe8 !important;
+    background-color: rgba(155, 143, 232, 0.08) !important;
+}
+
+.md-typeset .info > .admonition-title,
+.md-typeset details.info > summary {
+    border-left-color: #5b8ec4 !important;
+    background-color: rgba(91, 142, 196, 0.08) !important;
+}
+
+.md-typeset .success > .admonition-title,
+.md-typeset details.success > summary {
+    border-left-color: #4a9e6e !important;
+    background-color: rgba(74, 158, 110, 0.08) !important;
+}
+
+.md-typeset .failure > .admonition-title,
+.md-typeset details.failure > summary {
+    border-left-color: #c4544a !important;
+    background-color: rgba(196, 84, 74, 0.08) !important;
+}
+
+.md-typeset .bug > .admonition-title,
+.md-typeset details.bug > summary {
+    border-left-color: #c4544a !important;
+    background-color: rgba(196, 84, 74, 0.08) !important;
+}
+
+/* ============================================================
+   14. Task Lists
+   ============================================================ */
+
+.md-typeset .task-list-indicator:checked {
+    background-color: var(--hw-accent) !important;
+    border-color: var(--hw-accent) !important;
+}
+
+.md-typeset .task-list-item--checked {
+    opacity: 0.7;
+    text-decoration: line-through;
+    text-decoration-color: var(--hw-text-muted);
+}
+
+/* ============================================================
+   15. Footer
+   ============================================================ */
+
+.md-footer {
+    background-color: var(--hw-nav-bg);
+    color: var(--hw-text);
+}
+
+.md-footer-meta {
+    background-color: rgba(6, 6, 32, 0.8);
+}
+
+.md-footer__link {
+    color: var(--hw-text);
+}
+
+.md-footer__link:hover {
+    color: var(--hw-accent);
+}
+
+.md-footer__title {
+    color: var(--hw-accent);
+}
+
+/* ============================================================
+   16. Search
+   ============================================================ */
+
+.md-search__input {
+    background-color: rgba(245, 240, 232, 0.12);
+    border: 1px solid var(--hw-border);
+    border-radius: 8px;
+    color: var(--hw-text);
+    transition: all 0.3s ease;
+}
+
+.md-search__input:focus {
+    border-color: var(--hw-accent);
+    background-color: rgba(245, 240, 232, 0.18);
+    box-shadow: 0 0 8px rgba(212, 168, 85, 0.15);
+}
+
+.md-search__input::placeholder {
+    color: var(--hw-text-muted);
+}
+
+[data-md-color-scheme="slate"] .md-search__input {
+    background-color: rgba(36, 36, 56, 0.8);
+}
+
+.md-search-result__link:hover,
+.md-search-result__link:focus {
+    background-color: rgba(212, 168, 85, 0.08);
+}
+
+.md-search-result__more {
+    color: var(--hw-accent);
+}
+
+/* ============================================================
+   17. Scrollbar
+   ============================================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--md-default-bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--hw-accent);
+    opacity: 0.5;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--hw-accent-glow);
+    opacity: 0.8;
+}
+
+/* ============================================================
+   18. Light / Dark Mode Toggle Button
+   ============================================================ */
+
+.theme-toggle-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 24px;
+    z-index: 9998;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid var(--hw-accent);
+    background: var(--hw-nav-bg);
+    color: var(--hw-accent);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0.85;
+}
+
+.theme-toggle-btn:hover {
+    opacity: 1;
+    border-color: var(--hw-accent-glow);
+    color: var(--hw-accent-glow);
+    box-shadow: 0 2px 20px rgba(212, 168, 85, 0.3);
+    transform: scale(1.08);
+}
+
+/* ============================================================
+   19. Responsive Typography
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .md-typeset h1 {
+        font-size: 1.3em;
+    }
+    .md-typeset h2 {
+        font-size: 1.2em;
+    }
+    .md-typeset h3 {
+        font-size: 1.1em;
+    }
+}
