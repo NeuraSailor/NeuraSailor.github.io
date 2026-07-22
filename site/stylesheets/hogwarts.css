@@ -4,6 +4,37 @@
    ============================================================ */
 
 /* ============================================================
+   0. Math Formula Anti-FOUC
+   隐藏未渲染的 arithmatex 公式原始文本，MathJax 渲染后自动显示
+   ============================================================ */
+
+.arithmatex:not(.mjx-processed) {
+    visibility: hidden;
+    /* 保留布局空间，避免设置 hidden 后页面跳动 */
+    display: inline;
+    white-space: nowrap;
+    font-size: 0; /* 确保不占视觉空间 */
+}
+
+/* 行内公式占位符的宽度估算（避免布局抖动更准确） */
+.md-typeset span.arithmatex:not(.mjx-processed) {
+    display: inline-block;
+    width: 2em;
+    height: 1em;
+    vertical-align: middle;
+    font-size: inherit;
+    overflow: hidden;
+}
+
+/* 块级公式的占位符 */
+.md-typeset div.arithmatex:not(.mjx-processed) {
+    display: block;
+    height: 2em;
+    line-height: 0;
+    overflow: hidden;
+}
+
+/* ============================================================
    1. CSS Custom Properties (Design Tokens)
    ============================================================ */
 
