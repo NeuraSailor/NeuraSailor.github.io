@@ -4,6 +4,23 @@
    ============================================================ */
 
 /* ============================================================
+   0. Math Formula Anti-FOUC
+   .arithmatex 元素默认 opacity:0，MathJax renderActions 通过
+   .mjx-inflight 类控制显示。渲染完成 → 移除类 → 显示公式。
+   ============================================================ */
+
+.arithmatex {
+    opacity: 0;
+    transition: opacity 0.08s ease;
+}
+
+.arithmatex.mjx-inflight,
+/* 如果 MathJax 已替换内容（有 mjx-container 子元素），立即显示 */
+.arithmatex:has(mjx-container) {
+    opacity: 1;
+}
+
+/* ============================================================
    1. CSS Custom Properties (Design Tokens)
    ============================================================ */
 

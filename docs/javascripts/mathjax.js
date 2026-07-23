@@ -21,7 +21,24 @@ window.MathJax = {
   },
   options: {
     ignoreHtmlClass: ".*|",
-    processHtmlClass: "arithmatex"
+    processHtmlClass: "arithmatex",
+    renderActions: {
+      find: [10, function (doc) {
+        for (var _i = 0, _a = doc.math; _i < _a.length; _i++) {
+          var math = _a[_i];
+          if (math.start && math.start.parentNode) {
+            math.start.parentNode.classList.add('mjx-inflight');
+          }
+        }
+      }, function (doc) {
+        for (var _i = 0, _a = doc.math; _i < _a.length; _i++) {
+          var math = _a[_i];
+          if (math.start && math.start.parentNode) {
+            math.start.parentNode.classList.remove('mjx-inflight');
+          }
+        }
+      }]
+    }
   }
 };
 
