@@ -42,7 +42,7 @@
     const saved = localStorage.getItem('hw-sidebar-hidden');
     if (saved === 'true') {
       document.body.classList.add('sidebar-hidden');
-      btn.textContent = '📖'; // open book
+      btn.textContent = '📖';
     }
 
     btn.addEventListener('click', function () {
@@ -50,7 +50,6 @@
       localStorage.setItem('hw-sidebar-hidden', isHidden);
       btn.textContent = isHidden ? '📖' : '📚';
 
-      // Also toggle MkDocs' own sidebar state
       if (sidebar) {
         const mdToggle = sidebar.querySelector('[data-md-toggle="drawer"]');
         if (mdToggle && mdToggle.checked !== !isHidden) {
@@ -62,62 +61,22 @@
   }
 
   /* ----------------------------------------------------------
-     3. Theme Toggle (Light / Dark)
-     ---------------------------------------------------------- */
-
-  function initThemeToggle() {
-    const btn = document.getElementById('themeToggleBtn');
-    if (!btn) return;
-
-    // Restore saved theme
-    const saved = localStorage.getItem('hw-color-scheme');
-    if (saved) {
-      document.body.setAttribute('data-md-color-scheme', saved);
-    }
-    updateThemeIcon(btn);
-
-    btn.addEventListener('click', function () {
-      const current = document.body.getAttribute('data-md-color-scheme');
-      const next = (current === 'slate') ? 'default' : 'slate';
-      document.body.setAttribute('data-md-color-scheme', next);
-      localStorage.setItem('hw-color-scheme', next);
-      updateThemeIcon(btn);
-    });
-  }
-
-  function updateThemeIcon(btn) {
-    const scheme = document.body.getAttribute('data-md-color-scheme');
-    if (scheme === 'slate') {
-      btn.textContent = '☀️'; // sun for switching to light
-      btn.title = '切换到亮色模式';
-    } else {
-      btn.textContent = '🌙'; // moon for switching to dark
-      btn.title = '切换到暗色模式';
-    }
-  }
-
-  /* ----------------------------------------------------------
-     4. MkDocs Instant Navigation Hook
-        Re-initialize everything on each page load
+     3. MkDocs Instant Navigation Hook
      ---------------------------------------------------------- */
 
   function initAll() {
     initProgressBar();
     initSidebarToggle();
-    initThemeToggle();
   }
 
   if (typeof document$ !== 'undefined') {
     document$.subscribe(function () {
-      // Small delay to ensure DOM is ready after instant navigation
       setTimeout(initAll, 50);
     });
   } else {
-    // Fallback: DOMContentLoaded (for non-instant navigation)
     document.addEventListener('DOMContentLoaded', initAll);
   }
 
-  // Also run on first load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       if (typeof document$ === 'undefined') {
@@ -125,7 +84,6 @@
       }
     });
   } else {
-    // DOM already loaded, but document$ might still fire later
     setTimeout(function () {
       if (typeof document$ === 'undefined') {
         initAll();

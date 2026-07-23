@@ -779,39 +779,6 @@ body.sidebar-hidden .md-content {
 }
 
 /* ============================================================
-   18. Light / Dark Mode Toggle Button
-   ============================================================ */
-
-.theme-toggle-btn {
-    position: fixed;
-    right: 20px;
-    bottom: 24px;
-    z-index: 9998;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 2px solid var(--hw-accent);
-    background: var(--hw-nav-bg);
-    color: var(--hw-accent);
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-    opacity: 0.85;
-}
-
-.theme-toggle-btn:hover {
-    opacity: 1;
-    border-color: var(--hw-accent-glow);
-    color: var(--hw-accent-glow);
-    box-shadow: 0 2px 20px rgba(212, 168, 85, 0.3);
-    transform: scale(1.08);
-}
-
-/* ============================================================
    19. Responsive Typography
    ============================================================ */
 

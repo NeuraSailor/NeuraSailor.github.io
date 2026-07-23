@@ -4,7 +4,6 @@
      overrides/main.html — 霍格沃茨主题全局 UI 扩展
      - 阅读进度条
      - 侧边栏开关按钮
-     - 亮/暗模式切换按钮
      ============================================================ -->
 
 {% block container %}
@@ -17,12 +16,6 @@
 <button id="sidebarToggleBtn" class="sidebar-toggle-btn"
         aria-label="Toggle sidebar" title="打开/关闭侧边栏">
   📚
-</button>
-
-<!-- Theme Toggle Button -->
-<button id="themeToggleBtn" class="theme-toggle-btn"
-        aria-label="Toggle theme" title="切换亮色/暗色模式">
-  🌙
 </button>
 
 {{ super() }}
