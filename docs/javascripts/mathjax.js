@@ -1,8 +1,6 @@
 window.MathJax = {
   startup: {
     ready: function () {
-      // Decode HTML entities in .arithmatex elements
-      // MkDocs escapes & → &amp; in display math, breaking cases/matrix/aligned
       document.querySelectorAll('.arithmatex').forEach(function (el) {
         if (el.innerHTML.indexOf('&amp;') !== -1) {
           var ta = document.createElement('textarea');
@@ -23,19 +21,17 @@ window.MathJax = {
     ignoreHtmlClass: ".*|",
     processHtmlClass: "arithmatex",
     renderActions: {
+      // Add .mjx-inflight class while MathJax is working on an element,
+      // so CSS opacity rule can keep raw text hidden until rendering completes.
       find: [10, function (doc) {
-        for (var _i = 0, _a = doc.math; _i < _a.length; _i++) {
-          var math = _a[_i];
-          if (math.start && math.start.parentNode) {
-            math.start.parentNode.classList.add('mjx-inflight');
-          }
+        for (var i = 0; i < doc.math.length; i++) {
+          var p = doc.math[i].start && doc.math[i].start.parentNode;
+          if (p) p.classList.add('mjx-inflight');
         }
       }, function (doc) {
-        for (var _i = 0, _a = doc.math; _i < _a.length; _i++) {
-          var math = _a[_i];
-          if (math.start && math.start.parentNode) {
-            math.start.parentNode.classList.remove('mjx-inflight');
-          }
+        for (var i = 0; i < doc.math.length; i++) {
+          var p = doc.math[i].start && doc.math[i].start.parentNode;
+          if (p) p.classList.remove('mjx-inflight');
         }
       }]
     }
@@ -43,7 +39,6 @@ window.MathJax = {
 };
 
 document$.subscribe(function () {
-  // Clean arithmatex before typesetting on each nav
   document.querySelectorAll('.arithmatex').forEach(function (el) {
     if (el.innerHTML.indexOf('&amp;') !== -1) {
       var ta = document.createElement('textarea');
