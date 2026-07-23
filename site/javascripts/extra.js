@@ -29,11 +29,40 @@
   }
 
   /* ----------------------------------------------------------
-     2. MkDocs Instant Navigation Hook
+     2. Sidebar Drawer Toggle
+        JS 直控 __drawer checkbox，全屏/半屏统一行为
+     ---------------------------------------------------------- */
+
+  function initSidebarDrawer() {
+    var btn = document.getElementById('sidebarDrawerBtn');
+    var drawer = document.getElementById('__drawer');
+    if (!btn || !drawer) return;
+
+    // 恢复状态：默认侧边栏关闭
+    if (localStorage.getItem('hw-drawer-open') === 'true') {
+      drawer.checked = true;
+      btn.textContent = '📖';
+    } else {
+      drawer.checked = false;
+      btn.textContent = '📚';
+    }
+
+    btn.addEventListener('click', function () {
+      drawer.checked = !drawer.checked;
+      drawer.dispatchEvent(new Event('change', { bubbles: true }));
+      var isOpen = drawer.checked;
+      localStorage.setItem('hw-drawer-open', isOpen);
+      btn.textContent = isOpen ? '📖' : '📚';
+    });
+  }
+
+  /* ----------------------------------------------------------
+     3. MkDocs Instant Navigation Hook
      ---------------------------------------------------------- */
 
   function initAll() {
     initProgressBar();
+    initSidebarDrawer();
   }
 
   if (typeof document$ !== 'undefined') {

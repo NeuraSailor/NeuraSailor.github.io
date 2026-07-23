@@ -372,6 +372,40 @@
 }
 
 /* ============================================================
+   7. Sidebar Drawer Button
+   ============================================================ */
+
+.sidebar-drawer-btn {
+    position: fixed;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9998;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--hw-accent);
+    background: var(--hw-nav-bg);
+    color: var(--hw-accent);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0.85;
+}
+
+.sidebar-drawer-btn:hover {
+    opacity: 1;
+    border-color: var(--hw-accent-glow);
+    color: var(--hw-accent-glow);
+    box-shadow: 0 2px 20px rgba(212, 168, 85, 0.3);
+    transform: translateY(-50%) scale(1.08);
+}
+
+/* ============================================================
    8. Blockquotes
    ============================================================ */
 
@@ -747,40 +781,5 @@
     }
     .md-typeset h3 {
         font-size: 1.1em;
-    }
-}
-
-/* ============================================================
-   20. Unified Sidebar Drawer — All Screen Sizes
-   覆盖 Material 在 ≥76.25em（1220px+ 全屏）时的行为：
-   - 原生汉堡按钮始终可见
-   - 侧边栏在所有屏幕尺寸下都是抽屉滑出模式，非固定展开栏
-   ============================================================ */
-
-@media screen and (min-width: 76.25em) {
-    /* 显示原生抽屉按钮 */
-    .md-header__button[for="__drawer"] {
-        display: block !important;
-    }
-
-    /* 恢复抽屉式侧边栏（覆盖 Material 的 height:0 折叠） */
-    .md-sidebar {
-        height: auto;
-    }
-
-    /* 全屏下也使用抽屉模式：侧边栏初始隐藏，勾选后滑入 */
-    [dir="ltr"] .md-sidebar--primary {
-        left: -12.1rem;
-    }
-    [dir="rtl"] .md-sidebar--primary {
-        right: -12.1rem;
-    }
-
-    /* 移除 Material 为固定展开栏添加的 margin */
-    [dir="ltr"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
-        margin-left: 0;
-    }
-    [dir="rtl"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
-        margin-right: 0;
     }
 }
