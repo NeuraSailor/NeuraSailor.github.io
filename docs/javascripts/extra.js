@@ -11,18 +11,17 @@
      ---------------------------------------------------------- */
 
   function initProgressBar() {
-    const bar = document.getElementById('readingProgressBar');
+    var bar = document.getElementById('readingProgressBar');
     if (!bar) return;
 
     function update() {
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       if (scrollHeight <= 0) {
         bar.style.width = '0%';
         return;
       }
-      const progress = Math.min((scrollTop / scrollHeight) * 100, 100);
-      bar.style.width = progress + '%';
+      bar.style.width = Math.min((scrollTop / scrollHeight) * 100, 100) + '%';
     }
 
     window.addEventListener('scroll', update, { passive: true });
@@ -31,33 +30,41 @@
 
   /* ----------------------------------------------------------
      2. Sidebar Toggle
+        操控 MkDocs 原生 __drawer checkbox，统管全屏/半屏
      ---------------------------------------------------------- */
 
   function initSidebarToggle() {
-    const btn = document.getElementById('sidebarToggleBtn');
-    const sidebar = document.querySelector('.md-sidebar--primary');
-    if (!btn) return;
+    var btn = document.getElementById('sidebarToggleBtn');
+    var drawer = document.getElementById('__drawer');
+    if (!btn || !drawer) return;
 
-    // Restore saved state
-    const saved = localStorage.getItem('hw-sidebar-hidden');
+    // 恢复保存的状态
+    var saved = localStorage.getItem('hw-sidebar-hidden');
     if (saved === 'true') {
-      document.body.classList.add('sidebar-hidden');
+      drawer.checked = false;
       btn.textContent = '📖';
+    } else {
+      drawer.checked = true;
+      btn.textContent = '📚';
     }
 
     btn.addEventListener('click', function () {
-      const isHidden = document.body.classList.toggle('sidebar-hidden');
-      localStorage.setItem('hw-sidebar-hidden', isHidden);
-      btn.textContent = isHidden ? '📖' : '📚';
-
-      if (sidebar) {
-        const mdToggle = sidebar.querySelector('[data-md-toggle="drawer"]');
-        if (mdToggle && mdToggle.checked !== !isHidden) {
-          mdToggle.checked = !isHidden;
-          mdToggle.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      }
+      var hidden = !drawer.checked;  // 即将隐藏（click 在 before toggle）
+      drawer.checked = hidden;
+      dispatchChange(drawer);
+      localStorage.setItem('hw-sidebar-hidden', hidden);
+      btn.textContent = hidden ? '📖' : '📚';
     });
+  }
+
+  function dispatchChange(el) {
+    if ('createEvent' in document) {
+      var evt = document.createEvent('HTMLEvents');
+      evt.initEvent('change', true, true);
+      el.dispatchEvent(evt);
+    } else {
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
   }
 
   /* ----------------------------------------------------------
@@ -79,15 +86,11 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-      if (typeof document$ === 'undefined') {
-        initAll();
-      }
+      if (typeof document$ === 'undefined') initAll();
     });
   } else {
     setTimeout(function () {
-      if (typeof document$ === 'undefined') {
-        initAll();
-      }
+      if (typeof document$ === 'undefined') initAll();
     }, 100);
   }
 })();

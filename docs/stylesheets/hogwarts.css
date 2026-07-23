@@ -405,14 +405,15 @@
     transform: translateY(-50%) scale(1.08);
 }
 
-/* Sidebar hidden state */
-body.sidebar-hidden .md-sidebar--primary {
-    display: none;
-}
-
-body.sidebar-hidden .md-content {
-    margin-left: 0;
-    max-width: 100%;
+/* Sidebar hidden state — 仅在桌面端（全屏）模式下生效 */
+@media screen and (min-width: 960px) {
+  body.sidebar-hidden .md-sidebar--primary {
+      display: none;
+  }
+  body.sidebar-hidden .md-content {
+      margin-left: 0;
+      max-width: 100%;
+  }
 }
 
 /* ============================================================
