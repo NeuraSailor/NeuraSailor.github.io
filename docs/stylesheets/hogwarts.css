@@ -13,10 +13,8 @@
 
 .arithmatex {
     opacity: 0;
-    transition: opacity 0.08s ease;
 }
 
-.arithmatex.mjx-inflight,
 .arithmatex.mjx-done {
     opacity: 1;
 }
