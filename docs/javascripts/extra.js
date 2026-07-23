@@ -29,51 +29,11 @@
   }
 
   /* ----------------------------------------------------------
-     2. Sidebar Toggle
-        操控 MkDocs 原生 __drawer checkbox，统管全屏/半屏
-     ---------------------------------------------------------- */
-
-  function initSidebarToggle() {
-    var btn = document.getElementById('sidebarToggleBtn');
-    var drawer = document.getElementById('__drawer');
-    if (!btn || !drawer) return;
-
-    // 恢复保存的状态
-    var saved = localStorage.getItem('hw-sidebar-hidden');
-    if (saved === 'true') {
-      drawer.checked = false;
-      btn.textContent = '📖';
-    } else {
-      drawer.checked = true;
-      btn.textContent = '📚';
-    }
-
-    btn.addEventListener('click', function () {
-      var hidden = !drawer.checked;  // 即将隐藏（click 在 before toggle）
-      drawer.checked = hidden;
-      dispatchChange(drawer);
-      localStorage.setItem('hw-sidebar-hidden', hidden);
-      btn.textContent = hidden ? '📖' : '📚';
-    });
-  }
-
-  function dispatchChange(el) {
-    if ('createEvent' in document) {
-      var evt = document.createEvent('HTMLEvents');
-      evt.initEvent('change', true, true);
-      el.dispatchEvent(evt);
-    } else {
-      el.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-  }
-
-  /* ----------------------------------------------------------
-     3. MkDocs Instant Navigation Hook
+     2. MkDocs Instant Navigation Hook
      ---------------------------------------------------------- */
 
   function initAll() {
     initProgressBar();
-    initSidebarToggle();
   }
 
   if (typeof document$ !== 'undefined') {

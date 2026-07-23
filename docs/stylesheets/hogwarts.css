@@ -372,51 +372,6 @@
 }
 
 /* ============================================================
-   7. Sidebar Toggle Button (Custom)
-   ============================================================ */
-
-.sidebar-toggle-btn {
-    position: fixed;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 9998;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--hw-accent);
-    background: var(--hw-nav-bg);
-    color: var(--hw-accent);
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-    opacity: 0.85;
-}
-
-.sidebar-toggle-btn:hover {
-    opacity: 1;
-    border-color: var(--hw-accent-glow);
-    color: var(--hw-accent-glow);
-    box-shadow: 0 2px 20px rgba(212, 168, 85, 0.3);
-    transform: translateY(-50%) scale(1.08);
-}
-
-/* Sidebar hidden state — 仅在桌面端（全屏）模式下生效 */
-@media screen and (min-width: 960px) {
-  body.sidebar-hidden .md-sidebar--primary {
-      display: none;
-  }
-  body.sidebar-hidden .md-content {
-      margin-left: 0;
-      max-width: 100%;
-  }
-}
-
-/* ============================================================
    8. Blockquotes
    ============================================================ */
 
@@ -792,5 +747,17 @@
     }
     .md-typeset h3 {
         font-size: 1.1em;
+    }
+}
+
+/* ============================================================
+   20. Show drawer toggle on all screens
+   覆盖 Material 在 ≥76.25em 时隐藏抽屉按钮的默认行为，
+   使全屏下也能用原生汉堡按钮开关侧边栏。
+   ============================================================ */
+
+@media screen and (min-width: 76.25em) {
+    .md-header__button[for="__drawer"] {
+        display: block !important;
     }
 }
