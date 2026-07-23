@@ -183,7 +183,7 @@
     font-size: 1.618em;
     text-align: center;
     position: relative;
-    margin-bottom: 0.8em;
+    margin-bottom: 1.2em;
     color: var(--md-default-fg-color);
     transition: color 0.3s ease;
 }
@@ -191,7 +191,7 @@
 .md-typeset h1::after {
     content: '';
     position: absolute;
-    bottom: -8px;
+    bottom: -12px;
     left: 50%;
     transform: translateX(-50%);
     width: 40%;
