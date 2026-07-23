@@ -3,21 +3,9 @@
    霍格沃茨魔法世界主题 —— 深海军蓝 + 暗金 + 奶油色
    ============================================================ */
 
-/* ============================================================
-   0. Math Formula Anti-FOUC
-   .arithmatex 元素默认 opacity:0 隐藏原始 LaTeX 源码。
-   MathJax renderActions 在排版期间添加 .mjx-inflight 类并
-   在完成后移除。已有 mjx-container 子元素的公式（重渲染场景）
-   通过 JS 添加 mjx-done 类来显示。
-   ============================================================ */
-
-.arithmatex {
-    opacity: 0;
-}
-
-.arithmatex.mjx-done {
-    opacity: 1;
-}
+/* .arithmatex 默认透明，渲染完成后 JS 添加 .mjx-done 显示 */
+.arithmatex { opacity: 0; }
+.arithmatex.mjx-done { opacity: 1; }
 
 /* ============================================================
    1. CSS Custom Properties (Design Tokens)
