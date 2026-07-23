@@ -4,23 +4,6 @@
    ============================================================ */
 
 /* ============================================================
-   0. Math Formula Anti-FOUC
-   .arithmatex 的文字默认隐藏，MathJax 渲染后子元素 mjx-container
-   自动继承 CSS 中的 font-size 并正常显示。无需 JS 添加标记类。
-   ============================================================ */
-
-.arithmatex {
-    font-size: 0;
-    line-height: 1;
-}
-
-/* 渲染后的 MathJax 内容覆盖 font-size */
-.arithmatex mjx-container {
-    font-size: 1rem;
-    line-height: normal;
-}
-
-/* ============================================================
    1. CSS Custom Properties (Design Tokens)
    ============================================================ */
 
