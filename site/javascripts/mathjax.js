@@ -12,43 +12,31 @@ window.MathJax = {
     processEnvironments: true
   },
 
-  chtml: {
-    // Use CSS font for faster rendering (no webfont download)
-    mathmlSpacing: false
-  },
-
   options: {
     ignoreHtmlClass: "no-mathjax",
     processHtmlClass: "arithmatex"
   }
 };
 
-// Fix HTML entities (&amp; → & etc.) in arithmatex containers
+// Fix HTML entities (&amp; &lt; &gt;) in arithmatex containers
+// MkDocs escapes & in LaTeX alignment environments, breaking them.
+// Use textContent → textarea decode → innerHTML for safe decoding.
 function fixArithmatexEntities(root) {
-  root.querySelectorAll('.arithmatex').forEach(function (el) {
-    var s = el.textContent;
-    if (s.indexOf('&') === -1) return;
-    var t = document.createElement('template');
-    t.innerHTML = el.innerHTML;
-    if (t.innerHTML !== el.innerHTML) {
-      el.innerHTML = t.innerHTML;
-    }
-  });
-}
-
-// Mark all arithmatex elements on the page as "done" so CSS opacity
-// flips from 0 to 1, revealing the rendered math.
-function markDone(root) {
-  root.querySelectorAll('.arithmatex').forEach(function (el) {
-    el.classList.add('mjx-done');
-  });
+  var els = root.querySelectorAll('.arithmatex');
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    var raw = el.textContent;
+    // Only process if there are HTML entities to decode
+    if (raw.indexOf('&') === -1) continue;
+    var ta = document.createElement('textarea');
+    ta.innerHTML = el.innerHTML;
+    el.innerHTML = ta.value;
+  }
 }
 
 function typesetCurrentPage() {
   fixArithmatexEntities(document);
-  MathJax.typesetPromise([document.body]).then(function () {
-    markDone(document);
-  });
+  MathJax.typesetPromise([document.body]);
 }
 
 if (typeof document$ !== 'undefined') {
