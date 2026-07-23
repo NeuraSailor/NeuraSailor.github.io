@@ -21,9 +21,7 @@ window.MathJax = {
     ignoreHtmlClass: ".*|",
     processHtmlClass: "arithmatex",
     renderActions: {
-      // Add .mjx-inflight class while MathJax is working on an element,
-      // so CSS opacity rule can keep raw text hidden until rendering completes.
-      find: [10, function (doc) {
+      addInFlight: [16, function (doc) {
         for (var i = 0; i < doc.math.length; i++) {
           var p = doc.math[i].start && doc.math[i].start.parentNode;
           if (p) p.classList.add('mjx-inflight');
@@ -50,9 +48,6 @@ document$.subscribe(function () {
   MathJax.typesetClear();
   MathJax.texReset();
   MathJax.typesetPromise().then(function () {
-    // After typesetting completes, mark all processed arithmatex
-    // elements so CSS opacity reveals them. renderActions' cleanup
-    // removes mjx-inflight during find phase, not typeset phase.
     document.querySelectorAll('.arithmatex').forEach(function (el) {
       el.classList.add('mjx-done');
     });
