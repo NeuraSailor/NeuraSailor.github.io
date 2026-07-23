@@ -751,13 +751,36 @@
 }
 
 /* ============================================================
-   20. Show drawer toggle on all screens
-   覆盖 Material 在 ≥76.25em 时隐藏抽屉按钮的默认行为，
-   使全屏下也能用原生汉堡按钮开关侧边栏。
+   20. Unified Sidebar Drawer — All Screen Sizes
+   覆盖 Material 在 ≥76.25em（1220px+ 全屏）时的行为：
+   - 原生汉堡按钮始终可见
+   - 侧边栏在所有屏幕尺寸下都是抽屉滑出模式，非固定展开栏
    ============================================================ */
 
 @media screen and (min-width: 76.25em) {
+    /* 显示原生抽屉按钮 */
     .md-header__button[for="__drawer"] {
         display: block !important;
+    }
+
+    /* 恢复抽屉式侧边栏（覆盖 Material 的 height:0 折叠） */
+    .md-sidebar {
+        height: auto;
+    }
+
+    /* 全屏下也使用抽屉模式：侧边栏初始隐藏，勾选后滑入 */
+    [dir="ltr"] .md-sidebar--primary {
+        left: -12.1rem;
+    }
+    [dir="rtl"] .md-sidebar--primary {
+        right: -12.1rem;
+    }
+
+    /* 移除 Material 为固定展开栏添加的 margin */
+    [dir="ltr"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
+        margin-left: 0;
+    }
+    [dir="rtl"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
+        margin-right: 0;
     }
 }
