@@ -372,40 +372,6 @@
 }
 
 /* ============================================================
-   7. Sidebar Drawer Button
-   ============================================================ */
-
-.sidebar-drawer-btn {
-    position: fixed;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 9998;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--hw-accent);
-    background: var(--hw-nav-bg);
-    color: var(--hw-accent);
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-    opacity: 0.85;
-}
-
-.sidebar-drawer-btn:hover {
-    opacity: 1;
-    border-color: var(--hw-accent-glow);
-    color: var(--hw-accent-glow);
-    box-shadow: 0 2px 20px rgba(212, 168, 85, 0.3);
-    transform: translateY(-50%) scale(1.08);
-}
-
-/* ============================================================
    8. Blockquotes
    ============================================================ */
 
@@ -769,17 +735,35 @@
 }
 
 /* ============================================================
-   19. Responsive Typography
+   20. Show native drawer button on all screen sizes
+
+   Material 主题在 ≥76.25em（约 1220px）时隐藏抽屉按钮并将
+   侧边栏切换为固定展开的文档流模式。以下规则覆盖该行为：
+
+   1. 让汉堡按钮在所有屏幕尺寸下都显示
+   2. 让全屏下的侧边栏行为与移动端保持一致——始终使用
+      off-canvas 抽屉滑出模式，通过 __drawer checkbox 控制
    ============================================================ */
 
-@media (max-width: 768px) {
-    .md-typeset h1 {
-        font-size: 1.3em;
+@media screen and (min-width: 76.25em) {
+    /* ① 显示原生汉堡菜单按钮 */
+    .md-header__button[for="__drawer"] {
+        display: flex !important;
     }
-    .md-typeset h2 {
-        font-size: 1.2em;
+
+    /* ② 让侧边栏回到绝对定位的抽屉模式（移动端行为） */
+    [dir="ltr"] .md-sidebar--primary {
+        left: -12.1rem;
     }
-    .md-typeset h3 {
-        font-size: 1.1em;
+    [dir="rtl"] .md-sidebar--primary {
+        right: -12.1rem;
+    }
+
+    /* ③ 取消 Material 为固定展开栏对内容区域添加的左边距 */
+    [dir="ltr"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
+        margin-left: 0;
+    }
+    [dir="rtl"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
+        margin-right: 0;
     }
 }

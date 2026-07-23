@@ -3,7 +3,6 @@
 <!-- ============================================================
      overrides/main.html — 霍格沃茨主题全局 UI 扩展
      - 阅读进度条
-     - 侧边栏抽屉按钮（全屏/半屏统一切换）
      ============================================================ -->
 
 {% block container %}
@@ -11,12 +10,6 @@
 <div class="reading-progress">
   <div class="reading-progress-bar" id="readingProgressBar"></div>
 </div>
-
-<!-- Sidebar Drawer Toggle Button -->
-<button id="sidebarDrawerBtn" class="sidebar-drawer-btn"
-        aria-label="Toggle sidebar" title="打开/关闭侧边栏">
-  📚
-</button>
 
 {{ super() }}
 {% endblock %}
