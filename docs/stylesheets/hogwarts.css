@@ -5,42 +5,20 @@
 
 /* ============================================================
    0. Math Formula Anti-FOUC
-   隐藏未渲染的 arithmatex 公式原始文本，MathJax 渲染后用 mjx-done 显示
+   在 MathJax 渲染完成前隐藏 arithmatex 原始源码，
+   渲染完成后用 JS 加类名 mjx-done 恢复显示。
    ============================================================ */
 
-/* 未渲染前隐藏公式源码 */
+/* 用 opacity 0 替代 visibility:hidden：
+   MathJax chtml 在元素内部渲染 <mjx-container>，visibility:hidden
+   会把已渲染的公式也隐藏掉，而 opacity:0 + 占位宽度不阻碍渲染 */
 .arithmatex {
-    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.15s ease;
 }
 
-/* 行内公式占位：不溢出不占视觉空间 */
-.md-typeset span.arithmatex {
-    display: inline-block;
-    width: 2em;
-    height: 1em;
-    vertical-align: middle;
-    font-size: inherit;
-    overflow: hidden;
-}
-
-/* 块级公式占位 */
-.md-typeset div.arithmatex {
-    display: block;
-    height: 2em;
-    line-height: 0;
-    overflow: hidden;
-}
-
-/* 渲染完成后正常显示 */
-.arithmatex.mjx-done,
-.md-typeset .arithmatex.mjx-done {
-    visibility: visible;
-    display: revert;
-    width: revert;
-    height: revert;
-    overflow: revert;
-    line-height: revert;
-    font-size: revert;
+.arithmatex.mjx-done {
+    opacity: 1;
 }
 
 /* ============================================================
