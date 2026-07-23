@@ -5,8 +5,10 @@
 
 /* ============================================================
    0. Math Formula Anti-FOUC
-   .arithmatex 元素默认 opacity:0，MathJax renderActions 通过
-   .mjx-inflight 类控制显示。渲染完成 → 移除类 → 显示公式。
+   .arithmatex 元素默认 opacity:0 隐藏原始 LaTeX 源码。
+   MathJax renderActions 在排版期间添加 .mjx-inflight 类并
+   在完成后移除。已有 mjx-container 子元素的公式（重渲染场景）
+   通过 JS 添加 mjx-done 类来显示。
    ============================================================ */
 
 .arithmatex {
@@ -15,8 +17,7 @@
 }
 
 .arithmatex.mjx-inflight,
-/* 如果 MathJax 已替换内容（有 mjx-container 子元素），立即显示 */
-.arithmatex:has(mjx-container) {
+.arithmatex.mjx-done {
     opacity: 1;
 }
 

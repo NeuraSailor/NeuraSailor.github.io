@@ -49,5 +49,12 @@ document$.subscribe(function () {
   MathJax.startup.output.clearCache();
   MathJax.typesetClear();
   MathJax.texReset();
-  MathJax.typesetPromise();
+  MathJax.typesetPromise().then(function () {
+    // After typesetting completes, mark all processed arithmatex
+    // elements so CSS opacity reveals them. renderActions' cleanup
+    // removes mjx-inflight during find phase, not typeset phase.
+    document.querySelectorAll('.arithmatex').forEach(function (el) {
+      el.classList.add('mjx-done');
+    });
+  });
 });
