@@ -1,6 +1,6 @@
 /* ============================================================
    NeuraSailor Theme — Global Interactive JavaScript
-   霍格沃茨主题交互脚本 — 仅阅读进度条
+   霍格沃茨主题交互脚本
    ============================================================ */
 
 (function () {
@@ -29,11 +29,40 @@
   }
 
   /* ----------------------------------------------------------
-     2. MkDocs Instant Navigation Hook
+     2. Make native drawer button work on desktop
+        原生汉堡按钮在 ≥76.25em 全屏下被 Material CSS
+        display:none。我们用 JS 强制让它行为正常：
+       监听原生按钮 click，直控 __drawer checkbox。
+     ---------------------------------------------------------- */
+
+  function initNativeDrawer() {
+    var drawer = document.getElementById('__drawer');
+    // 找到原生 header 中的 <label for="__drawer">
+    var label = document.querySelector('.md-header__button[for="__drawer"]');
+    if (!drawer) return;
+
+    // 如果用户没有通过 CSS 让 label 可见，JS 在桌面端也能兜底——但主要由 CSS 负责 display。
+    // 这里负责确保 label 点击能 toggle drawer
+    if (!label) return;
+
+    // 移除 Material 可能绑定的事件干扰，重新监听
+    var newLabel = label.cloneNode(true);
+    label.parentNode.replaceChild(newLabel, label);
+
+    newLabel.addEventListener('click', function (e) {
+      e.preventDefault();
+      drawer.checked = !drawer.checked;
+      drawer.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+
+  /* ----------------------------------------------------------
+     3. MkDocs Instant Navigation Hook
      ---------------------------------------------------------- */
 
   function initAll() {
     initProgressBar();
+    initNativeDrawer();
   }
 
   if (typeof document$ !== 'undefined') {
