@@ -182,20 +182,16 @@
 .md-typeset h1 {
     font-size: 1.618em;
     text-align: center;
-    position: relative;
-    margin-bottom: 1.2em;
     color: var(--md-default-fg-color);
     transition: color 0.3s ease;
 }
 
 .md-typeset h1::after {
     content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 50%;
-    transform: translateX(-50%);
+    display: block;
     width: 40%;
     height: 2px;
+    margin: 12px auto 0;
     background: linear-gradient(90deg, transparent, var(--hw-accent), transparent);
     border-radius: 1px;
     transition: width 0.3s ease, box-shadow 0.3s ease;
