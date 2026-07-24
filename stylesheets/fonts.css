@@ -1,0 +1,51 @@
+/* ============================================================
+   Hogwarts Theme Fonts for MkDocs Material
+   霍格沃茨魔法世界字体配置
+   ============================================================ */
+
+/* ZCOOL XiaoWei - 标题字体（站酷小薇体，手写感） */
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap');
+
+/* Noto Serif SC - 正文字体（思源宋体，长文阅读） */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap');
+
+/* JetBrains Mono - 代码字体 */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* 标题字体 */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif !important;
+}
+
+/* 正文字体 */
+body,
+.md-typeset,
+.md-typeset p,
+.md-typeset li,
+.md-typeset blockquote,
+.md-typeset table {
+    font-family: 'Noto Serif SC', 'LXGW WenKai', serif !important;
+}
+
+/* 导航侧边栏字体 */
+.md-nav,
+.md-sidebar,
+.md-nav__link,
+.md-header__title {
+    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', sans-serif !important;
+}
+
+/* 代码字体 */
+code,
+pre,
+kbd,
+.md-typeset code,
+.md-typeset pre,
+.md-typeset kbd {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+}
