@@ -99,6 +99,9 @@ exclude_docs: |
   .obsidian/*
   .claude/*
 
+hooks:
+  - hooks.py
+
 extra_javascript:
   - javascripts/mathjax.js
   - javascripts/extra.js

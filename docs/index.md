@@ -1,72 +1,24 @@
 ---
-title: 欢迎来到NeuraSailor的知识花园😘
+title: NeuraSailor 知识花园
+description: 探索知识，记录成长，构建思维的魔法世界 — 机器人工程专业学习笔记与思考
+hide:
+  - navigation
+  - toc
 ---
-> [!tip]+ 敬请期待
->
-> - [ ] 书评、影评
-> - [ ] 个人工作流
-> - [ ] 个人软件、插件开发收集箱
 
-## 学习笔记
+<!-- 
+  This page content is intentionally minimal.
+  The visual homepage is rendered by overrides/main.html 
+  when page.is_homepage == True.
+  
+  The text below provides fallback content for search engines 
+  and environments where JavaScript/CSS is unavailable.
+-->
 
-### 大一上
+# NeuraSailor 知识花园
 
-> [!example]- [[大一上/线性代数md版（ai整理）]]
-> 11 篇笔记 · 矩阵、向量空间、特征值与特征向量、线性变换、二次型
+探索知识，记录成长，构建思维的魔法世界。
 
-### 大一下
-
-> [!example]- [[大一下/微积分/微积分Ⅱ]]
-> 2 篇笔记 · 微积分Ⅱ
-
-> [!example]- [[大一下/大学物理/大学物理]]
-> 2 篇笔记
-
-> [!example]- [[大一下/常微分方程]]
-
-> [!example]- [[大一下/人工智能基础/人工智能基础]]
-> 6 篇笔记
-
-> [!example]- [[大一下/大学与文化传承/大学与文化传承]]
-> 4 篇笔记
-
-> [!example]- [[大一下/军事理论/军事理论]]
-> 9 篇笔记
-
-> [!example]- [[大一下/中国近代史纲要/史纲复习]]
-
-> [!example]- [[大一下/大学英语]]
-
-> [!example]- [[大一下/心理课/心理课个人成长报告要求]]
-
-> [!example]- [[大一下/形势与政策复习]]
-
-### 大二上
-
-> [!example]- [[大二上/电路原理]]
-> 29 篇笔记 · 电路元件、基尔霍夫定律、正弦稳态分析、动态电路暂态分析、三相交流电路
-
-> [!example]- [[大二上/复变函数与积分变换]]
-> 26 篇笔记 · 复数、解析函数、柯西积分、留数、Laplace 变换、保角映射
-
-> [!example]- [[大二上/概率论与数理统计]]
-> 26 篇笔记 · 随机变量、分布、参数估计、假设检验
-
-> [!example]- [[大二上/集成电路基础]]
-> 37 篇笔记 · 二极管、三极管、放大电路、负反馈、功率放大
-
-> [!example]- [[大二上/大学物理-电磁学]]
-> 21 篇笔记 · 静电场、稳恒磁场、电磁感应、电磁波
-
-> [!example]- [[大二上/大物物理-光学]]
-> 22 篇笔记 · 干涉、衍射、偏振、光电效应、波粒二象性
-
-> [!example]- [[大二上/电路实验1]]
-
-> [!example]- [[大二上/电路实验2]]
-
-> [!example]- [[大二上/大学物理实验]]
-
-> [!example]- [[大二上/马克思主义基本原理]]
-
-> [!example]- [[大二上/新中国史]]
+- [学习笔记](学习笔记/index.md) — 20+ 门课程，240+ 篇笔记
+- [机械臂](学习笔记/机械臂blog/index.md) — ROS2 仿真与实体搭建
+- [唱唱反调](唱唱反调/index.md) — 思考、技术与成长

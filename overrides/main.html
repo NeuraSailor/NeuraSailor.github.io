@@ -3,8 +3,7 @@
 <!-- ============================================================
      overrides/main.html — 霍格沃茨主题全局 UI 扩展
      - 阅读进度条
-     - 阅读进度条
-     - 阻断 Material JS 对侧边栏的接管
+     - 首页着陆页（魔法主题）
      ============================================================ -->
 
 {% block container %}
@@ -16,9 +15,146 @@
 {{ super() }}
 {% endblock %}
 
+{% block content %}
+  {% if page.is_homepage %}
+
+    {# ========== HOMEPAGE — 霍格沃茨魔法着陆页 ========== #}
+
+    <!-- 漂浮魔法粒子画布 -->
+    <canvas class="hw-magic-canvas" id="magicCanvas" aria-hidden="true"></canvas>
+
+    <!-- Hero Section -->
+    <section class="hw-hero">
+      <div class="hw-hero__inner">
+        <div class="hw-hero__crest">
+          <span class="hw-hero__crest-icon">⚡</span>
+        </div>
+        <h1 class="hw-hero__title">
+          <span class="hw-hero__title-line">NeuraSailor</span>
+          <span class="hw-hero__title-sub">知识花园</span>
+        </h1>
+        <p class="hw-hero__tagline">
+          麻瓜止步！这里是我的魔法知识密室 ✦ 小心踩到会咬人的教科书
+        </p>
+        <div class="hw-hero__divider">
+          <span class="hw-hero__divider-star">✦</span>
+          <span class="hw-hero__divider-star">✧</span>
+          <span class="hw-hero__divider-star">✦</span>
+        </div>
+        <p class="hw-hero__flourish">
+          一封来自霍格沃茨的信？不，只是一堆作业和笔记。
+          <br>但谁说学习不能有点仪式感？
+        </p>
+      </div>
+    </section>
+
+    <!-- 导航卡片：分院帽帮你选 -->
+    <section class="hw-cards">
+      <div class="hw-cards__header">
+        <h2 class="hw-cards__heading">
+          <span class="hw-cards__hat">🎩</span> 分院帽时间 —— 你想去哪儿？
+        </h2>
+        <p class="hw-cards__sub">别担心，不管你选哪个，都不会被分到阿兹卡班。</p>
+      </div>
+      <div class="hw-cards__grid">
+        <!-- Card 1: 学习笔记（魔药学） -->
+        <a href="{{ '学习笔记/' | url }}" class="hw-card hw-card--potions">
+          <div class="hw-card__banner">
+            <span class="hw-card__emoji">⚗️</span>
+            <span class="hw-card__sparkle">✨</span>
+          </div>
+          <h3 class="hw-card__title">魔药学课堂</h3>
+          <p class="hw-card__subtitle">学习笔记 · {{ config.extra.stats.notes }} 篇配方</p>
+          <p class="hw-card__desc">
+            矩阵魔药、电磁咒语、概率占卜……<br>
+            这里熬的不是复方汤剂，是<strong>期末考试复习资料</strong>。<br>
+            小心别把微积分和线性代数搞混，会爆炸的 💥
+          </p>
+          <span class="hw-card__spell">🪄 翻开笔记本 →</span>
+        </a>
+
+        <!-- Card 2: 机械臂（魔法造物） -->
+        <a href="{{ '学习笔记/机械臂blog/' | url }}" class="hw-card hw-card--creature">
+          <div class="hw-card__banner">
+            <span class="hw-card__emoji">🦾</span>
+            <span class="hw-card__sparkle">🔧</span>
+          </div>
+          <h3 class="hw-card__title">魔法造物坊</h3>
+          <p class="hw-card__subtitle">机械臂实战 · {{ config.extra.stats.mecharm }} 篇实验记录</p>
+          <p class="hw-card__desc">
+            用 ROS2 驱动魔杖，让树莓派施法。<br>
+            从仿真到实体，打造一个<strong>听你话的机械手臂</strong>。<br>
+            温馨提示：它暂时还不会自己写作业 🥲
+          </p>
+          <span class="hw-card__spell">🪄 念动咒语 →</span>
+        </a>
+
+        <!-- Card 3: 唱唱反调（预言家日报） -->
+        <a href="{{ '唱唱反调/' | url }}" class="hw-card hw-card--quibbler">
+          <div class="hw-card__banner">
+            <span class="hw-card__emoji">🔮</span>
+            <span class="hw-card__sparkle">💫</span>
+          </div>
+          <h3 class="hw-card__title">唱唱反调</h3>
+          <p class="hw-card__subtitle">预言家日报 · 偶尔更新</p>
+          <p class="hw-card__desc">
+            卢娜·洛夫古德看了都说好。<br>
+            技术随想、奇思妙想、以及<strong>深夜写不出代码的自言自语</strong>。<br>
+            比甲虫眼糖浆还上头的阅读体验 🍭
+          </p>
+          <span class="hw-card__spell">🪄 翻开杂志 →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 统计栏：魔法部数据司 -->
+    <section class="hw-stats">
+      <div class="hw-stats__inner">
+        <h2 class="hw-stats__heading">📜 魔法部数据司报告</h2>
+        <p class="hw-stats__joke">（傲罗办公室友情提醒：以下数据每 <code>mkdocs build</code> 自动更新，无人工加水 🧙‍♂️）</p>
+        <div class="hw-stats__grid">
+          <div class="hw-stats__item">
+            <span class="hw-stats__icon">📖</span>
+            <span class="hw-stats__number" data-count="{{ config.extra.stats.notes }}">{{ config.extra.stats.notes }}</span>
+            <span class="hw-stats__label">篇魔药配方</span>
+          </div>
+          <div class="hw-stats__item">
+            <span class="hw-stats__icon">🏛️</span>
+            <span class="hw-stats__number" data-count="{{ config.extra.stats.courses }}">{{ config.extra.stats.courses }}</span>
+            <span class="hw-stats__label">门魔法学科</span>
+          </div>
+          <div class="hw-stats__item">
+            <span class="hw-stats__icon">📅</span>
+            <span class="hw-stats__number" data-count="{{ config.extra.stats.semesters }}">{{ config.extra.stats.semesters }}</span>
+            <span class="hw-stats__label">个学年冒险</span>
+          </div>
+          <div class="hw-stats__item">
+            <span class="hw-stats__icon">🦾</span>
+            <span class="hw-stats__number" data-count="{{ config.extra.stats.mecharm }}">{{ config.extra.stats.mecharm }}</span>
+            <span class="hw-stats__label">份造物图纸</span>
+          </div>
+        </div>
+      </div>
+      <!-- 底部引语 -->
+      <div class="hw-stats__quote">
+        <p>"沉湎于虚假的梦想是愚蠢的 —— 除非你在期末周。"</p>
+        <p class="hw-stats__quote-author">—— 阿不思·邓布利多（大概没说过）</p>
+      </div>
+    </section>
+
+    {# 隐藏的 Markdown 回退内容 (SEO 兜底) #}
+    {% if page.content %}
+      <div class="hw-home-markdown">
+        {{ page.content }}
+      </div>
+    {% endif %}
+
+  {% else %}
+    {# ========== 非首页：默认渲染 ========== #}
+    {{ page.content }}
+  {% endif %}
+{% endblock %}
+
 {% block scripts %}
-  <script src="{{ 'assets/javascripts/bundle.79ae519e.min.js' | url }}"></script>
-  {% for script in config.extra_javascript %}
-    <script src="{{ script | url }}"></script>
-  {% endfor %}
+  {{ super() }}
 {% endblock %}
