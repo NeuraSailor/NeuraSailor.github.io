@@ -1,13 +1,13 @@
 window.MathJax = {
   tex: {
-    inlineMath: [["\\(", "\\)"]],
-    displayMath: [["\\[", "\\]"]],
+    inlineMath: [["\\(", "\\)"], ["$", "$"]],
+    displayMath: [["\\[", "\\]"], ["$$", "$$"]],
     processEscapes: true,
     processEnvironments: true
   },
   options: {
-    ignoreHtmlClass: ".*|",
-    processHtmlClass: "arithmatex"
+    ignoreHtmlClass: "tex2jax_ignore",
+    processHtmlClass: "tex2jax_process"
   }
 };
 
@@ -22,7 +22,7 @@ document$.subscribe(function () {
   MathJax.startup.output.clearCache();
   MathJax.typesetClear();
   MathJax.texReset();
-  MathJax.typesetPromise().then(function () {
+  MathJax.typesetPromise([document.body]).then(function () {
     document.querySelectorAll('.arithmatex').forEach(function (el) {
       el.classList.add('mjx-done');
     });
