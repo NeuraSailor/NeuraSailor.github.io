@@ -3,6 +3,8 @@
 <!-- ============================================================
      overrides/main.html — 霍格沃茨主题全局 UI 扩展
      - 阅读进度条
+     - 阅读进度条
+     - 阻断 Material JS 对侧边栏的接管
      ============================================================ -->
 
 {% block container %}
@@ -12,4 +14,11 @@
 </div>
 
 {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ 'assets/javascripts/bundle.79ae519e.min.js' | url }}"></script>
+  {% for script in config.extra_javascript %}
+    <script src="{{ script | url }}"></script>
+  {% endfor %}
 {% endblock %}

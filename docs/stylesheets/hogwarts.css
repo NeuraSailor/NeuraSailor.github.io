@@ -319,21 +319,18 @@
    6. Sidebar
    ============================================================ */
 
-.md-sidebar {
-    background-color: transparent;
-}
-
 .md-sidebar--primary {
-    background-color: var(--hw-nav-bg);
+    background-color: var(--md-default-bg-color);
+    opacity: 1;
 }
 
 .md-nav__title {
-    color: var(--hw-nav-text);
+    color: var(--md-default-fg-color);
     font-weight: 600;
 }
 
 .md-nav__link {
-    color: var(--hw-text);
+    color: var(--md-default-fg-color);
     transition: color 0.2s ease;
 }
 
@@ -353,7 +350,7 @@
 .md-nav__item .md-nav__item .md-nav__link {
     padding-left: 1.2rem;
     font-size: 0.9em;
-    color: var(--hw-text-muted);
+    color: var(--md-default-fg-color--light);
 }
 
 .md-nav__item .md-nav__item .md-nav__link:hover {
@@ -382,7 +379,7 @@
     color: var(--md-default-fg-color);
     border: 1px solid var(--hw-border);
     border-left: 3px solid var(--hw-accent);
-    border-radius: 0 8px 8px 0;
+    border-radius: 8px;
     background: var(--hw-border-light);
     transition: all 0.3s ease;
     line-height: 1.8;
@@ -559,13 +556,14 @@
     border-left: 3px solid var(--hw-accent) !important;
     color: var(--hw-accent-dim);
     font-weight: 600;
-    padding: 8px 16px;
+    padding: 8px 16px 8px 2.4rem;
     border-radius: 0;
 }
 
 .md-typeset .admonition > .admonition-title::before,
 .md-typeset details > summary::before {
     color: var(--hw-accent);
+    flex-shrink: 0;
 }
 
 /* Callout type-specific styling */
@@ -735,35 +733,6 @@
 }
 
 /* ============================================================
-   20. Show native drawer button on all screen sizes
-
-   Material 主题在 ≥76.25em（约 1220px）时隐藏抽屉按钮并将
-   侧边栏切换为固定展开的文档流模式。以下规则覆盖该行为：
-
-   1. 让汉堡按钮在所有屏幕尺寸下都显示
-   2. 让全屏下的侧边栏行为与移动端保持一致——始终使用
-      off-canvas 抽屉滑出模式，通过 __drawer checkbox 控制
+   20. Desktop Navigation — 使用 Material 原生 navigation.tabs
+      不再需要 off-canvas drawer hack
    ============================================================ */
-
-@media screen and (min-width: 76.25em) {
-    /* ① 显示原生汉堡菜单按钮 */
-    .md-header__button[for="__drawer"] {
-        display: flex !important;
-    }
-
-    /* ② 让侧边栏回到绝对定位的抽屉模式（移动端行为） */
-    [dir="ltr"] .md-sidebar--primary {
-        left: -12.1rem;
-    }
-    [dir="rtl"] .md-sidebar--primary {
-        right: -12.1rem;
-    }
-
-    /* ③ 取消 Material 为固定展开栏对内容区域添加的左边距 */
-    [dir="ltr"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
-        margin-left: 0;
-    }
-    [dir="rtl"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
-        margin-right: 0;
-    }
-}
