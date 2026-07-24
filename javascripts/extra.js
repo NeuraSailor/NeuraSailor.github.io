@@ -30,22 +30,13 @@
 
   /* ----------------------------------------------------------
      2. Make native drawer button work on desktop
-        原生汉堡按钮在 ≥76.25em 全屏下被 Material CSS
-        display:none。我们用 JS 强制让它行为正常：
-       监听原生按钮 click，直控 __drawer checkbox。
      ---------------------------------------------------------- */
 
   function initNativeDrawer() {
     var drawer = document.getElementById('__drawer');
-    // 找到原生 header 中的 <label for="__drawer">
     var label = document.querySelector('.md-header__button[for="__drawer"]');
-    if (!drawer) return;
+    if (!drawer || !label) return;
 
-    // 如果用户没有通过 CSS 让 label 可见，JS 在桌面端也能兜底——但主要由 CSS 负责 display。
-    // 这里负责确保 label 点击能 toggle drawer
-    if (!label) return;
-
-    // 移除 Material 可能绑定的事件干扰，重新监听
     var newLabel = label.cloneNode(true);
     label.parentNode.replaceChild(newLabel, label);
 
@@ -57,12 +48,249 @@
   }
 
   /* ----------------------------------------------------------
-     3. MkDocs Instant Navigation Hook
+     3. Magic Particle System
+        背景漂浮粒子 + 鼠标拖尾
+     ---------------------------------------------------------- */
+
+  function initMagicParticles() {
+    var canvas = document.getElementById('magicCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    /* ---- 状态 ---- */
+    var bgParticles = [];
+    var trailParticles = [];
+    var mouseX = -100, mouseY = -100;
+    var mouseActive = false;
+    var tick = 0;
+    var BG_COUNT = 60;
+    var MAX_TRAIL = 80;
+    var animId;
+
+    resize();
+
+    /* ---- resize ---- */
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    /* ---- 背景粒子 ---- */
+    function createBg() {
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4 - 0.3,
+        op: Math.random() * 0.5 + 0.2,
+        hue: Math.random() < 0.5 ? 45 : 260,
+        maxAge: Math.random() * 300 + 200,
+        age: 0
+      };
+    }
+
+    function respawnBg(p) {
+      p.x = Math.random() * canvas.width;
+      p.y = canvas.height + 10;
+      p.r = Math.random() * 2 + 0.5;
+      p.vx = (Math.random() - 0.5) * 0.4;
+      p.vy = -(Math.random() * 0.6 + 0.2);
+      p.op = Math.random() * 0.5 + 0.2;
+      p.hue = Math.random() < 0.5 ? 45 : 260;
+      p.maxAge = Math.random() * 300 + 200;
+      p.age = 0;
+    }
+
+    /* ---- 主循环 ---- */
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      var i, p, alpha, s;
+
+      /* 背景粒子 */
+      for (i = 0; i < bgParticles.length; i++) {
+        p = bgParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.age++;
+
+        alpha = p.op * (1 - Math.abs(Math.sin(p.age * 0.03)) * 0.5);
+        if (alpha < 0) alpha = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'hsla(' + p.hue + ', 80%, 70%, ' + alpha + ')';
+        ctx.fill();
+
+        if (p.r > 1.5) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'hsla(' + p.hue + ', 80%, 70%, ' + (alpha * 0.12) + ')';
+          ctx.fill();
+        }
+
+        if (p.y < -20 || p.y > canvas.height + 20 ||
+            p.x < -20 || p.x > canvas.width + 20 ||
+            p.age > p.maxAge) {
+          respawnBg(p);
+        }
+      }
+
+      /* 鼠标拖尾 —— 与背景粒子统一外观，但更亮更多更散更久 */
+      if (mouseActive && tick % 1 === 0 && trailParticles.length < MAX_TRAIL) {
+        trailParticles.push({
+          x: mouseX + (Math.random() - 0.5) * 30,
+          y: mouseY + (Math.random() - 0.5) * 30,
+          r: Math.random() * 2 + 0.5,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5 - 0.6,
+          op: Math.random() * 0.5 + 0.2,
+          hue: Math.random() < 0.55 ? 42 : 265,
+          maxAge: Math.random() * 50 + 35,
+          age: 0
+        });
+      }
+
+      for (i = trailParticles.length - 1; i >= 0; i--) {
+        p = trailParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.age++;
+        p.vx *= 0.97;
+        p.vy *= 0.97;
+
+        alpha = p.op * (1 - p.age / p.maxAge);
+        if (alpha < 0) alpha = 0;
+
+        if (alpha > 0.01) {
+          s = p.r * (1 - p.age / p.maxAge * 0.5);
+
+          /* 亮度增强 25% */
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, s, 0, Math.PI * 2);
+          ctx.fillStyle = 'hsla(' + p.hue + ', 94%, 88%, ' + alpha + ')';
+          ctx.fill();
+        }
+
+        if (p.age >= p.maxAge || alpha <= 0.01) {
+          trailParticles.splice(i, 1);
+        }
+      }
+
+      tick++;
+      animId = requestAnimationFrame(draw);
+    }
+
+    /* ---- 事件 ---- */
+    document.addEventListener('mousemove', function (e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      mouseActive = true;
+    }, { passive: true });
+
+    document.addEventListener('mouseleave', function () {
+      mouseActive = false;
+    });
+
+    window.addEventListener('resize', resize, { passive: true });
+
+    /* ---- 启动 ---- */
+    for (var j = 0; j < BG_COUNT; j++) {
+      bgParticles.push(createBg());
+    }
+    animId = requestAnimationFrame(draw);
+  }
+
+  /* ----------------------------------------------------------
+     4. Card 3D Tilt Effect
+     ---------------------------------------------------------- */
+
+  function initCardTilt() {
+    var cards = document.querySelectorAll('.hw-card');
+    if (!cards.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    for (var i = 0; i < cards.length; i++) {
+      (function (card) {
+        card.addEventListener('mousemove', function (e) {
+          var rect = card.getBoundingClientRect();
+          var x = e.clientX - rect.left - rect.width / 2;
+          var y = e.clientY - rect.top - rect.height / 2;
+
+          var rx = (y / (rect.height / 2)) * -6;
+          var ry = (x / (rect.width / 2)) * 6;
+
+          card.style.transform =
+            'perspective(800px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-4px) scale(1.02)';
+        });
+
+        card.addEventListener('mouseleave', function () {
+          card.style.transform = '';
+        });
+      })(cards[i]);
+    }
+  }
+
+  /* ----------------------------------------------------------
+     5. Stats Counter Animation
+     ---------------------------------------------------------- */
+
+  function initStatsCounters() {
+    var counters = document.querySelectorAll('.hw-stats__number[data-count]');
+    if (!counters.length) return;
+
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var target = parseInt(el.getAttribute('data-count'), 10);
+        if (isNaN(target) || el._countAnimated) return;
+        el._countAnimated = true;
+
+        if (prefersReduced) {
+          el.textContent = target;
+          return;
+        }
+
+        el.textContent = '0';
+
+        var duration = Math.min(2000, Math.max(800, target * 10));
+        var start = performance.now();
+
+        function tick(now) {
+          var elapsed = now - start;
+          var progress = Math.min(elapsed / duration, 1);
+          var eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+          el.textContent = Math.round(eased * target);
+          if (progress < 1) {
+            requestAnimationFrame(tick);
+          }
+        }
+
+        requestAnimationFrame(tick);
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.3 });
+
+    counters.forEach(function (el) { observer.observe(el); });
+  }
+
+  /* ----------------------------------------------------------
+     6. MkDocs Instant Navigation Hook
      ---------------------------------------------------------- */
 
   function initAll() {
     initProgressBar();
     initNativeDrawer();
+    initMagicParticles();
+    initCardTilt();
+    initStatsCounters();
   }
 
   if (typeof document$ !== 'undefined') {
