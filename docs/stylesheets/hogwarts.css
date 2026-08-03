@@ -29,8 +29,8 @@
     --hw-card-bg: rgba(245, 240, 232, 0.85);
     --hw-code-bg: #1e1e36;
     --hw-code-text: #e8d5b0;
-    --hw-nav-bg: #0a0a2e;
-    --hw-nav-text: #d4a855;
+    --hw-nav-bg: #faf5ed;
+    --hw-nav-text: #2a2230;
     --hw-gradient-hero: linear-gradient(180deg, #060620 0%, #0a0a2e 40%, #0d1b3e 100%);
 
     /* Override MkDocs Material variables */
@@ -134,16 +134,6 @@
     --md-footer-fg-color: #e0d0b0;
     --md-footer-fg-color--light: #a09880;
     --md-footer-fg-color--lighter: #706858;
-}
-
-/* ============================================================
-   2. Top Gradient Decorative Bar
-   ============================================================ */
-
-/* Insert gradient bar via header pseudo-element */
-.md-header {
-    border-top: 4px solid transparent;
-    border-image: linear-gradient(90deg, #d4a855, #7B68EE, #87CEEB, #d4a855) 1;
 }
 
 /* ============================================================
@@ -290,10 +280,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.md-header[data-md-color-scheme="slate"] {
-    background-color: #1a1a2e;
-}
-
 .md-header__title {
     color: var(--hw-nav-text);
     font-weight: 600;
@@ -313,6 +299,72 @@
 .md-tabs__link:hover {
     color: var(--hw-accent);
     opacity: 1;
+}
+
+/* ============================================================
+   5b. 亮色模式导航区覆盖 — 奶油底 + 深墨字 + 金色点缀
+       (仅匹配 [data-md-color-scheme="default"]，暗色模式不受影响)
+   ============================================================ */
+
+/* Header：深墨前景（.md-header__button 用 currentcolor 继承，三个图标一并修正）
+   + 柔和阴影 + 金色底边 */
+[data-md-color-scheme="default"] .md-header {
+    color: var(--hw-text-dark);
+    border-bottom: 1px solid var(--hw-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* 保险起见显式声明（防未来其他规则覆盖 currentcolor） */
+[data-md-color-scheme="default"] .md-header__button {
+    color: var(--hw-text-dark);
+}
+
+/* Tabs：奶油底与正文同色系，深墨文字，金色下划线高亮 */
+[data-md-color-scheme="default"] .md-tabs {
+    background-color: var(--hw-bg-surface);
+    color: var(--hw-text-dark);
+    border-bottom: 1px solid var(--hw-border-light);
+}
+
+[data-md-color-scheme="default"] .md-tabs__link {
+    color: var(--hw-text-dark);
+    opacity: 0.8;
+}
+
+[data-md-color-scheme="default"] .md-tabs__link:hover,
+[data-md-color-scheme="default"] .md-tabs__link--active {
+    color: var(--hw-text-dark);
+    opacity: 1;
+    box-shadow: inset 0 -2px 0 var(--hw-accent);
+}
+
+/* Search：浅色药丸 + 深墨文字 + 金色 focus */
+[data-md-color-scheme="default"] .md-search__form {
+    background-color: rgba(10, 10, 46, 0.06);
+}
+
+[data-md-color-scheme="default"] .md-search__input {
+    background-color: rgba(245, 240, 232, 0.85);
+    color: var(--hw-text-dark);
+}
+
+[data-md-color-scheme="default"] .md-search__input::placeholder {
+    color: var(--hw-text-muted);
+}
+
+[data-md-color-scheme="default"] .md-search__input:focus {
+    background-color: #fffdf5;
+    border-color: var(--hw-accent-dim);
+    box-shadow: 0 0 8px rgba(212, 168, 85, 0.25);
+}
+
+[data-md-color-scheme="default"] .md-search__icon {
+    color: var(--hw-text-dark);
+}
+
+/* 侧边栏滚动条轨道：亮色下用暖金浅色（一致性） */
+[data-md-color-scheme="default"] .md-sidebar__scrollwrap::-webkit-scrollbar-track {
+    background: rgba(212, 168, 85, 0.08);
 }
 
 /* ============================================================
