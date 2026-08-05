@@ -73,20 +73,20 @@
           <span class="hw-card__spell">🪄 翻开笔记本 →</span>
         </a>
 
-        <!-- Card 2: 机械臂（魔法造物） -->
-        <a href="{{ '学习笔记/机械臂blog/' | url }}" class="hw-card hw-card--creature">
+        <!-- Card 2: 科研竞赛blog（魔法造物坊） -->
+        <a href="{{ '科研竞赛blog/' | url }}" class="hw-card hw-card--creature">
           <div class="hw-card__banner">
-            <span class="hw-card__emoji">🦾</span>
+            <span class="hw-card__emoji">🏆</span>
             <span class="hw-card__sparkle">🔧</span>
           </div>
           <h3 class="hw-card__title">魔法造物坊</h3>
-          <p class="hw-card__subtitle">机械臂实战 · {{ config.extra.stats.mecharm }} 篇实验记录</p>
+          <p class="hw-card__subtitle">科研竞赛 · {{ config.extra.stats.blogs }} 篇博文</p>
           <p class="hw-card__desc">
-            用 ROS2 驱动魔杖，让树莓派施法。<br>
-            从仿真到实体，打造一个<strong>听你话的机械手臂</strong>。<br>
+            工创赛机械臂搭建 + 强化学习实验。<br>
+            从 ROS2 仿真到实体，从 MDP 到 PPO。<br>
             温馨提示：它暂时还不会自己写作业 🥲
           </p>
-          <span class="hw-card__spell">🪄 念动咒语 →</span>
+          <span class="hw-card__spell">🪄 探秘科研坊 →</span>
         </a>
 
         <!-- Card 3: 唱唱反调（预言家日报） -->
@@ -129,9 +129,9 @@
             <span class="hw-stats__label">个学年冒险</span>
           </div>
           <div class="hw-stats__item">
-            <span class="hw-stats__icon">🦾</span>
-            <span class="hw-stats__number" data-count="{{ config.extra.stats.mecharm }}">{{ config.extra.stats.mecharm }}</span>
-            <span class="hw-stats__label">份造物图纸</span>
+            <span class="hw-stats__icon">🏆</span>
+            <span class="hw-stats__number" data-count="{{ config.extra.stats.blogs }}">{{ config.extra.stats.blogs }}</span>
+            <span class="hw-stats__label">篇科研博文</span>
           </div>
         </div>
       </div>

@@ -81,10 +81,12 @@ mkdocs.yml     - Site configuration
 ```
 docs/
 ├── index.md           - Home page
-├── 大一上/            - Freshman year notes
-├── 大一下/            - Sophomore year notes
-├── 大二上/            - Junior year notes
 ├── 学习笔记/          - Study notes (Calculus, Physics, etc.)
-├── 机械臂blog/        - Robotic arm blog
-└── 其他/              - Miscellaneous
+│   ├── 大一上/        - Freshman year notes
+│   ├── 大一下/        - Sophomore year notes
+│   └── 大二上/        - Junior year notes
+├── 科研竞赛blog/      - Research & competition blog
+│   ├── 机械臂blog/    - Robotic arm blog (ROS2)
+│   └── 强化学习blog/  - Reinforcement learning blog
+└── 唱唱反调/          - Opinion / personal blog
 ```
