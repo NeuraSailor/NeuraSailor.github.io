@@ -407,6 +407,8 @@
       
         
       
+        
+      
     
     
     
@@ -586,6 +588,34 @@
     
   
     手机端 Claude 接入滴答清单：让 AI 替你管日程
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%94%B1%E5%94%B1%E5%8F%8D%E8%B0%83/%E6%97%A5%E8%AE%B0%E7%B3%BB%E7%BB%9F-Flomo%E4%BB%98%E8%B4%B9%E5%8A%9F%E8%83%BD%E5%BC%80%E6%BA%90%E8%A7%A3%E5%86%B3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    日记系统：Flomo 付费功能开源解决
   
 
     
@@ -10741,12 +10771,12 @@
 </div>
 <blockquote>
 <p><strong>学习方式</strong>：费曼学习法——我用自己的思路复述核心概念，AI 对我的理解做简单评价。<br />
-<strong>参考文章</strong>：<a href="https://lilianweng.github.io/posts/2018-02-19-rl-overview/">A (Long) Peek into Reinforcement Learning</a>（Lilian Weng）</p>
+<strong>学习资料</strong>：<a href="https://lilianweng.github.io/posts/2018-02-19-rl-overview/">A (Long) Peek into Reinforcement Learning</a>（Lilian Weng）</p>
 </blockquote>
 <hr />
 <h2 id="1">1. 什么是强化学习：前置概念<a class="headerlink" href="#1" title="点击此处可置顶内容">&para;</a></h2>
 <div class="admonition note">
-<p class="admonition-title">我的复述 · ①</p>
+<p class="admonition-title">✏️ 我的复述 · ①</p>
 <p>Agent 是一个根据策略去选择动作的行动者，定义了状态、动作与策略。而环境定义规则，定义了转移概率与奖励函数——也就是我做出一个行为后，对我做出反馈的是环境。模型是智能体对环境的认知。模型无关（model-free），指的是智能体对环境没有认知，只能靠试错不断推进。</p>
 </div>
 <div class="admonition info">
@@ -10758,7 +10788,7 @@
 </ul>
 </div>
 <div class="admonition note">
-<p class="admonition-title">我的复述 · ②</p>
+<p class="admonition-title">✏️ 我的复述 · ②</p>
 <p>策略是在某个状态采取什么动作的一个映射，最优策略就是所有状态下采取的最佳动作的集合。</p>
 </div>
 <div class="admonition info">
@@ -10766,7 +10796,7 @@
 <p>正确 ✓，这一条已经完整且准确。前半句是策略的<strong>一般定义</strong>（状态 → 动作的映射，可以是确定性 π(s) = a，也可以是随机 π(a|s) = P[A=a|S=s]）；后半句是<strong>最优策略 π</strong><em>（使每个状态都取到最大价值 V</em> / Q* 的动作集合）。学习过程——比如后面 DP / MC 里的策略迭代——就是一步步把"当前策略"改造成 π*。</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">我的复述 · ③</p>
+<p class="admonition-title">✏️ 我的复述 · ③</p>
 <p>价值函数 G 是从当前状态（或动作）出发、按一定策略一直进行到结束所能获得的回报；折扣因子 γ 控制未来的回报对现在的影响。其中状态的价值称为 V，某状态下采取某动作的价值称为 Q。</p>
 </div>
 <div class="admonition info">
@@ -10777,7 +10807,7 @@
 <hr />
 <h2 id="2-mdp-bellman">2. MDP 与 Bellman 方程<a class="headerlink" href="#2-mdp-bellman" title="点击此处可置顶内容">&para;</a></h2>
 <div class="admonition note">
-<p class="admonition-title">我的复述 · ④</p>
+<p class="admonition-title">✏️ 我的复述 · ④</p>
 <p>状态 S、动作 A、状态转移函数 P、奖励函数 R、折扣系数 γ 用来描述一个马尔可夫决策过程。</p>
 </div>
 <div class="admonition info">
@@ -10785,7 +10815,7 @@
 <p>基本正确 ✓，MDP 就是一个五元组 M = ⟨S, A, P, R, γ⟩。补充最关键的一点：它叫<strong>马尔可夫</strong>决策过程，是因为状态具有<strong>马尔可夫性</strong>——未来只依赖当前状态，与历史无关（原文："the future only depends on the current state, not the history"）。这个性质才是 MDP 的基石，你的复述里没提到。</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">我的复述 · ⑤</p>
+<p class="admonition-title">✏️ 我的复述 · ⑤</p>
 <p>贝尔曼方程就是某个步骤的价值等于奖励加上下一步骤的价值乘以折扣因子。</p>
 </div>
 <div class="admonition info">
@@ -10800,7 +10830,7 @@
 <hr />
 <h2 id="3-dp-mc">3. 常见方法：动态规划与蒙特卡洛（DP / MC）<a class="headerlink" href="#3-dp-mc" title="点击此处可置顶内容">&para;</a></h2>
 <div class="admonition note">
-<p class="admonition-title">我的复述 · ⑥</p>
+<p class="admonition-title">✏️ 我的复述 · ⑥</p>
 <p>如果模型已知，就采用动态规划（DP）的方法。已知初始状态 S 和策略 π，可以计算出各状态和动作的回报；对所有状态都试一下它的各个动作、算出回报，并取其中回报最大的那个动作作为新的策略。</p>
 </div>
 <div class="admonition info">
@@ -10813,7 +10843,7 @@
 <p>这也正好呼应第②条：策略迭代就是在一步步把"当前策略"改造成"最优策略 π*"。</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">我的复述 · ⑦</p>
+<p class="admonition-title">✏️ 我的复述 · ⑦</p>
 <p>模型未知的情况，只能采用蒙特卡洛方法（MC）。通过实际实验测出从某个状态 S 到终点的回报，多次测量取平均得到期望回报；跟着策略走，走到某状态后尝试它的所有动作，再继续按策略走，算出多个期望回报，取其中最大的作为新策略。</p>
 </div>
 <div class="admonition info">
