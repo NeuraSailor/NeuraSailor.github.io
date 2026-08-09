@@ -98,6 +98,9 @@ Flomo的ai功能是有想法的，应该覆盖了日记反思回顾联想的所�
 | AI 洞察（多视角深度分析）             | PRO      | **flomo-insight** |
 | AI 记忆档案（画像 + 记忆文档 + 碎片） | MAX      | **flomo-memory**  |
 
+!!! note "开源了"
+    这 4 个 skill 已经整理成一个完整项目开源到 GitHub：[**github.com/NeuraSailor/flomo-ai-skill**](https://github.com/NeuraSailor/flomo-ai-skill)（MIT ）。想用的人 clone 下来，把 `.claude/skills/` 里的 4 个 skill 目录和 `scripts/index_notes.py` 复制进自己的 vault 就能跑，不用再自己写一遍。
+
 它们都放在 vault 的 `.claude/skills/` 目录里，Claude Code 会自动发现。下面是每个的功能。
 
 ### flomo-agent —— 复刻 MAX 的 Agent
@@ -156,7 +159,7 @@ Flomo 的记忆档案把笔记提炼成三份结构化记忆：**用户画像**�
 
 工具的意义是让记录这件事变得顺畅，而不是把记录本身变成你的负债。现在我每天照常记 Flomo，但心里很清楚——它只是一个输入法，我的思想存在我自己硬盘上，我的 AI 引擎跑在自己搭的 skill 里。
 
-如果你也在为"数据该归谁"纠结，这套方案（flomo-bridge 同步 + 4 个 skill 复刻付费功能）是一个可以照抄的起点。所有东西都是开源的，你的日记终于只属于你。
+如果你也在为"数据该归谁"纠结，这套方案（flomo-bridge 同步 + 4 个 skill 复刻付费功能）是一个可以照抄的起点，完整代码已开源在 [github.com/NeuraSailor/flomo-ai-skill](https://github.com/NeuraSailor/flomo-ai-skill)（MIT）。所有东西都是开源的，你的日记终于只属于你。
 
 ---
 
