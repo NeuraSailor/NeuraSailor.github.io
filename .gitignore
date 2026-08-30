@@ -3,3 +3,10 @@
 .history/
 .claude/worktrees/
 __pycache__/
+.publish/
+
+# Tencent Cloud EdgeOne
+.env
+.edgeone/*
+.tef_dist/*
+  
