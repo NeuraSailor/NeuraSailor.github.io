@@ -4,9 +4,9 @@ This file provides guidance to AI coding agents when working with code in this r
 
 ## Project Overview
 
-个人知识花园，**Astro 5 + 可插拔多皮肤**（liquid-glass 液态玻璃 / neumorphic 新拟态 / latex-paper LaTeX 论文 / anti-design 反设计 / hogwarts 霍格沃兹）构建的静态站点。内容源自 Obsidian vault，同步到 `docs/` 目录后由 Astro 构建。旧 MkDocs 栈已于 V3 重构时移除。
+个人知识花园，**Astro 5 + 可插拔多皮肤**（liquid-glass 液态玻璃 / neumorphic 新拟态 / latex-paper LaTeX 论文 / anti-design 反设计 / hogwarts 霍格沃兹 / developer-terminal 开发者终端）构建的静态站点。内容源自 Obsidian vault，同步到 `docs/` 目录后由 Astro 构建。旧 MkDocs 栈已于 V3 重构时移除。
 
-liquid-glass 设计规范依据：`C:\Users\WUZHO\.cc-switch\skills\apple-design-skill-main`（Apple HIG 参考 skill）；neumorphic 规范依据 stylekit neumorphism（同色表面 + 双影凸凹三态，禁位移/渐变）；latex-paper 规范依据 stylekit latex-paper（白纸墨字、衬线、零圆角/零阴影、booktabs 三线表、蓝只作链接）；anti-design 规范依据 stylekit anti-design（4px+ 黑框、硬偏移阴影、高饱和原色块、100ms linear 直切）；hogwarts 源自旧 MkDocs 站 hogwarts.css + hogwarts-theme 技能库（奶油纸/烛光密室、暗金、恒暗代码、深色公式框）。
+liquid-glass 设计规范依据：`C:\Users\WUZHO\.cc-switch\skills\apple-design-skill-main`（Apple HIG 参考 skill）；neumorphic 规范依据 stylekit neumorphism（同色表面 + 双影凸凹三态，禁位移/渐变）；latex-paper 规范依据 stylekit latex-paper（白纸墨字、衬线、零圆角/零阴影、booktabs 三线表、蓝只作链接）；anti-design 规范依据 stylekit anti-design（4px+ 黑框、硬偏移阴影、高饱和原色块、100ms linear 直切）；hogwarts 源自旧 MkDocs 站 hogwarts.css + hogwarts-theme 技能库（奶油纸/烛光密室、暗金、恒暗代码、深色公式框）；developer-terminal 融合 stylekit developer-terminal × pixel-anime（NES 六色 RPG 终端，内容整页会话化）。
 
 ## Key Commands
 
@@ -56,6 +56,7 @@ src/
 │   ├── latex-paper/    #   LaTeX 论文（衬线学术排版）
 │   ├── anti-design/    #   反设计（粗野主义原色块）
 │   ├── hogwarts/       #   霍格沃兹（旧 MkDocs 主题迁入）
+│   ├── developer-terminal/ # 开发者终端（终端风等宽）
 │   └── <皮肤>/         #   skin(令牌)/chrome(控件)/content(正文)/motion(动效)/index.css
 ├── scripts/site.ts     # 全站交互（astro:page-load 感知；initSkin 皮肤切换）
 └── lib/                # nav-tree / stats / themes(皮肤注册表自动发现) / katex-text
@@ -110,6 +111,17 @@ hogwarts（霍格沃兹，旧 MkDocs 主题迁入）：
 - 魔法特效层（纯 CSS，transform/opacity，reduced-motion 冻结）：Hero 双层金尘
   视差上浮、暗色星空闪烁+烛光顶晕、导航卡微光扫过、激活胶囊金光呼吸、
   进度条彗星头、h1 金线流光
+
+developer-terminal（像素终端，terminal × pixel-anime 融合）：
+- 内容 = 终端窗口里的会话：VIEWER.EXE 标题栏 → cd 面包屑 → '>' 金字页题 +
+  闪烁光标 → stat 元信息 → h2 '>' 命令流 → 输出正文 → [EOF]
+- NES 六色：紫底 #2d1b69/面板 #1a1040/蓝 #4a90d9 框与链接/金 #ffd93d 命令/
+  绿 #50c878 激活/红 #ff6b6b 危险；全站等宽 + 全大写标题，零圆角/渐变/模糊
+- 窗口语言：2px 蓝框 + 外扩双线 + 硬偏移阴影 + 对角像素角块（悬停闪烁）
+- 交互 75ms linear 掉帧感：hover 步进 2px + 金色光晕方块阵，
+  :active 挤压拉伸（scaleX1.08/scaleY0.92，禁等比）；callout=RPG 对话框，
+  代码=OUTPUT 子窗、公式=CALC 子窗（恒暗），表格=任务日志，进度条=EXP 条
+- 暗色=规范原档 NES 夜间；亮色=白昼会话（文字级四色深化）
 
 ### 客户端交互要点
 

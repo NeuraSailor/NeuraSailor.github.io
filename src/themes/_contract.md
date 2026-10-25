@@ -108,4 +108,9 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
 禁单侧彩色条纹；暗色为反相档）；`hogwarts` 按旧 MkDocs 站 hogwarts.css
 与 hogwarts-theme 技能库验收（奶油纸/烛光密室双档、暗金强调、
 五色渐变顶规、恒暗代码 #1e1e36、深色公式框、h1/h2/h3 金饰签名、
-零 webfont）。
+零 webfont）；`developer-terminal` 融合 stylekit developer-terminal ×
+pixel-anime 验收（NES 六色 RPG 终端：内容整页会话化——VIEWER.EXE 标题栏/
+cd 面包屑/'>' 金字页题+闪烁光标/命令流 h2/输出正文/[EOF]；2px 蓝框+
+外扩双线+硬偏移阴影+对角像素角块；75ms linear 掉帧感、步进 2px 悬停、
+挤压拉伸按压、角块仅悬停闪烁；恒暗代码/公式子窗；暗色=规范原档、
+亮色=白昼会话深化档）。

@@ -1,0 +1,151 @@
+/* ============================================================
+   skin.css —— 像素终端（Pixel RPG Terminal）皮肤令牌
+   融合规范：stylekit developer-terminal（终端会话格式骨架：
+   提示符/命令/输出流/闪烁光标/恒暗代码）× stylekit pixel-anime
+   （NES 六色调色板、RPG 对话框粗边+四角像素块、硬偏移阴影、
+   2px 步进位移、挤压拉伸按压、75ms linear 掉帧感、全大写、
+   '>' 光标前缀、无圆角/渐变/模糊/软阴影）
+   · 暗色 = NES 夜间会话（规范原档：紫底 #2d1b69）
+   · 亮色 = 白昼会话（淡紫纸底 + 文字级用色深化保对比度——
+     本站明暗双模式为一等公民）
+   内容排版哲学：整篇文章 = 一个终端窗口里的会话记录
+   （标题栏 → cd 命令 → 输出流 → 状态栏）
+   结构令牌（间距 / 布局尺寸 / z 层）在共享层 src/styles/base.css
+   ============================================================ */
+
+:root {
+  /* ---------- 字体：等宽一统天下（像素终端铁律）---------- */
+  --font-system: 'Cascadia Code', ui-monospace, 'JetBrains Mono', 'SF Mono',
+    Consolas, 'Courier New', 'Noto Sans Mono CJK SC', monospace;
+  --font-mono: 'Cascadia Code', ui-monospace, 'JetBrains Mono', 'SF Mono',
+    Consolas, 'Courier New', 'Noto Sans Mono CJK SC', monospace;
+
+  /* ---------- 字阶（终端小字号 + 大写标题）---------- */
+  --text-caption: 0.7rem;     /* 11.2 */
+  --text-footnote: 0.775rem;  /* 12.4 */
+  --text-subhead: 0.875rem;   /* 14 */
+  --text-body: 0.9375rem;     /* 15 */
+  --text-title3: 1.0625rem;   /* 17 */
+  --text-title2: 1.25rem;     /* 20 */
+  --text-title1: 1.5rem;      /* 24 */
+  --text-large: 2rem;         /* 32 */
+
+  /* ---------- 圆角：零（像素铁律）---------- */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+  --r-xl: 0;
+  --r-2xl: 0;
+
+  /* ---------- 动效：75ms linear 掉帧感，无有机曲线 ---------- */
+  --ease-soft: linear;
+  --dur-fast: 75ms;
+  --dur-base: 280ms;  /* SearchPalette 关闭计时器对齐（契约）*/
+  --dur-morph: 75ms;
+  --dur-slow: 150ms;
+
+  /* ---------- NES 家族色（两档共用）---------- */
+  --nes-blue: #4a90d9;   /* 像素蓝：边框/链接/窗口框 */
+  --nes-red: #ff6b6b;    /* 像素红：危险/错误 */
+  --nes-gold: #ffd93d;   /* 像素金：命令/标题/高亮 */
+  --nes-green: #50c878;  /* 像素绿：成功/激活/EXP */
+
+  /* 像素块（四角装饰）与硬阴影 */
+  --pixel-corner: 6px;
+  --hard-shadow: 4px 4px 0 0 var(--nes-surface);
+  --hard-shadow-frame: 4px 4px 0 0 #0d0826;
+}
+
+/* ---------- 暗色（默认：NES 夜间会话，规范原档）---------- */
+:root {
+  color-scheme: dark;
+
+  --bg: #2d1b69;
+  --surface: #1a1040;
+  --surface-2: #1a1040;
+  --elevated: #1a1040;
+
+  --label: #f4f2ff;
+  --label-2: #c9c2ee;
+  --label-3: #8f86c9;
+  --label-4: #5d5490;
+
+  --separator: #4a90d9;
+  --separator-strong: #4a90d9;
+  --fill: rgba(74, 144, 217, 0.14);
+  --fill-2: rgba(74, 144, 217, 0.24);
+
+  /* 主强调：像素蓝（边框/链接/选中）；金用于命令与标题 */
+  --accent: #4a90d9;
+  --accent-raw: 74, 144, 217;
+  --accent-hover: #ffd93d;
+  --on-accent: #1a1040;
+
+  --code-bg: rgba(255, 217, 61, 0.12);
+  --code-bg-block: #1a1040;
+  --code-border: #4a90d9;
+
+  /* 深度只有硬偏移阴影 */
+  --shadow-1: 4px 4px 0 0 #1a1040;
+  --shadow-2: 4px 4px 0 0 #0d0826;
+  --shadow-3: 6px 6px 0 0 #0d0826;
+
+  /* 兼容玻璃令牌名（像素终端无玻璃，垫片取面板）*/
+  --glass: var(--surface);
+  --glass-strong: var(--surface);
+  --glass-subtle: var(--surface);
+  --glass-border: #4a90d9;
+  --glass-highlight: transparent;
+
+  --nes-surface: #1a1040;
+
+  --scrim: rgba(13, 8, 38, 0.78);
+}
+
+/* 选区 = 金色高亮块 */
+::selection {
+  background: #ffd93d;
+  color: #1a1040;
+}
+
+/* ---------- 亮色（白昼会话：淡紫纸底 + 文字级用色深化）---------- */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f2f0fa;
+  --surface: #ffffff;
+  --surface-2: #f7f5ff;
+  --elevated: #ffffff;
+
+  --label: #1a1040;
+  --label-2: #3c3260;
+  --label-3: #6b6292;
+  --label-4: #a49cc4;
+
+  --separator: #4a90d9;
+  --separator-strong: #3a7bc0;
+  --fill: rgba(74, 144, 217, 0.1);
+  --fill-2: rgba(74, 144, 217, 0.18);
+
+  --accent: #3a7bc0;
+  --accent-raw: 58, 123, 192;
+  --accent-hover: #b89400;
+  --on-accent: #ffffff;
+
+  /* NES 四色文字级深化档（浅底可读）*/
+  --nes-red: #e04848;
+  --nes-gold: #b89400;
+  --nes-green: #2e9e5c;
+
+  --code-bg: rgba(184, 148, 0, 0.1);
+  --code-bg-block: #1a1040; /* 代码恒为深暗面板 */
+  --code-border: #4a90d9;
+
+  --shadow-1: 4px 4px 0 0 #d8d4f0;
+  --shadow-2: 4px 4px 0 0 #c9c3e8;
+  --shadow-3: 6px 6px 0 0 #c9c3e8;
+
+  --nes-surface: #d8d4f0;
+
+  --scrim: rgba(45, 27, 105, 0.5);
+}

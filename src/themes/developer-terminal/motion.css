@@ -1,0 +1,67 @@
+/* ============================================================
+   motion.css —— 像素终端动效
+   规范：75ms linear 掉帧感（无有机曲线）；步进位移 2px；
+   光标 0.9s steps 闪烁；角块仅悬停时闪烁；
+   reduced-motion 下全部停帧（chrome.css 已处理装饰动画）
+   ============================================================ */
+
+/* 滚动渐入（掉帧感硬切淡入）*/
+[data-reveal] {
+  opacity: 0;
+  transition: opacity var(--dur-slow) linear;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+}
+
+/* View Transitions：页面切换快切 */
+@keyframes px-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+::view-transition-old(root) {
+  animation: 75ms linear both px-fade;
+}
+
+::view-transition-new(root) {
+  animation: 150ms linear both px-fade;
+}
+
+/* 明暗/皮肤切换过渡（75ms linear）*/
+.theme-transition,
+.theme-transition body,
+.theme-transition .toolbar,
+.theme-transition .sidebar,
+.theme-transition .tabbar {
+  transition:
+    background-color var(--dur-fast) linear,
+    color var(--dur-fast) linear,
+    border-color var(--dur-fast) linear;
+}
+
+/* ---------- 降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

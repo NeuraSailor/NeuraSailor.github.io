@@ -1,0 +1,25 @@
+/* ============================================================
+   developer-terminal 主题入口 —— 像素终端 / Pixel RPG Terminal
+   融合 stylekit developer-terminal（会话格式骨架）×
+   stylekit pixel-anime（NES 皮与街机交互）。
+   内容排版哲学（改样式前先读）：
+   · 整篇文章 = 一个终端窗口里的会话记录：标题栏（VIEWER.EXE）→
+     cd 路径（面包屑）→ 命令回显（页题 '>' 金字 + 光标）→
+     stat 输出（元信息）→ 命令流（h2 '>'）→ 输出（正文）→ [EOF]
+   · NES 六色：紫底 #2d1b69 / 面板 #1a1040 / 蓝 #4a90d9（框/链接）/
+     金 #ffd93d（命令/标题）/ 绿 #50c878（成功/激活/EXP）/ 红 #ff6b6b
+   · 窗口语言：2px 蓝框 + 外扩双线 + 硬偏移阴影（4/6px 无模糊）+
+     对角像素角块（悬停闪烁）
+   · 交互：75ms linear 掉帧感；hover 步进位移 2px + 金色光晕方块阵；
+     :active 挤压拉伸 scaleX≈1.08/scaleY≈0.92（禁等比缩放）
+   · callout = RPG 对话框（说话人语义色 + [+] 折叠徽记）；
+     代码 = OUTPUT 子窗、公式 = CALC 子窗（恒暗 #1a1040）；
+     表格 = 任务日志；引用 = NPC 台词窗；进度条 = EXP 条
+   · 全站等宽无一例外；标题/标签全大写；零圆角/渐变/模糊/软阴影
+   · 暗色 = NES 夜间会话（规范原档）；亮色 = 白昼会话（文字级深化）
+   由 src/lib/themes.ts 经 import.meta.glob('?url') 自动发现
+   ============================================================ */
+@import './skin.css';
+@import './chrome.css';
+@import './content.css';
+@import './motion.css';
