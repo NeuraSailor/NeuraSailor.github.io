@@ -1,0 +1,69 @@
+/* ============================================================
+   motion.css —— 反设计动效
+   规范：100ms linear 直切或无过渡；禁 ease 曲线/弹簧
+   滚动渐入 = 硬出现（无过渡）；prefers-reduced-motion 天然满足
+   ============================================================ */
+
+/* 滚动渐入（JS 标注 [data-reveal] → .is-visible；无过渡直接出现）*/
+[data-reveal] {
+  opacity: 0;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+}
+
+/* 锚点跳转不平滑（直切）*/
+html {
+  scroll-behavior: auto;
+}
+
+/* View Transitions：页面切换 100ms linear 淡入 */
+@keyframes anti-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+::view-transition-old(root) {
+  animation: 100ms linear both anti-fade;
+}
+
+::view-transition-new(root) {
+  animation: 100ms linear both anti-fade;
+}
+
+/* 明暗/皮肤切换过渡（色彩 100ms linear）*/
+.theme-transition,
+.theme-transition body,
+.theme-transition .toolbar,
+.theme-transition .sidebar,
+.theme-transition .tabbar {
+  transition:
+    background-color var(--dur-fast) linear,
+    color var(--dur-fast) linear,
+    border-color var(--dur-fast) linear;
+}
+
+/* ---------- 降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

@@ -1,0 +1,71 @@
+/* ============================================================
+   motion.css —— 新拟态动效
+   规范：阴影形态渐变 300ms ease-in-out；无位移/缩放/弹簧
+   渐入只做透明度；全部 prefers-reduced-motion 降级
+   ============================================================ */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 滚动渐入（JS 标注 [data-reveal] → .is-visible，纯淡入）*/
+[data-reveal] {
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+}
+
+/* View Transitions：页面切换淡入 */
+::view-transition-old(root) {
+  animation: 220ms var(--ease-soft) both fade-in;
+}
+
+::view-transition-new(root) {
+  animation: 300ms var(--ease-soft) both fade-in;
+}
+
+/* 明暗/皮肤切换过渡（含阴影形态）*/
+.theme-transition,
+.theme-transition body,
+.theme-transition .toolbar,
+.theme-transition .sidebar,
+.theme-transition .tabbar {
+  transition:
+    background-color var(--dur-morph) var(--ease-soft),
+    color var(--dur-morph) var(--ease-soft),
+    border-color var(--dur-morph) var(--ease-soft),
+    box-shadow var(--dur-morph) var(--ease-soft);
+}
+
+/* ---------- 降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

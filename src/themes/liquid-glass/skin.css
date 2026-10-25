@@ -1,0 +1,132 @@
+/* ============================================================
+   skin.css —— Liquid Glass 皮肤令牌（颜色 / 字体 / 圆角 / 动效）
+   颜色语义照 HIG：label / secondaryLabel / separator / accent
+   每种颜色都有亮/暗双值（HIG 要求，支持玻璃自适应）
+   结构令牌（间距 / 布局尺寸 / z 层）在共享层 src/styles/base.css
+   ============================================================ */
+
+:root {
+  /* ---------- 字体 ---------- */
+  --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'PingFang SC', 'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', 'Segoe UI',
+    'Noto Sans SC', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', Menlo,
+    Consolas, 'Noto Sans Mono CJK SC', monospace;
+
+  /* ---------- 字阶（HIG 文本样式 → web px）---------- */
+  --text-caption: 0.75rem;    /* 12 */
+  --text-footnote: 0.8125rem; /* 13 */
+  --text-subhead: 0.9375rem;  /* 15 */
+  --text-body: 1.0625rem;     /* 17 */
+  --text-title3: 1.25rem;     /* 20 */
+  --text-title2: 1.375rem;    /* 22 */
+  --text-title1: 1.75rem;     /* 28 */
+  --text-large: 2.125rem;     /* 34 */
+
+  /* ---------- 圆角（连续曲率感）---------- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-2xl: 28px;
+
+  /* ---------- 动效 ---------- */
+  --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
+  /* 弹性曲线（Q弹）：小控件按压回弹用，带轻微过冲 */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring-soft: cubic-bezier(0.22, 1.18, 0.36, 1);
+  --dur-fast: 180ms;
+  --dur-base: 280ms;
+  --dur-slow: 420ms;
+  --dur-spring: 460ms;
+}
+
+/* ---------- 亮色（默认）---------- */
+:root {
+  color-scheme: light;
+
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-2: #fbfbfd;
+  --elevated: #ffffff;
+
+  /* 玻璃（Regular 变体：保可读性）*/
+  --glass-strong: rgba(255, 255, 255, 0.72);
+  --glass: rgba(255, 255, 255, 0.62);
+  --glass-subtle: rgba(255, 255, 255, 0.48);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+
+  --label: #1d1d1f;
+  --label-2: #6e6e73;
+  --label-3: #aeaeb2;
+  --label-4: #c7c7cc;
+  --separator: rgba(60, 60, 67, 0.12);
+  --separator-strong: rgba(60, 60, 67, 0.22);
+  --fill: rgba(120, 120, 128, 0.08);
+  --fill-2: rgba(120, 120, 128, 0.14);
+
+  --accent: #0071e3;         /* iOS 蓝（可读性调校）*/
+  --accent-raw: 0, 113, 227;
+  --accent-hover: #0077ed;
+  --on-accent: #ffffff;
+
+  --code-bg: rgba(135, 131, 120, 0.07);
+  --code-bg-block: #fafafa;
+  --code-border: rgba(60, 60, 67, 0.1);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-3: 0 4px 12px rgba(0, 0, 0, 0.06), 0 16px 48px rgba(0, 0, 0, 0.12);
+
+  /* 极光环境层（内容层背景，玻璃借此透色）*/
+  --aurora-1: rgba(100, 145, 255, 0.16);
+  --aurora-2: rgba(176, 132, 255, 0.12);
+  --aurora-3: rgba(255, 176, 133, 0.1);
+  --aurora-4: rgba(120, 210, 190, 0.1);
+  --ambient-base: #f5f5f7;
+}
+
+/* ---------- 暗色 ---------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0a0a0c;
+  --surface: #141416;
+  --surface-2: #1a1a1d;
+  --elevated: #1c1c1e;
+
+  --glass-strong: rgba(28, 28, 30, 0.78);
+  --glass: rgba(24, 24, 26, 0.66);
+  --glass-subtle: rgba(24, 24, 26, 0.52);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.14);
+
+  --label: #f5f5f7;
+  --label-2: #98989d;
+  --label-3: #636366;
+  --label-4: #48484a;
+  --separator: rgba(84, 84, 88, 0.5);
+  --separator-strong: rgba(84, 84, 88, 0.8);
+  --fill: rgba(120, 120, 128, 0.24);
+  --fill-2: rgba(120, 120, 128, 0.36);
+
+  --accent: #0a84ff;
+  --accent-raw: 10, 132, 255;
+  --accent-hover: #409cff;
+  --on-accent: #ffffff;
+
+  --code-bg: rgba(134, 134, 139, 0.16);
+  --code-bg-block: #101012;
+  --code-border: rgba(84, 84, 88, 0.4);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-3: 0 4px 12px rgba(0, 0, 0, 0.4), 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  --aurora-1: rgba(10, 60, 160, 0.22);
+  --aurora-2: rgba(90, 40, 160, 0.16);
+  --aurora-3: rgba(160, 70, 60, 0.1);
+  --aurora-4: rgba(20, 110, 120, 0.12);
+  --ambient-base: #0a0a0c;
+}

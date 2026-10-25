@@ -1,0 +1,22 @@
+---
+import { getCollection, render } from 'astro:content';
+import Article from '../layouts/Article.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map((entry) => {
+    // entry.id 已由 generateId 归一为路由 slug（原始大小写、/index 已折叠）
+    return { params: { slug: entry.id || undefined }, props: { entry } };
+  });
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+// 正文以 # 标题开头时隐藏之（由页头大标题承担，避免重复）
+const hideFirstH1 = /^#\s/m.test((entry.body ?? '').replace(/^---[\s\S]*?---\s*/, ''));
+---
+
+<Article entry={entry} headings={headings} hideFirstH1={hideFirstH1}>
+  <Content />
+</Article>

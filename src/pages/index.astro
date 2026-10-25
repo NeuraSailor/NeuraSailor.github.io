@@ -1,0 +1,87 @@
+---
+/**
+ * 首页 —— 克制文案的着陆页
+ * 三张分区导航卡 + 统计条 + 收束引语（外观由当前皮肤的 chrome.css 定义）
+ */
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { computeStats } from '../lib/stats';
+
+const entries = await getCollection('docs');
+const stats = computeStats(entries.map((e) => e.id));
+---
+
+<Base title="NeuraSailor 知识花园" currentSlug="" noSidebar>
+  <div class="home">
+    <!-- Hero -->
+    <section class="home__hero">
+      <p class="home__kicker" data-reveal>NeuraSailor · Est. 2024</p>
+      <h1 class="home__title" data-reveal style="--reveal-delay: 70ms">知识花园</h1>
+      <p class="home__tagline" data-reveal style="--reveal-delay: 140ms">
+        课程笔记、科研实验与随想，一座持续生长的思维花园。
+      </p>
+      <div class="home__divider" data-reveal style="--reveal-delay: 200ms" aria-hidden="true"></div>
+    </section>
+
+    <!-- 三张分区导航卡 -->
+    <section class="home__cards" aria-label="内容分区">
+      <a class="home-card" href="/学习笔记/" data-reveal style="--reveal-delay: 240ms">
+        <span class="home-card__no">01</span>
+        <h2 class="home-card__title">学习笔记</h2>
+        <p class="home-card__sub">{stats.courses} 门课程 · {stats.notes} 篇笔记</p>
+        <p class="home-card__desc">从线性代数到电路原理，按学期与课程归档的学习档案。</p>
+        <span class="home-card__cta">
+          翻阅
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8h11M9.5 4 13.5 8l-4 4"></path></svg>
+        </span>
+      </a>
+
+      <a class="home-card" href="/科研竞赛blog/" data-reveal style="--reveal-delay: 320ms">
+        <span class="home-card__no">02</span>
+        <h2 class="home-card__title">科研竞赛</h2>
+        <p class="home-card__sub">{stats.blogs} 篇博文</p>
+        <p class="home-card__desc">机械臂、ROS2 与强化学习，工创赛的实验记录与踩坑笔记。</p>
+        <span class="home-card__cta">
+          翻阅
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8h11M9.5 4 13.5 8l-4 4"></path></svg>
+        </span>
+      </a>
+
+      <a class="home-card" href="/唱唱反调/" data-reveal style="--reveal-delay: 400ms">
+        <span class="home-card__no">03</span>
+        <h2 class="home-card__title">唱唱反调</h2>
+        <p class="home-card__sub">不定期更新</p>
+        <p class="home-card__desc">技术随想与方法论反思，偶尔唱唱反调。</p>
+        <span class="home-card__cta">
+          翻阅
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8h11M9.5 4 13.5 8l-4 4"></path></svg>
+        </span>
+      </a>
+    </section>
+
+    <!-- 统计条 -->
+    <section class="home__stats" data-reveal style="--reveal-delay: 480ms" aria-label="站点统计">
+      <div class="home-stat">
+        <span class="home-stat__num" data-count={stats.notes}>0</span>
+        <span class="home-stat__label">篇笔记</span>
+      </div>
+      <div class="home-stat">
+        <span class="home-stat__num" data-count={stats.courses}>0</span>
+        <span class="home-stat__label">门课程</span>
+      </div>
+      <div class="home-stat">
+        <span class="home-stat__num" data-count={stats.semesters}>0</span>
+        <span class="home-stat__label">个学期</span>
+      </div>
+      <div class="home-stat">
+        <span class="home-stat__num" data-count={stats.blogs}>0</span>
+        <span class="home-stat__label">篇博文</span>
+      </div>
+    </section>
+
+    <!-- 收束引语 -->
+    <p class="home__closing" data-reveal style="--reveal-delay: 560ms">
+      园中草木，皆由日常浇灌。
+    </p>
+  </div>
+</Base>

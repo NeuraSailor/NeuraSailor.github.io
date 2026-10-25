@@ -1,0 +1,162 @@
+/* ============================================================
+   skin.css —— 反设计（Anti-Design / 新粗野主义）皮肤令牌
+   规范（stylekit anti-design）：
+   · 白底黑墨，边框/文字/阴影统一纯黑，border-4 起步
+   · 阴影只有硬偏移（4/8/12px 无模糊无扩散）
+   · 高饱和原色块：红 FF0000 / 蓝 0000EE / 黄 FFFF00 /
+     洋红 FF00FF / 青 00FFFF / 绿 00FF00
+   · 禁：圆角、柔和投影、渐变、半透明/毛玻璃、单侧彩色条纹
+   · 动效 100ms linear 直切，无 ease 曲线；交互可位移/错位
+   · 暗色 = 反相档（纯黑底 + 白墨白框，硬阴影改白偏移，
+     蓝提亮保证焦点可见——本站明暗双模式为一等公民）
+   结构令牌（间距 / 布局尺寸 / z 层）在共享层 src/styles/base.css
+   ============================================================ */
+
+:root {
+  /* ---------- 字体（刻意不时髦的 Helvetica/Arial + 系统黑体）---------- */
+  --font-system: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC',
+    'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  --font-mono: ui-monospace, 'Courier New', 'SF Mono', Menlo, Consolas,
+    'Noto Sans Mono CJK SC', monospace;
+
+  /* ---------- 字阶（正文小一号全粗体）---------- */
+  --text-caption: 0.75rem;    /* 12 */
+  --text-footnote: 0.8125rem; /* 13 */
+  --text-subhead: 0.9375rem;  /* 15 */
+  --text-body: 0.9375rem;     /* 15（font-bold 全局）*/
+  --text-title3: 1.25rem;     /* 20 */
+  --text-title2: 1.5rem;      /* 24 */
+  --text-title1: 1.875rem;    /* 30 */
+  --text-large: 2.5rem;       /* 40 */
+
+  /* ---------- 圆角：全零（规范硬约束）---------- */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+  --r-xl: 0;
+  --r-2xl: 0;
+
+  /* ---------- 动效：100ms linear 直切，无 ease ---------- */
+  --ease-soft: linear;
+  --dur-fast: 100ms;
+  --dur-base: 280ms;  /* SearchPalette 关闭计时器对齐（契约）*/
+  --dur-morph: 100ms;
+  --dur-slow: 100ms;
+}
+
+/* ---------- 亮色（白纸黑墨 + 原色块）---------- */
+:root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #ffff00;
+  --elevated: #ffffff;
+
+  /* 墨阶（黑即一切边框与阴影）*/
+  --label: #000000;
+  --label-2: #000000;
+  --label-3: #6b7280; /* gray-500 muted（白底 4.9:1）*/
+  --label-4: #9ca3af;
+
+  --separator: #000000;
+  --separator-strong: #000000;
+  --fill: #ffff00;
+  --fill-2: #ffff00;
+
+  /* 原色块 */
+  --pop-red: #ff0000;
+  --pop-blue: #0000ee;   /* 原生浏览器链接蓝 */
+  --pop-yellow: #ffff00;
+  --pop-magenta: #ff00ff;
+  --pop-cyan: #00ffff;
+  --pop-green: #00ff00;
+
+  /* 主强调红（进度/选中/翻转）；hover 翻蓝（突变允许）*/
+  --accent: #ff0000;
+  --accent-raw: 255, 0, 0;
+  --accent-hover: #0000ee;
+  --on-accent: #ffffff;
+
+  /* 代码：白底黑框 */
+  --code-bg: #ffff00;
+  --code-bg-block: #ffffff;
+  --code-border: #000000;
+
+  /* 硬偏移阴影（无模糊无扩散）*/
+  --hard-ink: #000000;
+  --hard-4: 4px 4px 0 #000000;
+  --hard-8: 8px 8px 0 #000000;
+  --hard-12: 12px 12px 0 #000000;
+  --shadow-1: var(--hard-4);
+  --shadow-2: var(--hard-8);
+  --shadow-3: var(--hard-12);
+
+  /* 兼容玻璃令牌名（防共享层/残留引用落空，值取纸面）*/
+  --glass: var(--surface);
+  --glass-strong: var(--surface);
+  --glass-subtle: var(--surface);
+  --glass-border: var(--label);
+  --glass-highlight: transparent;
+
+  --scrim: rgba(0, 0, 0, 0.55);
+}
+
+/* 反设计的选中态：黄底黑字（经典原色块高亮）*/
+::selection {
+  background: var(--pop-yellow);
+  color: #000000;
+}
+
+/* 焦点：蓝色硬描边（规范：focus 用蓝）*/
+:focus-visible {
+  outline: 3px solid var(--pop-blue);
+  outline-offset: 0;
+  border-radius: 0;
+}
+
+/* ---------- 暗色（反相档：纯黑底 + 白墨白框）---------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #1a1a1a;
+  --elevated: #000000;
+
+  --label: #ffffff;
+  --label-2: #ffffff;
+  --label-3: #9ca3af;
+  --label-4: #6b7280;
+
+  --separator: #ffffff;
+  --separator-strong: #ffffff;
+  --fill: #ffff00;
+  --fill-2: #ffff00;
+
+  --accent: #ff0000;
+  --accent-raw: 255, 0, 0;
+  --accent-hover: #4d4dff; /* 黑底上蓝提亮一档 */
+  --on-accent: #ffffff;
+
+  --code-bg: #ffff00;
+  --code-bg-block: #000000;
+  --code-border: #ffffff;
+
+  /* 硬偏移阴影：黑底改白偏移（依然凌厉）*/
+  --hard-ink: #ffffff;
+  --hard-4: 4px 4px 0 #ffffff;
+  --hard-8: 8px 8px 0 #ffffff;
+  --hard-12: 12px 12px 0 #ffffff;
+
+  --scrim: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme='dark'] ::selection {
+  background: var(--pop-yellow);
+  color: #000000;
+}
+
+[data-theme='dark'] :focus-visible {
+  outline: 3px solid #4d4dff;
+}

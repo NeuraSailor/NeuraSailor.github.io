@@ -1,0 +1,58 @@
+---
+/**
+ * SidebarNode —— 递归渲染导航树节点
+ * 目录 = <details> 折叠组（当前路径默认展开）；文件 = 链接行
+ * pathKey 由父级累积传入（目录可能没有自己的 index 页）
+ */
+import type { NavNode } from '../lib/nav-tree';
+import { countLeaves } from '../lib/nav-tree';
+import { renderMathText } from '../lib/katex-text';
+import SidebarNode from './SidebarNode.astro';
+
+interface Props {
+  node: NavNode;
+  pathKey: string;
+  currentSlug: string;
+  openTrail: Set<string>;
+}
+const { node, pathKey, currentSlug, openTrail } = Astro.props;
+const href = node.slug ? `/${encodeURI(node.slug)}/` : null;
+const isDir = node.children.length > 0 || href === null;
+const isOpen = openTrail.has(pathKey);
+---
+
+{
+  isDir ? (
+    <details class="nav-group" open={isOpen}>
+      <summary class="nav-group__toggle">
+        <svg class="nav-group__chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 2.5 8 6l-4 3.5"></path>
+        </svg>
+        {href ? (
+          <a class="nav-group__name" href={href} set:html={renderMathText(node.name)} />
+        ) : (
+          <span class="nav-group__name" set:html={renderMathText(node.name)} />
+        )}
+        <span class="nav-group__count">{countLeaves(node)}</span>
+      </summary>
+      <div class="nav-group__children">
+        {node.children.map((child) => (
+          <SidebarNode
+            node={child}
+            pathKey={pathKey ? `${pathKey}/${child.name}` : child.name}
+            currentSlug={currentSlug}
+            openTrail={openTrail}
+          />
+        ))}
+      </div>
+    </details>
+  ) : (
+    <a
+      class:list={['nav-item', { 'is-active': node.slug === currentSlug }]}
+      href={href}
+      aria-current={node.slug === currentSlug ? 'page' : undefined}
+      set:html={renderMathText(node.name)}
+    >
+    </a>
+  )
+}

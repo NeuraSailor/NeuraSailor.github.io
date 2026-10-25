@@ -1,0 +1,126 @@
+/* ============================================================
+   skin.css —— LaTeX 论文（latex-paper）皮肤令牌
+   规范（stylekit latex-paper）：
+   · 白纸 #FFFFFF 唯一页面背景，墨 #111111 唯一主色
+   · 蓝只作超链接与交叉引用（hyperref #0B5394）
+   · 层级来自横线（粗规 2px 墨 / 细规 1px 灰）与留白
+   · 全站禁：圆角、阴影、渐变、斑马纹、竖线表格
+   · 衬线排印（Latin: Georgia/Times；CJK: 宋体系）
+   · 暗色 = 「夜间纸」自适配（stylekit 无暗色档，本站明暗
+     双模式为一等公民，取暖炭纸 + 米白墨）
+   结构令牌（间距 / 布局尺寸 / z 层）在共享层 src/styles/base.css
+   ============================================================ */
+
+:root {
+  /* ---------- 字体（衬线正文 + 打字机代码）---------- */
+  --font-system: Georgia, 'Times New Roman', Times, 'Songti SC', 'STSong',
+    'SimSun', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas,
+    'Noto Sans Mono CJK SC', monospace;
+
+  /* ---------- 字阶（衬线略收一号）---------- */
+  --text-caption: 0.75rem;    /* 12 */
+  --text-footnote: 0.8125rem; /* 13 */
+  --text-subhead: 0.9375rem;  /* 15 */
+  --text-body: 1.03125rem;    /* 16.5 */
+  --text-title3: 1.1875rem;   /* 19 */
+  --text-title2: 1.3125rem;   /* 21 */
+  --text-title1: 1.625rem;    /* 26 */
+  --text-large: 2.0625rem;    /* 33 */
+
+  /* ---------- 圆角：全零（规范硬约束）---------- */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+  --r-xl: 0;
+  --r-2xl: 0;
+
+  /* ---------- 动效：色彩渐变 200ms；渐入 500ms ease-out ---------- */
+  --ease-soft: ease-out;
+  --dur-fast: 120ms;
+  --dur-base: 280ms;  /* 与 SearchPalette 关闭计时器对齐（契约）*/
+  --dur-morph: 200ms; /* 按钮规范 transition-colors duration-200 */
+  --dur-slow: 500ms;  /* 规范唯一关键帧：fade-in 0.5s ease-out */
+
+  /* LaTeX 版心更窄（65–75 字符行宽）*/
+  --content-max: 42rem;
+}
+
+/* ---------- 亮色（白纸黑字，唯一档）---------- */
+:root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f5f5f0; /* 定理盒填充 */
+  --elevated: #ffffff;
+
+  /* 墨阶 */
+  --label: #111111;
+  --label-2: #33332f;
+  --label-3: #6b6b66; /* muted */
+  --label-4: #98988e;
+
+  /* 规线：细规 / 粗规（粗规即墨色）*/
+  --separator: #d4d4d0;
+  --separator-strong: #111111;
+  --fill: #f5f5f0;
+  --fill-2: #ecece5;
+
+  /* hyperref 蓝：链接 / 交叉引用 / 焦点环 */
+  --accent: #0b5394;
+  --accent-raw: 11, 83, 148;
+  --accent-hover: #0b5394; /* 规范：悬停不变色，仅加下划线 */
+  --on-accent: #ffffff;
+
+  /* 代码（texttt 浅填充；块级 listings 细框）*/
+  --code-bg: #f5f5f0;
+  --code-bg-block: #fafaf7;
+  --code-border: #d4d4d0;
+
+  /* 零阴影（规范硬约束）*/
+  --shadow-1: none;
+  --shadow-2: none;
+  --shadow-3: none;
+
+  /* 兼容玻璃令牌名（防共享层/残留引用落空，值取纸面）*/
+  --glass: var(--surface);
+  --glass-strong: var(--surface);
+  --glass-subtle: var(--surface);
+  --glass-border: var(--separator);
+  --glass-highlight: transparent;
+
+  /* 遮罩（墨色半透明，无模糊）*/
+  --scrim: rgba(17, 17, 17, 0.32);
+}
+
+/* ---------- 暗色（夜间纸：暖炭纸 + 米白墨）---------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #1b1b18;
+  --surface: #1b1b18;
+  --surface-2: #232320;
+  --elevated: #1b1b18;
+
+  --label: #e6e4dd;
+  --label-2: #c6c4bb;
+  --label-3: #8f8d84;
+  --label-4: #5f5d56;
+
+  --separator: #3a3a35;
+  --separator-strong: #e6e4dd;
+  --fill: #232320;
+  --fill-2: #2a2a26;
+
+  --accent: #8ab4d8;
+  --accent-raw: 138, 180, 216;
+  --accent-hover: #8ab4d8;
+  --on-accent: #10233a;
+
+  --code-bg: #232320;
+  --code-bg-block: #20201c;
+  --code-border: #3a3a35;
+
+  --scrim: rgba(0, 0, 0, 0.5);
+}

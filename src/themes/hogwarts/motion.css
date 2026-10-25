@@ -1,0 +1,221 @@
+/* ============================================================
+   motion.css —— 霍格沃兹动效
+   基准 0.3s cubic-bezier(.4,0,.2,1)（技能库规范）；
+   滚动渐入 fadeInUp（技能库 animate-in：translateY 20px）；
+   strong 悬停弹性跳起（content.css 内）；全部 prefers-reduced-motion 降级
+   ============================================================ */
+
+@keyframes hw-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hw-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 滚动渐入（JS 标注 [data-reveal] → .is-visible）*/
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity var(--dur-slow) ease-out,
+    transform var(--dur-slow) ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* View Transitions：页面切换淡入上浮 */
+::view-transition-old(root) {
+  animation: 220ms var(--ease-soft) both hw-fade-in;
+}
+
+::view-transition-new(root) {
+  animation: 320ms var(--ease-soft) both hw-fade-in-up;
+}
+
+/* 明暗/皮肤切换过渡 */
+.theme-transition,
+.theme-transition body,
+.theme-transition .toolbar,
+.theme-transition .sidebar,
+.theme-transition .tabbar {
+  transition:
+    background-color var(--dur-morph) var(--ease-soft),
+    color var(--dur-morph) var(--ease-soft),
+    border-color var(--dur-morph) var(--ease-soft),
+    box-shadow var(--dur-morph) var(--ease-soft);
+}
+
+/* ============================================================
+   魔法特效层（结构在 chrome.css；全部 transform/opacity）
+   ============================================================ */
+
+/* Hero 金尘上浮：50% 高度平铺图案 → -50% 位移无缝循环 */
+@keyframes hw-rise {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* 闪烁（Hero 副层尘 / 暗色星空）*/
+@keyframes hw-twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* 烛光摇曳（不规则明暗，烛火感）*/
+@keyframes hw-candle {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  18% {
+    opacity: 0.95;
+  }
+  36% {
+    opacity: 0.78;
+  }
+  55% {
+    opacity: 1;
+  }
+  74% {
+    opacity: 0.82;
+  }
+  90% {
+    opacity: 0.93;
+  }
+}
+
+/* 卡片微光扫过（含停顿的周期）*/
+@keyframes hw-sheen {
+  0% {
+    transform: skewX(-18deg) translateX(-160%);
+  }
+  55% {
+    transform: skewX(-18deg) translateX(340%);
+  }
+  100% {
+    transform: skewX(-18deg) translateX(340%);
+  }
+}
+
+/* 激活胶囊金光呼吸（保留 navy 底影）*/
+@keyframes hw-breathe {
+  0%,
+  100% {
+    box-shadow: 0 2px 8px rgba(10, 10, 46, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 2px 8px rgba(10, 10, 46, 0.35),
+      0 0 12px 1px rgba(212, 168, 85, 0.45);
+  }
+}
+
+/* h1 金线流光（光斑沿线缓行）*/
+@keyframes hw-flow {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* --- 指派 --- */
+
+/* Hero 双层金尘视差（副层更慢 + 闪烁）*/
+.home__hero::before {
+  animation: hw-rise 26s linear infinite;
+}
+
+.home__hero::after {
+  animation:
+    hw-rise 41s linear infinite,
+    hw-twinkle 5s ease-in-out infinite;
+}
+
+/* 暗色星空闪烁 + 烛光摇曳（亮色 = 白日微尘，保持安静）*/
+[data-theme='dark'] .ambient::before {
+  animation: hw-twinkle 7s ease-in-out infinite;
+}
+
+[data-theme='dark'] .ambient::after {
+  animation: hw-candle 4.5s ease-in-out infinite;
+}
+
+/* 导航卡微光扫过（三卡错峰）*/
+.home-card::after {
+  animation: hw-sheen 7s ease-in-out infinite;
+}
+
+.home-card:nth-child(2)::after {
+  animation-delay: 2.3s;
+}
+
+.home-card:nth-child(3)::after {
+  animation-delay: 4.6s;
+}
+
+/* 激活胶囊金光呼吸 */
+.nav-item.is-active,
+.tabbar__item.is-active,
+.skin-menu__item.is-active {
+  animation: hw-breathe 3.4s ease-in-out infinite;
+}
+
+/* 页题与 h1 金下划线流光（background-size 加倍供光斑行走，与 hover 展宽共存）*/
+.article__title::after,
+.md-content h1::after {
+  background-size: 200% 100%;
+  animation: hw-flow 7s linear infinite;
+}
+
+/* ---------- 降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

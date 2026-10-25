@@ -1,25 +1,31 @@
 name: ci
+
 on:
   push:
     branches:
       - master
       - main
+  workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          python-version: 3.x
-      - uses: actions/cache@v3
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run linkcheck
+      # dist → gh-pages（GitHub Pages 从该分支 root 读取）
+      - uses: peaceiris/actions-gh-pages@v4
         with:
-          key: ${{ github.ref }}
-          path: .cache
-      - run: pip install mkdocs-material
-      - run: pip install mkdocs-roamlinks-plugin
-      - run: pip install mkdocs-rss-plugin
-      # - run: pip install mkdocs-mermaid2-plugin
-      - run: mkdocs gh-deploy --force
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+          force_orphan: true

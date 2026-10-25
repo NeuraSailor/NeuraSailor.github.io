@@ -1,0 +1,139 @@
+/* ============================================================
+   skin.css —— 新拟态（Neumorphism / Soft UI）皮肤令牌
+   规范（stylekit neumorphism）：
+   · 所有元素同色表面，靠双阴影（左上亮 / 右下暗）塑造凸凹
+   · 三态：凸起 convex（可点）/ 平面 flat（中性）/ 凹陷 concave（激活、输入）
+   · 禁：位移/缩放交互、渐变、纯黑纯白背景；圆角宁大勿小
+   · 强调色只用于文字与条纹，不作大面积背景
+   · 阴影过渡 300ms ease-in-out
+   结构令牌（间距 / 布局尺寸 / z 层）在共享层 src/styles/base.css
+   ============================================================ */
+
+:root {
+  /* ---------- 字体 ---------- */
+  --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'PingFang SC', 'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', 'Segoe UI',
+    'Noto Sans SC', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', Menlo,
+    Consolas, 'Noto Sans Mono CJK SC', monospace;
+
+  /* ---------- 字阶（沿用站点尺度）---------- */
+  --text-caption: 0.75rem;    /* 12 */
+  --text-footnote: 0.8125rem; /* 13 */
+  --text-subhead: 0.9375rem;  /* 15 */
+  --text-body: 1.0625rem;     /* 17 */
+  --text-title3: 1.25rem;     /* 20 */
+  --text-title2: 1.375rem;    /* 22 */
+  --text-title1: 1.75rem;     /* 28 */
+  --text-large: 2.125rem;     /* 34 */
+
+  /* ---------- 圆角（新拟态宁大勿小）---------- */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-2xl: 30px;
+
+  /* ---------- 动效（阴影形态渐变，无弹簧）---------- */
+  --ease-soft: ease-in-out;
+  --dur-fast: 160ms;
+  --dur-base: 280ms;  /* 与 SearchPalette 关闭计时器对齐（契约）*/
+  --dur-morph: 300ms; /* 阴影过渡规范值 */
+  --dur-slow: 420ms;
+
+  /* ---------- 新拟态专属：表面与双影 ---------- */
+  /* 凸起（convex）——审稿后整体调强约 40% */
+  --emboss-lg: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+  --emboss-md: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+  --emboss-sm: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+  --emboss-xs: 2.5px 2.5px 5px var(--shadow-dark), -2.5px -2.5px 5px var(--shadow-light);
+  /* 悬停（凸起减弱）*/
+  --emboss-hover: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+  /* 凹陷（concave）*/
+  --inset-lg: inset 10px 10px 20px var(--shadow-dark), inset -10px -10px 20px var(--shadow-light);
+  --inset-md: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+  --inset-sm: inset 2.5px 2.5px 6px var(--shadow-dark), inset -2.5px -2.5px 6px var(--shadow-light);
+}
+
+/* ---------- 亮色（默认）---------- */
+:root {
+  color-scheme: light;
+
+  /* 表面：所有元素同色（禁纯白）*/
+  --bg: #e0e5ec;
+  --surface: #e0e5ec;
+  --surface-2: #d6dce6;
+  --elevated: #e0e5ec;
+
+  /* 双影色（光源在左上；暗影加深一档保证浮雕可辨）*/
+  --shadow-dark: #adb3bf;
+  --shadow-light: #ffffff;
+
+  /* 文字（独立于表面校验对比度，正文 ≥4.5:1）*/
+  --label: #39414f;
+  --label-2: #515b6a;
+  --label-3: #737d8d;
+  --label-4: #99a2b1;
+  --separator: rgba(52, 62, 78, 0.14);
+  --separator-strong: rgba(52, 62, 78, 0.26);
+  --fill: rgba(52, 62, 78, 0.08);
+  --fill-2: rgba(52, 62, 78, 0.13);
+
+  /* 强调紫：文字级可读色（#6d5dfc 在本底上对比不足，深化一档）*/
+  --accent: #5a49ee;
+  --accent-raw: 90, 73, 238;
+  --accent-hover: #6d5dfc;
+  --on-accent: #ffffff;
+
+  /* 凹井色（代码/表格/输入的"按入表面"）*/
+  --code-bg: rgba(52, 62, 78, 0.11);
+  --code-bg-block: #d8dde7;
+  --code-border: rgba(52, 62, 78, 0.08);
+
+  --shadow-1: var(--emboss-sm);
+  --shadow-2: var(--emboss-md);
+  --shadow-3: var(--emboss-lg);
+
+  /* 兼容玻璃令牌名（防共享层/残留引用落空，值取平面）*/
+  --glass: var(--surface);
+  --glass-strong: var(--surface);
+  --glass-subtle: var(--surface);
+  --glass-border: var(--separator);
+  --glass-highlight: transparent;
+
+  /* 遮罩 */
+  --scrim: rgba(43, 48, 56, 0.38);
+}
+
+/* ---------- 暗色（深色新拟态：禁纯黑，双影取临近明度）---------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #2b3038;
+  --surface: #2b3038;
+  --surface-2: #252a31;
+  --elevated: #2b3038;
+
+  --shadow-dark: #1d2229;
+  --shadow-light: #3e4651;
+
+  --label: #dde3ec;
+  --label-2: #b3bdc9;
+  --label-3: #8a95a3;
+  --label-4: #5d6673;
+  --separator: rgba(221, 227, 236, 0.12);
+  --separator-strong: rgba(221, 227, 236, 0.24);
+  --fill: rgba(221, 227, 236, 0.07);
+  --fill-2: rgba(221, 227, 236, 0.13);
+
+  --accent: #9483ff;
+  --accent-raw: 148, 131, 255;
+  --accent-hover: #aaa0ff;
+  --on-accent: #1c1f25;
+
+  --code-bg: rgba(221, 227, 236, 0.13);
+  --code-bg-block: #252a32;
+  --code-border: rgba(221, 227, 236, 0.08);
+
+  --scrim: rgba(12, 14, 18, 0.5);
+}

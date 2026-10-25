@@ -1,0 +1,135 @@
+---
+/**
+ * Base —— 全局壳：工具栏 + 侧栏 + 内容 + 移动标签栏
+ * 结构样式在 src/styles/base.css（常载）；皮肤在 src/themes/<skin>/
+ * （<link data-skin-link> 全量渲染、仅默认皮肤启用，运行时按 data-skin 切换）
+ */
+import { ClientRouter } from 'astro:transitions';
+import Toolbar from '../components/Toolbar.astro';
+import Sidebar from '../components/Sidebar.astro';
+import TabBar from '../components/TabBar.astro';
+import SearchPalette from '../components/SearchPalette.astro';
+import { SKINS, DEFAULT_SKIN } from '../lib/themes';
+import baseCssUrl from '../styles/base.css?url';
+import katexCssUrl from 'katex/dist/katex.min.css?url';
+
+interface Props {
+  title: string;
+  description?: string;
+  currentSlug?: string;
+  noSidebar?: boolean;
+}
+
+const {
+  title,
+  description = '课程笔记、科研实验与随想，一座持续生长的思维花园。',
+  currentSlug = '',
+  noSidebar = false,
+} = Astro.props;
+
+const skinRegistry = JSON.stringify({
+  skins: SKINS.map((s) => ({ id: s.id, label: s.label, mermaid: s.mermaid })),
+});
+
+// 皮肤 <link> 批量拼装（Astro 编译器对 head 内 map 回调里的属性表达式会错误提升作用域，改用字符串）
+const skinLinksHtml = [
+  ...SKINS.map(
+    (s) =>
+      `<link rel="stylesheet" href="${s.cssUrl}" data-skin-link="${s.id}"${s.id !== DEFAULT_SKIN ? ' disabled' : ''}/>`,
+  ),
+  ...SKINS.filter((s) => s.id !== DEFAULT_SKIN).map(
+    (s) => `<link rel="preload" as="style" href="${s.cssUrl}"/>`,
+  ),
+].join('\n    ');
+---
+
+<!doctype html>
+<html lang="zh" data-skin={DEFAULT_SKIN}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
+    <noscript>
+      <!-- 无 JS 时跳过入场渐入，保证内容可见 -->
+      <style>[data-reveal]{opacity:1 !important;transform:none !important}</style>
+    </noscript>
+    <!-- 结构层 → KaTeX → 皮肤（顺序决定覆盖权；皮肤间互斥，按 data-skin 启停）-->
+    <link rel="stylesheet" href={baseCssUrl} />
+    <link rel="stylesheet" href={katexCssUrl} />
+    <Fragment set:html={skinLinksHtml} />
+    <script type="application/json" id="skinRegistry" set:html={skinRegistry} />
+    <script is:inline>
+      // 外观先行（防闪白）：明暗默认跟随系统；皮肤默认取服务端 data-skin，
+      // localStorage('garden-skin') 存在且合法时覆盖（链接需先于本脚本存在）
+      (() => {
+        const stored = localStorage.getItem('garden-theme');
+        const theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.dataset.theme = theme;
+        try {
+          const links = [...document.querySelectorAll('link[data-skin-link]')];
+          const ids = links.map((l) => l.dataset.skinLink);
+          if (ids.length > 1) {
+            const storedSkin = localStorage.getItem('garden-skin');
+            const current = document.documentElement.dataset.skin;
+            const skin =
+              storedSkin && ids.includes(storedSkin)
+                ? storedSkin
+                : current && ids.includes(current)
+                  ? current
+                  : ids[0];
+            document.documentElement.dataset.skin = skin;
+            for (const l of links) {
+              const off = l.dataset.skinLink !== skin;
+              l.disabled = off;
+              l.toggleAttribute('disabled', off);
+            }
+          }
+        } catch {}
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+
+    <Toolbar />
+
+    <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+    <div class="shell">
+      {!noSidebar && <Sidebar currentSlug={currentSlug} />}
+      <div class="shell__main">
+        <slot />
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <span>© {new Date().getFullYear()} NeuraSailor</span>
+      <span class="site-footer__dot" aria-hidden="true"></span>
+      <span>用 Astro 构建</span>
+      <span class="site-footer__dot" aria-hidden="true"></span>
+      <a href="https://github.com/NeuraSailor" rel="noopener">GitHub</a>
+    </footer>
+
+    <TabBar currentSlug={currentSlug} />
+
+    <SearchPalette />
+
+    <button class="backtop" id="backtop" aria-label="回到顶部">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 19V5"></path>
+        <path d="m5.5 11.5 6.5-6.5 6.5 6.5"></path>
+      </svg>
+    </button>
+
+    <script src="../scripts/site.ts"></script>
+  </body>
+</html>

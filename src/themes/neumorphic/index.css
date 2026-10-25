@@ -1,0 +1,20 @@
+/* ============================================================
+   neumorphic 主题入口 —— 新拟态 / Soft UI
+   参考 https://www.stylekit.top/styles/neumorphism/showcase：
+   同色表面 + 左上亮影/右下暗影，无位移交互、无渐变、圆角宁大勿小，
+   强调紫只用于文字与条纹。
+   凹凸语法（统一物理模型，改凹凸前先读）：
+   · 页面 = 一整块软面板
+   · 操作件 = 錾入面板的凹槽（工具栏按钮/侧栏行/TOC 行/标签栏项/
+     徽章：inset；hover 加深，:active 按到底；凹影在盒内永不溢出）
+   · 信息对象 = 放在面板上的凸起物（首页卡/callout/浮层/回顶钮：emboss，
+     层级：首页卡 lg > callout sm）
+   · 容器井 = 更深的凹（代码块/输入框/进度轨道/统计仪表：inset-md/lg）
+   · 被动正文 = 纯平面零阴影（段落/引用/表格/图片/元信息/kicker/分隔线，
+     用发丝线与字重分层）
+   由 src/lib/themes.ts 经 import.meta.glob('?url') 自动发现
+   ============================================================ */
+@import './skin.css';
+@import './chrome.css';
+@import './content.css';
+@import './motion.css';

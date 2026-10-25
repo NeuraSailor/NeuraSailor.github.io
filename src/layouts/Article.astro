@@ -1,0 +1,74 @@
+---
+/**
+ * Article —— 文章页：面包屑 + 大标题 + 元信息条 + 正文
+ */
+import Base from './Base.astro';
+import Toc from '../components/Toc.astro';
+import { renderMathText } from '../lib/katex-text';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'docs'>;
+  headings: { depth: number; slug: string; text: string }[];
+  hideFirstH1?: boolean;
+}
+
+const { entry, headings, hideFirstH1 = false } = Astro.props;
+const slug: string = entry.id;
+
+// 标题：frontmatter → 正文首个 h1 → 文件名
+const firstH1 = /^#\s+(.+)$/m.exec(entry.body ?? '')?.[1]?.trim();
+const title = (entry.data.title as string | undefined) ?? firstH1 ?? slug.split('/').pop()!;
+
+// 元信息：字数 / 阅读时长 / 更新日期（有则显示；frontmatter 日期可能是 Date 对象）
+const charCount = (entry.body ?? '').replace(/\s/g, '').length;
+const readMin = Math.max(1, Math.round(charCount / 500));
+const toDateStr = (v: unknown): string | null => {
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  if (typeof v === 'string' && v.trim()) return v.trim().slice(0, 10);
+  return null;
+};
+const date = toDateStr(entry.data.updated) ?? toDateStr(entry.data.date) ?? toDateStr(entry.data.created);
+const dateLabel = entry.data.updated || entry.data.date ? '更新' : '创建';
+
+// 面包屑：分节根可链接，中间层级为纯文本
+const parts = slug.split('/');
+const SECTION_ROOTS = new Set(['学习笔记', '科研竞赛blog', '唱唱反调']);
+const crumbs = parts.slice(0, -1).map((name, i) => ({
+  name,
+  path: parts.slice(0, i + 1).join('/'),
+  linked: i === 0 && SECTION_ROOTS.has(name),
+}));
+---
+
+<Base title={`${title} · NeuraSailor 知识花园`} currentSlug={slug}>
+  <article class="article" id="article">
+    <nav class="article__breadcrumb" aria-label="路径">
+      <a href="/">首页</a>
+      {
+        crumbs.map((c) => (
+          <>
+            <span class="crumb-sep">/</span>
+            {c.linked ? <a href={`/${encodeURI(c.path)}/`}>{c.name}</a> : <span>{c.name}</span>}
+          </>
+        ))
+      }
+    </nav>
+
+    <h1 class="article__title" data-reveal set:html={renderMathText(title)}></h1>
+
+    <div class="article__meta" data-reveal style="--reveal-delay: 80ms">
+      <span>{charCount.toLocaleString('zh-CN')} 字</span>
+      <span class="meta-dot" aria-hidden="true"></span>
+      <span>约 {readMin} 分钟</span>
+      {date && <span class="meta-dot" aria-hidden="true"></span>}
+      {date && <span>{dateLabel}于 {date}</span>}
+    </div>
+
+    <div class:list={['md-content', { 'hide-first-h1': hideFirstH1 }]} data-pagefind-body data-reveal style="--reveal-delay: 160ms">
+      <slot />
+    </div>
+  </article>
+
+  <Toc headings={headings} />
+</Base>

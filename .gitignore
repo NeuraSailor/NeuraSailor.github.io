@@ -5,8 +5,13 @@
 __pycache__/
 .publish/
 
+# Astro
+node_modules/
+dist/
+.astro/
+
 # Tencent Cloud EdgeOne
 .env
 .edgeone/*
 .tef_dist/*
-  
+.worktrees/

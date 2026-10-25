@@ -1,0 +1,47 @@
+---
+/**
+ * TabBar —— 移动端底部悬浮玻璃标签栏（iOS 范式：顶级分区导航）
+ */
+interface Props {
+  currentSlug?: string;
+}
+const { currentSlug = '' } = Astro.props;
+
+const tabs = [
+  {
+    name: '首页',
+    href: '/',
+    match: (s: string) => s === '',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9.5V20a1 1 0 0 0 1 1h4v-6h3v6h4a1 1 0 0 0 1-1V9.5"/></svg>',
+  },
+  {
+    name: '笔记',
+    href: '/学习笔记/',
+    match: (s: string) => s.startsWith('学习笔记'),
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6.5A1.5 1.5 0 0 1 5 19.5v-15Z"/><path d="M5 17.5h15"/><path d="M9 7.5h6"/></svg>',
+  },
+  {
+    name: '科研',
+    href: '/科研竞赛blog/',
+    match: (s: string) => s.startsWith('科研竞赛blog'),
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="5"/><circle cx="9" cy="9" r="1.6"/><path d="m13 13 7 7"/></svg>',
+  },
+  {
+    name: '反调',
+    href: '/唱唱反调/',
+    match: (s: string) => s.startsWith('唱唱反调'),
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M12 8v4l3 2"/><path d="M17 3.5h4v4"/></svg>',
+  },
+];
+---
+
+<nav class="tabbar" id="tabbar" aria-label="主导航">
+  {
+    tabs.map((t) => (
+      <a class:list={['tabbar__item', { 'is-active': t.match(currentSlug) }]} href={t.href} aria-current={t.match(currentSlug) ? 'page' : undefined}>
+        <Fragment set:html={t.icon} />
+        <span>{t.name}</span>
+      </a>
+    ))
+  }
+</nav>

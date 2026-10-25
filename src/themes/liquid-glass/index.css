@@ -1,0 +1,9 @@
+/* ============================================================
+   liquid-glass 主题入口 —— Apple HIG / Liquid Glass
+   由 src/lib/themes.ts 经 import.meta.glob('?url') 自动发现，
+   Base.astro 以 <link data-skin-link> 注入，按 <html data-skin> 启停
+   ============================================================ */
+@import './skin.css';
+@import './chrome.css';
+@import './content.css';
+@import './motion.css';

@@ -1,0 +1,214 @@
+---
+/**
+ * SearchPalette —— ⌘K 玻璃命令面板（Pagefind 全文搜索）
+ * 事件委托绑定，View Transitions 安全；Pagefind 懒加载
+ */
+---
+
+<div class="search-palette" id="searchPalette" role="dialog" aria-modal="true" aria-label="站内搜索" hidden>
+  <div class="search-palette__panel">
+    <div class="search-palette__input-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+      </svg>
+      <input id="searchInput" type="search" placeholder="搜索笔记与文章…" autocomplete="off" spellcheck="false" />
+      <kbd>Esc</kbd>
+    </div>
+    <div class="search-palette__results" id="searchResults">
+      <div class="search-palette__hint">输入关键词开始搜索 · 支持中文与英文</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  type Pagefind = { search: (q: string) => Promise<{ results: { data: () => Promise<{ url: string; meta?: { title?: string }; excerpt?: string }> }[] }> };
+
+  let pagefind: Pagefind | null = null;
+  let pagefindFailed = false;
+  let activeIndex = -1;
+  let closeTimer: number | undefined;
+  let searchTimer: number | undefined;
+  let searchSeq = 0;
+  let lastTrigger: HTMLElement | null = null;
+
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T | null;
+
+  function palette() {
+    return $('searchPalette');
+  }
+
+  function resetResults() {
+    $('searchResults')!.innerHTML =
+      '<div class="search-palette__hint">输入关键词开始搜索 · 支持中文与英文</div>';
+  }
+
+  function openPalette(trigger?: HTMLElement | null) {
+    const p = palette();
+    if (!p) return;
+    window.clearTimeout(closeTimer);
+    if (trigger) lastTrigger = trigger;
+    pagefindFailed = false; // 每次打开允许重试索引加载
+    p.hidden = false;
+    document.documentElement.classList.add('has-modal'); // 防滚动穿透
+    void p.offsetWidth; // 强制样式计算，保证过渡从初始态开始（不依赖 rAF，后台页也可靠）
+    p.classList.add('is-open');
+    $('searchInput')?.focus();
+  }
+
+  function closePalette(restoreFocus = true) {
+    const p = palette();
+    if (!p || p.hidden) {
+      document.documentElement.classList.remove('has-modal');
+      return;
+    }
+    window.clearTimeout(searchTimer);
+    searchSeq++; // 使在途回调失效
+    p.classList.remove('is-open');
+    document.documentElement.classList.remove('has-modal');
+    window.clearTimeout(closeTimer);
+    closeTimer = window.setTimeout(() => {
+      p.hidden = true;
+      const input = $('searchInput') as HTMLInputElement | null;
+      if (input) input.value = '';
+      activeIndex = -1;
+      resetResults();
+      if (restoreFocus) lastTrigger?.focus();
+    }, 280); // 与 --dur-base 对齐，保证关闭动画完整
+  }
+
+  async function loadPagefind(): Promise<Pagefind | null> {
+    if (pagefind) return pagefind;
+    if (pagefindFailed) return null;
+    try {
+      const url = '/pagefind/pagefind.js';
+      pagefind = (await import(/* @vite-ignore */ url)) as unknown as Pagefind;
+      return pagefind;
+    } catch {
+      pagefindFailed = true;
+      return null;
+    }
+  }
+
+  function renderResults(
+    items: { url: string; title: string; excerpt: string }[],
+  ) {
+    const box = $('searchResults');
+    if (!box) return;
+    activeIndex = -1;
+    if (!items.length) {
+      box.innerHTML = '<div class="search-palette__hint">没有匹配的结果</div>';
+      return;
+    }
+    box.innerHTML = '';
+    for (const it of items.slice(0, 8)) {
+      const a = document.createElement('a');
+      a.className = 'search-palette__result';
+      a.href = it.url;
+      a.innerHTML = `<div class="search-palette__result-title"></div><div class="search-palette__result-excerpt"></div>`;
+      (a.firstElementChild as HTMLElement).textContent = it.title;
+      (a.lastElementChild as HTMLElement).innerHTML = it.excerpt || '';
+      a.addEventListener('click', () => closePalette());
+      box.appendChild(a);
+    }
+  }
+
+  function runSearch(q: string) {
+    window.clearTimeout(searchTimer);
+    const mySeq = ++searchSeq;
+    searchTimer = window.setTimeout(async () => {
+      const box = $('searchResults');
+      if (!box) return;
+      if (!q.trim()) {
+        resetResults();
+        return;
+      }
+      const pf = await loadPagefind();
+      if (mySeq !== searchSeq) return; // 已有更新的查询或面板已关闭
+      if (!pf) {
+        box.innerHTML = '<div class="search-palette__hint">搜索索引不可用（开发模式下请先 npm run build）</div>';
+        return;
+      }
+      const res = await pf.search(q);
+      const items = await Promise.all(
+        res.results.slice(0, 8).map((r) => r.data()),
+      );
+      if (mySeq !== searchSeq) return;
+      renderResults(
+        items.map((d) => ({
+          url: d.url,
+          title: d.meta?.title ?? d.url,
+          excerpt: d.excerpt ?? '',
+        })),
+      );
+    }, 180);
+  }
+
+  function moveActive(delta: number) {
+    const rows = [...document.querySelectorAll<HTMLAnchorElement>('.search-palette__result')];
+    if (!rows.length) return;
+    // 首次按键约定：↓ 选第一项，↑ 选最后一项
+    if (activeIndex === -1) {
+      activeIndex = delta > 0 ? 0 : rows.length - 1;
+    } else {
+      activeIndex = (activeIndex + delta + rows.length) % rows.length;
+    }
+    rows.forEach((r, i) => r.classList.toggle('is-active', i === activeIndex));
+    rows[activeIndex]?.scrollIntoView({ block: 'nearest' });
+  }
+
+  // 委托绑定（View Transitions 安全）
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const toggle = target.closest('#searchToggle') as HTMLElement | null;
+    if (toggle) {
+      e.preventDefault();
+      openPalette(toggle);
+      return;
+    }
+    const p = palette();
+    if (p && !p.hidden && target === p) closePalette();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    // IME 组合期（中文输入候选窗）不劫持任何按键
+    if (e.isComposing || (e as KeyboardEvent & { keyCode?: number }).keyCode === 229) return;
+    const p = palette();
+    if (!p || p.hidden) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closePalette();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      moveActive(1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      moveActive(-1);
+    } else if (e.key === 'Tab') {
+      // 简单循环：焦点已在最后则回输入框
+      e.preventDefault();
+      const focusables = [
+        $('searchInput'),
+        ...[...document.querySelectorAll<HTMLAnchorElement>('.search-palette__result')],
+      ].filter((el): el is HTMLElement => el !== null);
+      if (!focusables.length) { focusables[0]?.focus(); return; }
+      const idx = focusables.indexOf(document.activeElement as HTMLElement);
+      focusables[(idx + 1) % focusables.length]?.focus();
+    } else if (e.key === 'Enter' && activeIndex >= 0) {
+      const active = document.activeElement;
+      // 焦点已在结果链接上时交给原生行为，避免双击导航
+      if (active instanceof HTMLAnchorElement && active.classList.contains('search-palette__result')) return;
+      e.preventDefault();
+      const rows = document.querySelectorAll<HTMLAnchorElement>('.search-palette__result');
+      rows[activeIndex]?.click();
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.id === 'searchInput') runSearch((t as HTMLInputElement).value);
+  });
+
+  // 页面切换时收起（不回焦到已失效的旧元素）
+  document.addEventListener('astro:after-swap', () => closePalette(false));
+</script>

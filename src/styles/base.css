@@ -1,0 +1,210 @@
+/* ============================================================
+   base.css —— 共享结构层（主题无关）
+   皮肤令牌与组件外观在 src/themes/<皮肤>/，经 <link data-skin-link>
+   按 <html data-skin> 切换；本文件只放 reset、结构令牌、布局骨架
+   与纯令牌驱动的中性基线（不携带任何主题的视觉决策）
+   ============================================================ */
+
+:root {
+  /* ---------- 结构令牌（所有主题共享，主题可在自己的 skin.css 覆盖）---------- */
+  /* 间距 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+
+  /* 布局尺寸 */
+  --toolbar-h: 56px;
+  --sidebar-w: 288px;
+  --toc-w: 232px;
+  --content-max: 46rem;
+
+  /* z 层 */
+  --z-ambient: -1;
+  --z-content: 1;
+  --z-toolbar: 40;
+  --z-tabbar: 50;
+  --z-scrim: 55;
+  --z-drawer: 60;
+  --z-toast: 80;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-system);
+  font-size: var(--text-body);
+  line-height: 1.75;
+  color: var(--label);
+  background: var(--bg);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+::selection {
+  background: rgba(var(--accent-raw), 0.22);
+}
+
+:focus-visible {
+  outline: 2.5px solid rgba(var(--accent-raw), 0.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  color: var(--label-2);
+  background: var(--fill);
+  border: 1px solid var(--separator);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 1px 5px;
+  line-height: 1.4;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- 滚动条（细腻不抢焦点）---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--label-4) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--label-4);
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- 搜索面板滚动锁（功能性，非皮肤）---------- */
+html.has-modal {
+  overflow: hidden;
+}
+
+/* ============================================================
+   布局骨架（侧栏 + 主区 + 页脚）
+   ============================================================ */
+.shell {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.shell__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-8);
+  padding: 0 var(--sp-6) var(--sp-10);
+}
+
+.shell__main > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+  padding: var(--sp-6) var(--sp-4) calc(var(--sp-8) + env(safe-area-inset-bottom));
+  font-size: var(--text-footnote);
+  color: var(--label-3);
+  border-top: 1px solid var(--separator);
+}
+
+.site-footer a {
+  color: var(--label-2);
+}
+
+.site-footer__dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: var(--label-4);
+}
+
+@media (max-width: 900px) {
+  .shell__main {
+    padding: 0 var(--sp-4) var(--sp-12);
+  }
+
+  /* 悬浮标签栏（含偏移）高约 90px，页脚需完整让出 */
+  .site-footer {
+    padding-bottom: calc(var(--sp-16) + var(--sp-8) + env(safe-area-inset-bottom));
+  }
+}

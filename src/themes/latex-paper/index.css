@@ -1,0 +1,21 @@
+/* ============================================================
+   latex-paper 主题入口 —— LaTeX 论文 / 学术排版
+   参考 https://www.stylekit.top/zh/styles/latex-paper：
+   白纸墨字、衬线排印、层级靠横线与留白；蓝只作超链接。
+   设计语法（改样式前先读）：
+   · 页面 = 一张纸（白底 #FFFFFF，夜间为暖炭纸）
+   · 分层 = 横线（粗规 2px 墨 / 细规 1px 灰）+ 留白，零阴影
+   · 圆角全零；交互反馈 = 填充色变化（hover 定理盒填充 /
+     :active 墨底反白），无位移无缩放
+   · callout = 定理环境（#F5F5F0 填充 + 左 2px 墨规 +
+     小帽粗体标签，图标着印刷油墨色）
+   · 表格 = booktabs 三线表（无竖线无斑马纹，表头斜体）
+   · 标题自动编号（CSS 计数器：h2=1，h3=1.1，h4=1.1.1）
+   · 链接 = hyperref 蓝 #0B5394，hover 只加下划线不变色
+   · 动效唯一 fade-in 0.5s ease-out；色彩过渡 200ms
+   由 src/lib/themes.ts 经 import.meta.glob('?url') 自动发现
+   ============================================================ */
+@import './skin.css';
+@import './chrome.css';
+@import './content.css';
+@import './motion.css';

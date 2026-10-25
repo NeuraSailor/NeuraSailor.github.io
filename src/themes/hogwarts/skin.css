@@ -1,0 +1,164 @@
+/* ============================================================
+   skin.css —— 霍格沃兹（Hogwarts）皮肤令牌
+   源自旧 MkDocs 站 docs/stylesheets/hogwarts.css（用户此前长期
+   使用的主题）与 hogwarts-theme 技能库设计语言：
+   · 亮色 = 图书馆白天：暖奶油纸 + 暗金 + 深海军蓝
+   · 暗色 = 烛光下的密室：深蓝紫 + 暖金
+   · 签名元素：金渐变发光进度条、恒暗代码/公式框、纸纹噪点、
+     五色渐变顶规、圆角卡片
+   字体：站规零 CJK webfont，技能库的 Google Fonts 思源宋/
+   站酷小薇以系统衬线栈近似（Georgia/宋体系），气质由配色与
+   组件承载；JetBrains Mono 本地优先（非 webfont）
+   结构令牌（间距 / 布局尺寸 / z 层）在共享层 src/styles/base.css
+   ============================================================ */
+
+:root {
+  /* ---------- 字体 ---------- */
+  --font-system: Georgia, 'Times New Roman', Times, 'Songti SC', 'STSong',
+    'SimSun', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas,
+    'Noto Sans Mono CJK SC', monospace;
+
+  /* ---------- 字阶 ---------- */
+  --text-caption: 0.75rem;    /* 12 */
+  --text-footnote: 0.8125rem; /* 13 */
+  --text-subhead: 0.9375rem;  /* 15 */
+  --text-body: 1.0625rem;     /* 17 */
+  --text-title3: 1.25rem;     /* 20 */
+  --text-title2: 1.4375rem;   /* 23 */
+  --text-title1: 1.75rem;     /* 28 */
+  --text-large: 2.125rem;     /* 34 */
+
+  /* ---------- 圆角（圆角卡片宁暖勿硬）---------- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-2xl: 24px;
+
+  /* ---------- 动效（技能库规范 0.3s cubic-bezier(.4,0,.2,1)）---------- */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 160ms;
+  --dur-base: 280ms;  /* SearchPalette 关闭计时器对齐（契约）*/
+  --dur-morph: 300ms;
+  --dur-slow: 480ms;
+
+  /* ---------- 霍格沃兹家族色（两档共用）---------- */
+  --hw-navy: #0a0a2e;        /* 深海军蓝：Hero / 表头 / 激活胶囊 */
+  --hw-deep: #0f3460;        /* 深蓝：渐变搭档 */
+  --hw-ink-navy: #16213e;
+  --hw-gold: #d4a855;        /* 暗金：主强调 */
+  --hw-gold-bright: #f0d060; /* 亮金：高亮 */
+  --hw-gold-dim: #b8922e;    /* 沉金：链接 */
+  --hw-amber: #c87941;       /* 琥珀 */
+  --hw-rust: #a64d3e;        /* 铁锈红 */
+  --hw-sage: #8a9a5b;        /* 鼠尾草绿 */
+  --hw-teal: #2d6a4f;        /* 深青 */
+  --hw-cream: #e8d5b0;       /* 羊皮纸金文字 */
+  --hw-parchment: #f0e6d3;   /* 羊皮纸 */
+
+  /* 五色渐变顶规（rust → amber → gold → sage → teal，技能库签名）*/
+  --hw-gradient-rainbow: linear-gradient(
+    90deg,
+    var(--hw-rust),
+    var(--hw-amber),
+    var(--hw-gold),
+    var(--hw-sage),
+    var(--hw-teal)
+  );
+  --hw-gradient-hero: linear-gradient(165deg, #0a0a2e 0%, #0f3460 100%);
+  --hw-gradient-progress: linear-gradient(90deg, #d4a855, #f0d060, #b8922e);
+
+  /* 深色公式框（技能库铁律：始终深色不改浅；明暗两档一致）*/
+  --hw-formula-bg: #1a1a2e;
+  --hw-formula-text: #e8d5b0;
+  --hw-code-bg: #1e1e36;
+}
+
+/* ---------- 亮色（图书馆白天）---------- */
+:root {
+  color-scheme: light;
+
+  --bg: #f5f0e8;
+  --surface: #ffffff;
+  --surface-2: #faf3e0;
+  --elevated: #ffffff;
+
+  --label: #2a2230;
+  --label-2: #3d3530;
+  --label-3: #8a8070;
+  --label-4: #b0a595;
+
+  --separator: rgba(212, 168, 85, 0.22);
+  --separator-strong: rgba(212, 168, 85, 0.45);
+  --fill: #f0e6d3;
+  --fill-2: #efe4c8;
+
+  /* 链接沉金，hover 提亮金（旧站 --md-typeset-a-color）*/
+  --accent: #b8922e;
+  --accent-raw: 184, 146, 46;
+  --accent-hover: #d4a855;
+  --on-accent: #ffffff;
+
+  --code-bg: rgba(212, 168, 85, 0.16);
+  --code-bg-block: #1e1e36;
+  --code-border: rgba(212, 168, 85, 0.2);
+
+  --shadow-1: 0 2px 8px rgba(26, 26, 46, 0.05);
+  --shadow-2: 0 2px 16px rgba(26, 26, 46, 0.06);
+  --shadow-3: 0 8px 32px rgba(26, 26, 46, 0.12);
+
+  /* 兼容玻璃令牌名（奶油纸毛玻璃，技能库 topnav 配方）*/
+  --glass: rgba(250, 245, 237, 0.9);
+  --glass-strong: rgba(250, 245, 237, 0.95);
+  --glass-subtle: rgba(250, 245, 237, 0.8);
+  --glass-border: rgba(212, 168, 85, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.6);
+
+  --hw-nav-bg: rgba(250, 245, 237, 0.92);
+
+  --scrim: rgba(10, 10, 46, 0.4);
+}
+
+/* ---------- 暗色（烛光下的密室，旧站 slate 档原值）---------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #1a1a2e;
+  --surface: #242438;
+  --surface-2: #2a2a3e;
+  --elevated: #242438;
+
+  --label: #e0d0b0;
+  --label-2: #d0c0a0;
+  --label-3: #a09880;
+  --label-4: #6a6a8a;
+
+  --separator: rgba(212, 168, 85, 0.18);
+  --separator-strong: rgba(212, 168, 85, 0.4);
+  --fill: #2a2a3e;
+  --fill-2: #32324a;
+
+  --accent: #d4a855;
+  --accent-raw: 212, 168, 85;
+  --accent-hover: #f0d060;
+  --on-accent: #1a1a2e;
+
+  --code-bg: rgba(212, 168, 85, 0.14);
+  --code-bg-block: #1e1e36;
+  --code-border: rgba(212, 168, 85, 0.16);
+
+  --shadow-1: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 16px rgba(0, 0, 0, 0.35);
+  --shadow-3: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  --glass: rgba(36, 36, 56, 0.88);
+  --glass-strong: rgba(36, 36, 56, 0.94);
+  --glass-subtle: rgba(36, 36, 56, 0.8);
+  --glass-border: rgba(212, 168, 85, 0.16);
+  --glass-highlight: rgba(240, 208, 96, 0.08);
+
+  --hw-nav-bg: rgba(26, 26, 46, 0.92);
+
+  --scrim: rgba(4, 4, 18, 0.6);
+}

@@ -1,0 +1,28 @@
+---
+/**
+ * Toc —— 右侧目录轨（scroll-spy 由 site.ts 驱动）
+ */
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Props {
+  headings: Heading[];
+}
+const { headings } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  toc.length >= 2 ? (
+    <nav class="toc" id="toc" aria-label="本页目录">
+      <div class="toc__label">本页目录</div>
+      {toc.map((h) => (
+        <a href={`#${h.slug}`} class={h.depth === 3 ? 'toc--h3' : 'toc--h2'} data-toc-link>
+          {h.text}
+        </a>
+      ))}
+    </nav>
+  ) : null
+}

@@ -1,0 +1,28 @@
+{
+  "name": "neurasailor-garden",
+  "type": "module",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/sync-assets.mjs",
+    "dev": "astro dev",
+    "prebuild": "node scripts/sync-assets.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "linkcheck": "node scripts/linkcheck.mjs",
+    "deploy": "npm run build && npm run linkcheck && node scripts/deploy.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "astro-pagefind": "^2.0.1",
+    "github-slugger": "^2.0.0",
+    "katex": "^0.19.1",
+    "rehype-katex": "^7.0.1",
+    "remark": "^15.0.1",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "unist-util-visit": "^5.1.0"
+  }
+}
