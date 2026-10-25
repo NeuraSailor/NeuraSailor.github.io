@@ -38,14 +38,16 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
 - 颜色：`--bg` / `--label` / `--label-2..4` / `--accent` / `--accent-raw`（R,G,B 三元组）/
   `--accent-hover` / `--separator` / `--fill` / `--fill-2`
 - 代码：`--code-bg` / `--code-bg-block` / `--code-border`
-- 上述全部需提供 `[data-theme='dark']` 暗色值（明暗双模式是一等公民）
+- 上述全部需提供 `[data-theme='dark']` 暗色值（明暗双模式是一等公民）；允许反向档：
+  `:root`=暗 + `[data-theme='light']` 覆盖亮色（developer-terminal 先例）
 - 结构令牌（间距/布局尺寸/z 层）默认在 `base.css`，皮肤可按需覆盖（如圆角 `--r-*` 归皮肤）
 
 ## chrome.css + content.css 必须实现的选择器集
 
 ### 组件（BEM，结构见 src/components/）
 
-- `toolbar` 及子元素（滚动态 `is-scrolled`）、`progress`/`progress__bar`
+- `toolbar` 及子元素（滚动态 `is-scrolled` 可选：无滚动视觉变化的皮肤可不实现，
+  site.ts 会照常加该类）、`progress`/`progress__bar`
 - `icon-btn`（≥44×44 命中区，`:hover`/`:active` 必须有按压反馈）、`icon-btn--search`、
   `icon-btn--github`；**≤640px 窄屏需处理**：搜索收为图标、GitHub 隐藏（页脚可达），
   按钮位次序「搜索/皮肤/明暗」优先——否则站名被挤爆
@@ -57,7 +59,7 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
 - `skin-menu` 全家（site.ts 注入）：`.skin-menu`（fixed 定位，inline style
   定 top/left）、`.skin-menu__label`、`.skin-menu__item`（`is-active` 当前
   皮肤，`::before` 为选择指示点/块）、`is-open` 淡入（入场约 120-200ms，
-  JS 关闭动画计时 200ms）
+  JS 关闭动画计时 200ms；developer-terminal 豁免 75ms，掉帧感是其设计语言）
 - `ambient`：至少 `display:none` 或给出自己的环境层
 - 首页 `home` 全套（`home-card` 系列、`home-stat`、`home__*`）
 - `search-palette` 全套：**`[hidden]` 显式压制**（外层 display:flex 会盖过 UA 的
@@ -75,7 +77,9 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
 ### 内容层（remark-garden 插件产物契约）
 
 - `.md-content` 全套正文排印（标题/列表/表格/图片/脚注/引用/`hr`）
-- **callout 12 型**：`.callout`（`aside` 或 `details`）、`.callout--<type>` 提供
+- **callout 11 型**（canon 集合 = `remark-garden.ts` 的 `CALLOUT_TYPES`：
+  note / abstract / info / tip / important / example / warning / danger / quote /
+  success / question）：`.callout`（`aside` 或 `details`）、`.callout--<type>` 提供
   `--co`（R,G,B）与 `--callout-icon`、`.callout__title::before`（mask 图标）、
   折叠 chevron（`details.callout[open]`）、按压反馈；亮暗各一套类型色
 - `.garden-missing`（未解析引用的诚实降级）

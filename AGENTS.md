@@ -6,6 +6,8 @@ This file provides guidance to AI coding agents when working with code in this r
 
 个人知识花园，**Astro 5 + 可插拔多皮肤**（liquid-glass 液态玻璃 / neumorphic 新拟态 / latex-paper LaTeX 论文 / anti-design 反设计 / hogwarts 霍格沃兹 / developer-terminal 开发者终端）构建的静态站点。内容源自 Obsidian vault，同步到 `docs/` 目录后由 Astro 构建。旧 MkDocs 栈已于 V3 重构时移除。
 
+> 架构全景、交互生命周期模型与问题登记簿：见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+
 liquid-glass 设计规范依据：`C:\Users\WUZHO\.cc-switch\skills\apple-design-skill-main`（Apple HIG 参考 skill）；neumorphic 规范依据 stylekit neumorphism（同色表面 + 双影凸凹三态，禁位移/渐变）；latex-paper 规范依据 stylekit latex-paper（白纸墨字、衬线、零圆角/零阴影、booktabs 三线表、蓝只作链接）；anti-design 规范依据 stylekit anti-design（4px+ 黑框、硬偏移阴影、高饱和原色块、100ms linear 直切）；hogwarts 源自旧 MkDocs 站 hogwarts.css + hogwarts-theme 技能库（奶油纸/烛光密室、暗金、恒暗代码、深色公式框）；developer-terminal 融合 stylekit developer-terminal × pixel-anime（NES 六色 RPG 终端，内容整页会话化）。
 
 ## Key Commands
@@ -24,6 +26,7 @@ npm run deploy     # build + linkcheck + 推送 gh-pages
 
 - 日常开发在 `source` 分支；GitHub Actions（`.github/workflows/ci.yml`）在 push 到 main/master 时自动 Node 构建 + 推 gh-pages
 - 手动发布：`npm run deploy`（构建+审计+强推 gh-pages）
+- ⚠ v3.9 审计现状：V3（Astro）全部提交仅在 `source` 分支，`main`/`gh-pages` 仍是旧 MkDocs 产物——上线需合并 source→main 触发 CI，或手动 `npm run deploy`
 - 站点地址：https://neurasailor.github.io/ （仓库 remote 即 NeuraSailor/NeuraSailor.github.io）
 
 ## Architecture
@@ -35,7 +38,7 @@ Obsidian vault → 同步 → docs/*.md → Astro 构建（只读）
 ```
 
 - `docs/` 保留 Obsidian 原生语法：`[[wikilink]]`、`![[图片|尺寸]]`、`> [!callout]` 折叠标记
-- 构建期由 `src/plugins/remark-garden.ts` 统一转换：wikilink 解析（同名优先同目录）、图片按 basename 扁平到 `/assets/`（文件名已验证全局唯一）、callout → `<aside>/<details>`、MkDocs `!!!` 归一化、mermaid 围栏转客户端渲染
+- 构建期由 `src/plugins/remark-garden.ts` 统一转换：wikilink 解析（同名优先同目录）、图片按 basename 扁平到 `/assets/`（文件名已验证全局唯一）、callout → `<aside>/<details>`（canon 11 型）、MkDocs `!!!` 归一化（仅根级、内容限缩进块）、mermaid 围栏转客户端渲染、`==高亮==` → `<mark>`、`.md` 相对内链解析
 - 数学管线：`remarkMath`（必须在 `remarkBreaks` **之前**，否则 `$` 块公式被 `<br>` 切碎）+ `rehype-katex` 构建期预渲染（`strict:false`）；Obsidian 式段落级 `$` 配对与残骸抢救都在 remark-garden 内
 - **URL 保留原始大小写**：content collection 的 `generateId` 必须保持自定义（Astro 默认会 slugify 成小写+连字符，破坏外链）
 - Astro 的 markdown 渲染有内容摘要缓存：改 remark 插件后需 `rm -rf .astro node_modules/.astro` 再构建
@@ -67,7 +70,7 @@ src/
 - **DOM 不携带皮肤决策**（markup 无皮肤类、组件无 `<style>`）；换肤 = 换一套全局 CSS
 - 加载：base.css → katex → 皮肤 `<link data-skin-link>`（全部渲染、仅默认启用，
   其余 disabled 备用）；`<html data-skin>` + localStorage('garden-skin') + 防闪白内联脚本
-- 切换入口：工具栏 `#skinToggle`（调色板图标）弹出选择菜单，访客可用；mermaid 主题随皮肤映射
+- 切换入口：工具栏 `#skinToggle`（调色板图标）弹出选择菜单，访客可用；mermaid 主题支持按皮肤映射（`lib/themes.ts` 的 `MERMAID` 表，当前未配置，全部走默认 neutral/dark）
 - 新增皮肤：建 `src/themes/<id>/` 目录即可被 `lib/themes.ts` 自动发现（三步流程见契约）
 - 换默认皮肤：改 `src/site.config.ts` 的 `defaultSkin` 一行重建
 - **改动任何皮肤前先读 `src/themes/_contract.md`**（必须实现的令牌/选择器集/功能段落）
@@ -127,7 +130,7 @@ developer-terminal（像素终端，terminal × pixel-anime 融合）：
 
 - View Transitions（ClientRouter）：swap 会替换整个 document，事件绑定用 document 级委托或每次 `astro:page-load` 重绑（见 site.ts 模式）
 - 搜索：Pagefind（构建后生成索引），⌘K 命令面板；中文输入需 `isComposing` 守卫
-- Mermaid 源码存档在 `dataset.src`，主题切换时重渲染
+- Mermaid 源码存档在 `dataset.src`，主题切换时重渲染；mermaid@11 本体是 CDN 运行时依赖（非 npm 包）
 
 ## 内容组织（不变）
 

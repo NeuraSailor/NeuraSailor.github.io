@@ -15,3 +15,9 @@ dist/
 .edgeone/*
 .tef_dist/*
 .worktrees/
+
+# ZCode 会话工件
+.zcode/
+
+# Astro 静态资源（predev/prebuild 由 docs/assets 再生，不入库）
+public/assets/

@@ -1,5 +1,8 @@
 # NeuraSailor 知识花园 V2 重构手册
 
+> ⚠ **历史文档**（V2 时代）：描述的是已移除的 MkDocs 栈与 V2 重构计划，仅供考古。
+> 现行架构见 [ARCHITECTURE.md](ARCHITECTURE.md)，现行协作守则见 [AGENTS.md](AGENTS.md)。
+
 ## 项目当前状态
 
 MkDocs Material 站点，`docs/` 下有 247 篇 Obsidian 笔记 + 494 张图片，覆盖大一~大二 20+ 门课程。Git 基准 commit：`339008f`（main 分支），当前可以正常 `mkdocs serve`，站点外观为 V1 的粉色主题。
