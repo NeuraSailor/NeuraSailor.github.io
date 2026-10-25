@@ -5,7 +5,7 @@
    ============================================================ */
 
 /* ============================================================
-   工具栏（平面同色带，滚动后仅加分隔线）
+   工具栏（整体凸出的操作台：emboss-lg 双影；凹陷按钮錾在凸台上）
    ============================================================ */
 .toolbar {
   position: sticky;
@@ -18,12 +18,7 @@
   height: var(--toolbar-h);
   padding: 0 max(var(--sp-4), env(safe-area-inset-left)) 0 max(var(--sp-3), env(safe-area-inset-right));
   background: var(--surface);
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--dur-morph) var(--ease-soft);
-}
-
-.toolbar.is-scrolled {
-  border-bottom-color: var(--separator);
+  box-shadow: var(--emboss-lg);
 }
 
 .toolbar__leading,

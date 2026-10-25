@@ -47,15 +47,35 @@ function bindGlobal() {
   });
 }
 
+/* ---------- localStorage 安全读写（隐私模式 / 受限源下不抛错） ---------- */
+function storedPref(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function storePref(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* 写不进就只保留内存态 */
+  }
+}
+
 /* ---------- 明暗切换（跟随系统 + 手动覆盖） ---------- */
+let systemThemeBound = false;
+
 function initTheme() {
   const btn = document.getElementById('themeToggle');
   if (!btn) return;
 
-  // 未手动选择时，跟随系统主题变化
-  if (!localStorage.getItem('garden-theme')) {
+  // 未手动选择时，跟随系统主题变化；监听器跨 swap 存活，模块级只挂一次
+  if (!systemThemeBound) {
+    systemThemeBound = true;
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (localStorage.getItem('garden-theme')) return;
+      if (storedPref('garden-theme')) return;
       document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
     });
   }
@@ -65,7 +85,7 @@ function initTheme() {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.classList.add('theme-transition');
     root.dataset.theme = next;
-    localStorage.setItem('garden-theme', next);
+    storePref('garden-theme', next);
     window.clearTimeout(themeTimer);
     themeTimer = window.setTimeout(() => root.classList.remove('theme-transition'), 350);
     // 图标翻转（Q弹）+ Mermaid 按新主题重渲染
@@ -115,7 +135,7 @@ function chooseSkin(id: string) {
   const root = document.documentElement;
   root.classList.add('theme-transition');
   applySkin(id);
-  localStorage.setItem('garden-skin', id);
+  storePref('garden-skin', id);
   window.clearTimeout(themeTimer);
   themeTimer = window.setTimeout(() => root.classList.remove('theme-transition'), 350);
   rerenderMermaid(); // 皮肤可能映射不同 mermaid 主题
@@ -458,15 +478,33 @@ function init() {
   renderMermaid();
 }
 
-/* View Transitions 交换 <html> 时会丢弃运行时属性（data-theme 等），
-   且皮肤 <link> 的启停态被换回 SSR 默认——导航后统一恢复外观 */
+/* View Transitions 交换 <html> 前把当前外观写进新文档：
+   SSR 产物不带 data-theme、皮肤 <link> 也是默认启停态，
+   若等 after-swap 再修，swap 与其之间的 await 边界会渲染一帧错误主题
+   （即「页面加载完成后自动切换一次」的来源） */
+document.addEventListener('astro:before-swap', (e) => {
+  const cur = document.documentElement;
+  const next = (e as Event & { newDocument?: Document }).newDocument;
+  if (!next) return;
+  if (cur.dataset.theme) next.documentElement.dataset.theme = cur.dataset.theme;
+  if (cur.dataset.skin) next.documentElement.dataset.skin = cur.dataset.skin;
+  const skin = cur.dataset.skin;
+  if (!skin) return;
+  for (const l of next.querySelectorAll<HTMLLinkElement>('link[data-skin-link]')) {
+    const off = l.dataset.skinLink !== skin;
+    l.disabled = off;
+    l.toggleAttribute('disabled', off);
+  }
+});
+
+/* 兜底：swap 后再校正一次（防 before-swap 未覆盖的路径） */
 document.addEventListener('astro:after-swap', () => {
   // 换肤菜单挂在旧 body 上，随 swap 丢弃；清引用防误操作已离屏节点
   skinMenu = null;
   window.clearTimeout(skinMenuTimer);
 
   const root = document.documentElement;
-  const stored = localStorage.getItem('garden-theme');
+  const stored = storedPref('garden-theme');
   root.dataset.theme =
     stored === 'light' || stored === 'dark'
       ? stored
@@ -477,7 +515,7 @@ document.addEventListener('astro:after-swap', () => {
   const links = [...document.querySelectorAll<HTMLLinkElement>('link[data-skin-link]')];
   const ids = links.map((l) => l.dataset.skinLink).filter((x): x is string => !!x);
   if (ids.length > 1) {
-    const storedSkin = localStorage.getItem('garden-skin');
+    const storedSkin = storedPref('garden-skin');
     const current = root.dataset.skin;
     const skin =
       storedSkin && ids.includes(storedSkin)
