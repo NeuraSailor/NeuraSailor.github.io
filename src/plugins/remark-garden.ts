@@ -177,9 +177,16 @@ function transformWikilinks(tree: Node, ctx: TransformCtx) {
       const [rawTarget, ...aliasParts] = inner.split('|');
       const alias = aliasParts.join('|').trim();
       const target = rawTarget.trim();
-      const isImage = bang === '!' || IMG_EXT.has(extname(target).toLowerCase());
+      const ext = extname(target).toLowerCase();
+      const isImage = bang === '!' || IMG_EXT.has(ext);
+      // ![[页面]] 嵌入：无图片扩展名时先按页面解析（Obsidian 笔记嵌入语义），
+      // 命中内链，避免被当图片降级成 garden-missing
+      const pageSlug =
+        bang === '!' && !IMG_EXT.has(ext)
+          ? resolvePage(target.split('#')[0]!.trim(), ctx)
+          : null;
 
-      if (isImage) {
+      if (isImage && !pageSlug) {
         const name = target.replace(/^assets\//, '').split('/').pop()!;
         if (ctx.maps.assetNames.has(name)) {
           out.push(makeImageNode(name, alias));
@@ -191,6 +198,16 @@ function transformWikilinks(tree: Node, ctx: TransformCtx) {
           });
           ctx.stats.unresolved++;
         }
+      } else if (pageSlug) {
+        const [pagePart, ...anchorParts] = target.split('#');
+        const anchor = anchorParts.join('#').trim();
+        ctx.stats.links++;
+        const url = `/${encodeHref(pageSlug)}/` + (anchor ? `#${ctx.slugger.slug(anchor)}` : '');
+        out.push({
+          type: 'link',
+          url,
+          children: [{ type: 'text', value: alias || pagePart.split('/').pop()! }],
+        } as unknown as Node);
       } else {
         const [pagePart, ...anchorParts] = target.split('#');
         const anchor = anchorParts.join('#').trim();

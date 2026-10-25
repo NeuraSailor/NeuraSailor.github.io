@@ -222,7 +222,7 @@ function initSidebar() {
   if (!sidebar || !toggle) return;
 
   const desktop = matchMedia('(min-width: 901px)');
-  if (desktop.matches && localStorage.getItem('garden-sidebar') === 'collapsed') {
+  if (desktop.matches && storedPref('garden-sidebar') === 'collapsed') {
     sidebar.classList.add('is-collapsed');
   }
 
@@ -233,7 +233,7 @@ function initSidebar() {
       toggle.setAttribute('aria-expanded', String(open));
     } else {
       const collapsed = sidebar.classList.toggle('is-collapsed');
-      localStorage.setItem('garden-sidebar', collapsed ? 'collapsed' : 'open');
+      storePref('garden-sidebar', collapsed ? 'collapsed' : 'open');
       toggle.setAttribute('aria-expanded', String(!collapsed));
     }
   });
@@ -505,12 +505,15 @@ document.addEventListener('astro:after-swap', () => {
 
   const root = document.documentElement;
   const stored = storedPref('garden-theme');
+  const current = root.dataset.theme;
   root.dataset.theme =
     stored === 'light' || stored === 'dark'
       ? stored
-      : matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
+      : current === 'light' || current === 'dark'
+        ? current
+        : matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light';
 
   const links = [...document.querySelectorAll<HTMLLinkElement>('link[data-skin-link]')];
   const ids = links.map((l) => l.dataset.skinLink).filter((x): x is string => !!x);
