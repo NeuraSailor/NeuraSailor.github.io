@@ -1,0 +1,78 @@
+---
+/**
+ * Binary —— PDF/xmind 一等公民内容页：面包屑 + 标题 + 元信息 + 阅读器
+ * pdf = 原生阅读器 iframe；xmind = xmind-embed-viewer 挂载点（site.ts initXmind 初始化）
+ */
+import Base from './Base.astro';
+import { renderMathText } from '../lib/katex-text';
+import { fileLabel, formatSize, type BinaryDoc } from '../lib/binary-content';
+
+interface Props {
+  doc: BinaryDoc;
+}
+
+const { doc } = Astro.props;
+const rawUrl = `/files/${encodeURI(doc.relPath)}`;
+const name = doc.relPath.split('/').pop()!;
+
+// 面包屑：分节根可链接，中间层级为纯文本（与 Article 同律）
+const parts = doc.relPath.split('/');
+const SECTION_ROOTS = new Set(['学习笔记', '科研竞赛blog', '唱唱反调']);
+const crumbs = parts.slice(0, -1).map((nm, i) => ({
+  name: nm,
+  path: parts.slice(0, i + 1).join('/'),
+  linked: i === 0 && SECTION_ROOTS.has(nm),
+}));
+
+const date = doc.mtime.toISOString().slice(0, 10);
+---
+
+<Base title={`${name} · NeuraSailor 知识花园`} currentSlug={doc.relPath}>
+  <article class="article" id="article">
+    <nav class="article__breadcrumb" aria-label="路径">
+      <a href="/">首页</a>
+      {
+        crumbs.map((c) => (
+          <>
+            <span class="crumb-sep">/</span>
+            {c.linked ? <a href={`/${encodeURI(c.path)}/`}>{c.name}</a> : <span>{c.name}</span>}
+          </>
+        ))
+      }
+    </nav>
+
+    <h1 class="article__title" data-reveal set:html={renderMathText(name)}></h1>
+
+    <div class="article__meta" data-reveal style="--reveal-delay: 80ms">
+      <span>{fileLabel(doc.ext)}</span>
+      <span class="meta-dot" aria-hidden="true"></span>
+      <span>{formatSize(doc.size)}</span>
+      <span class="meta-dot" aria-hidden="true"></span>
+      <span>更新于 {date}</span>
+    </div>
+
+    <div class="md-content" data-pagefind-body data-reveal style="--reveal-delay: 160ms">
+      {
+        doc.ext === '.pdf' ? (
+          <div class="pdf-embed" style="--pdf-frame-h: calc(100vh - 300px)">
+            <a class="pdf-embed__open" href={rawUrl} target="_blank" rel="noopener" title="在新标签页打开">
+              {name}
+            </a>
+            <iframe class="pdf-embed__frame" src={rawUrl} loading="lazy" title={name} />
+          </div>
+        ) : (
+          <div class="pdf-embed" style="--pdf-frame-h: calc(100vh - 300px)">
+            <a class="pdf-embed__open" href={rawUrl} target="_blank" rel="noopener" title="下载原文件">
+              {name}
+            </a>
+            <div
+              class="pdf-embed__frame xmind-embed__frame"
+              data-xmind-src={rawUrl}
+              aria-label="XMind 导图阅读器"
+            />
+          </div>
+        )
+      }
+    </div>
+  </article>
+</Base>

@@ -1,22 +1,43 @@
 ---
 import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import Article from '../layouts/Article.astro';
+import Binary from '../layouts/Binary.astro';
+import { binaryDocs, type BinaryDoc } from '../lib/binary-content';
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
-  return docs.map((entry) => {
-    // entry.id 已由 generateId 归一为路由 slug（原始大小写、/index 已折叠）
-    return { params: { slug: entry.id || undefined }, props: { entry } };
-  });
+  // 二进制一等公民（pdf/xmind，带扩展名）与 md 条目 slug 互不相交
+  const bins = binaryDocs();
+  return [
+    ...docs.map((entry) => {
+      // entry.id 已由 generateId 归一为路由 slug（原始大小写、/index 已折叠）
+      return { params: { slug: entry.id || undefined }, props: { entry } };
+    }),
+    ...bins.map((doc) => ({ params: { slug: doc.relPath }, props: { doc } })),
+  ];
 }
 
-const { entry } = Astro.props;
-const { Content, headings } = await render(entry);
+const { entry, doc } = Astro.props as { entry?: CollectionEntry<'docs'>; doc?: BinaryDoc };
 
-// 正文以 # 标题开头时隐藏之（由页头大标题承担，避免重复）
-const hideFirstH1 = /^#\s/m.test((entry.body ?? '').replace(/^---[\s\S]*?---\s*/, ''));
+let Content: Awaited<ReturnType<typeof render>>['Content'] | undefined;
+let headings: { depth: number; slug: string; text: string }[] = [];
+let hideFirstH1 = false;
+if (entry) {
+  const rendered = await render(entry);
+  Content = rendered.Content;
+  headings = rendered.headings;
+  // 正文以 # 标题开头时隐藏之（由页头大标题承担，避免重复）
+  hideFirstH1 = /^#\s/m.test((entry.body ?? '').replace(/^---[\s\S]*?---\s*/, ''));
+}
 ---
 
-<Article entry={entry} headings={headings} hideFirstH1={hideFirstH1}>
-  <Content />
-</Article>
+{
+  entry && Content ? (
+    <Article entry={entry} headings={headings} hideFirstH1={hideFirstH1}>
+      <Content />
+    </Article>
+  ) : (
+    doc && <Binary doc={doc} />
+  )
+}

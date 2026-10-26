@@ -4,6 +4,7 @@
  */
 import { getCollection } from 'astro:content';
 import { buildNavTree, ancestorSet } from '../lib/nav-tree';
+import { binaryDocs } from '../lib/binary-content';
 import SidebarNode from './SidebarNode.astro';
 
 interface Props {
@@ -12,7 +13,8 @@ interface Props {
 const { currentSlug = '' } = Astro.props;
 
 const entries = await getCollection('docs');
-const slugs = entries.map((e) => e.id);
+// pdf/xmind 一等公民内容页与 md 平权，共同进入侧栏树（叶子名带扩展名）
+const slugs = [...entries.map((e) => e.id), ...binaryDocs().map((b) => b.relPath)];
 const tree = buildNavTree(slugs);
 const openTrail = ancestorSet(currentSlug);
 ---

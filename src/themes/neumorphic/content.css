@@ -584,7 +584,7 @@
 .pdf-embed__frame {
   display: block;
   width: 100%;
-  height: min(72vh, 560px);
+  height: var(--pdf-frame-h, min(72vh, 560px));
   margin-top: var(--sp-3);
   border: none;
   background: var(--code-bg-block);

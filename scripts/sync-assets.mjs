@@ -1,5 +1,5 @@
 // 构建前把 docs/assets 同步到 public/assets（Astro 静态资源目录）
-import { cpSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,4 +26,31 @@ const walk = (dir) => {
 };
 walk(src);
 
+// 内容区 pdf/xmind 一等公民文件 → public/files/<相对路径>（内容页阅读器加载）
+// 与 assets 附件池互斥：docs/assets/ 走 basename 扁平嵌入流，不入 files/
+// public/files 为纯生成物：每次全量重建（避免陈旧文件与 Windows 覆盖锁）
+const BIN_EXT = new Set(['.pdf', '.xmind']);
+const filesDest = join(root, 'public', 'files');
+rmSync(filesDest, { recursive: true, force: true });
+mkdirSync(filesDest, { recursive: true });
+let binCount = 0;
+const walkBin = (dir, rel) => {
+  for (const f of readdirSync(dir, { withFileTypes: true })) {
+    if (f.name.startsWith('.')) continue;
+    if (rel === '' && f.name === 'assets') continue;
+    const abs = join(dir, f.name);
+    if (f.isDirectory()) {
+      walkBin(abs, rel ? `${rel}/${f.name}` : f.name);
+      continue;
+    }
+    const lower = f.name.toLowerCase();
+    if (!BIN_EXT.has(lower.slice(lower.lastIndexOf('.')))) continue;
+    mkdirSync(join(filesDest, rel), { recursive: true });
+    cpSync(abs, join(filesDest, rel, f.name));
+    binCount++;
+  }
+};
+walkBin(join(root, 'docs'), '');
+
 console.log('[sync-assets] docs/assets → public/assets 完成');
+console.log(`[sync-assets] 内容区 pdf/xmind → public/files 完成（${binCount} 个，全量重建）`);

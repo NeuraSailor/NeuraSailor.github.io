@@ -58,6 +58,9 @@ interface PageMaps {
   byBasename: Map<string, string[]>;
   assetNames: Set<string>;
   assetsDir: string;
+  docsDir: string;
+  /** 内容区一等公民 pdf/xmind：basename（带扩展名）→ 相对路径列表（与 md 同名歧义同策略） */
+  binByBase: Map<string, string[]>;
 }
 
 let cachedMaps: PageMaps | null = null;
@@ -105,7 +108,39 @@ function buildMaps(docsDir: string): PageMaps {
     for (const f of readdirSync(assetsDir)) assetNames.add(f);
   }
 
-  cachedMaps = { byPath, byBasename, assetNames, assetsDir };
+  // 内容区一等公民 pdf/xmind（排除 assets/ 附件池与点目录），与 binary-content.ts 同规则
+  const binByBase = new Map<string, string[]>();
+  const walkBin = (dir: string, rel: string) => {
+    let entries: string[];
+    try {
+      entries = readdirSync(dir);
+    } catch {
+      return;
+    }
+    for (const f of entries) {
+      if (f.startsWith('.')) continue;
+      if (rel === '' && f === 'assets') continue;
+      const abs = join(dir, f);
+      let st;
+      try {
+        st = statSync(abs);
+      } catch {
+        continue;
+      }
+      if (st.isDirectory()) {
+        walkBin(abs, rel ? `${rel}/${f}` : f);
+        continue;
+      }
+      const lower = f.toLowerCase();
+      if (lower.endsWith('.pdf') || lower.endsWith('.xmind')) {
+        if (!binByBase.has(f)) binByBase.set(f, []);
+        binByBase.get(f)!.push(rel ? `${rel}/${f}` : f);
+      }
+    }
+  };
+  walkBin(docsDir, '');
+
+  cachedMaps = { byPath, byBasename, assetNames, assetsDir, docsDir, binByBase };
   return cachedMaps;
 }
 
@@ -155,29 +190,40 @@ function makeImageNode(name: string, alias: string | undefined): Node {
   return img;
 }
 
-/* ---------- PDF / xmind 附件（文件存在于 docs/assets 才生效，否则 garden-missing） ---------- */
+/* ---------- PDF / xmind 附件（v4.1：一等公民内容页 + 附件双轨） ----------
+ * docs/assets/ = 附件池（basename 扁平，原文件在 /assets/）；
+ * 内容区 = 一等公民（独立路由页 /<relPath>/，原文件托管在 /files/<relPath>）。
+ * 解析：assets 原文件优先（v4.0 语义），内容区兜底；非嵌入链接优先指向内容页。 */
 
 function pdfPageOf(frag: string): number | null {
   const m = /^(?:page=)?(\d+)$/.exec(frag);
   return m ? Number(m[1]) : null;
 }
 
-function makePdfEmbed(name: string, alias: string, frag: string): Node {
-  const page = pdfPageOf(frag);
-  const url = `/assets/${encodeHref(name)}` + (page ? `#page=${page}` : '');
-  const label = escapeHtml(alias || name.replace(/\.pdf$/i, ''));
+function resolveBinPage(name: string, ctx: TransformCtx): string | null {
+  const candidates = ctx.maps.binByBase.get(name);
+  if (!candidates || candidates.length === 0) return null;
+  if (candidates.length === 1) return candidates[0];
+  const dir = ctx.currentSlug.includes('/') ? ctx.currentSlug.slice(0, ctx.currentSlug.lastIndexOf('/')) : '';
+  const sameDir = candidates.find((c) => (c.includes('/') ? c.slice(0, c.lastIndexOf('/')) : '') === dir);
+  if (sameDir) return sameDir;
+  return [...candidates].sort((a, b) => a.length - b.length)[0];
+}
+
+function makePdfEmbed(url: string, label: string): Node {
+  const safeLabel = escapeHtml(label);
   return {
     type: 'html',
     value:
       `<div class="pdf-embed">` +
-      `<a class="pdf-embed__open" href="${escapeHtml(url)}" target="_blank" rel="noopener" title="在新标签页打开">${label}</a>` +
-      `<iframe class="pdf-embed__frame" src="${escapeHtml(url)}" loading="lazy" title="${label}"></iframe>` +
+      `<a class="pdf-embed__open" href="${escapeHtml(url)}" target="_blank" rel="noopener" title="在新标签页打开">${safeLabel}</a>` +
+      `<iframe class="pdf-embed__frame" src="${escapeHtml(url)}" loading="lazy" title="${safeLabel}"></iframe>` +
       `</div>`,
   };
 }
 
-function xmindEmbedHtml(assetsDir: string, name: string): string {
-  const data = readFileSync(join(assetsDir, name));
+function xmindEmbedHtml(absPath: string): string {
+  const data = readFileSync(absPath);
   const sheets = xmindToMermaidSheets(new Uint8Array(data));
   // 多张表时逐表出图并加 sheet 标题（单一表不加，避免噪音）；样式复用既有 pre.mermaid
   const multi = sheets.length > 1;
@@ -228,7 +274,17 @@ function transformWikilinks(tree: Node, ctx: TransformCtx) {
 
       if (ext === '.pdf' || ext === '.xmind') {
         const name = filePart.replace(/^assets\//, '').split('/').pop()!;
-        const exists = ctx.maps.assetNames.has(name);
+        const pageSlug = resolveBinPage(name, ctx); // 内容区一等公民页（null = 无）
+        const inAssets = ctx.maps.assetNames.has(name);
+        const pageFrag = pdfPageOf(frag);
+        const stem = name.replace(/\.(pdf|xmind)$/i, '');
+        // 原文件地址：assets 附件池优先，否则内容区 /files/ 托管
+        const rawUrl = (withFrag: boolean): string | null =>
+          inAssets
+            ? `/assets/${encodeHref(name)}` + (withFrag && pageFrag ? `#page=${pageFrag}` : '')
+            : pageSlug
+              ? `/files/${encodeHref(pageSlug)}` + (withFrag && pageFrag ? `#page=${pageFrag}` : '')
+              : null;
         const missing = (why: string) => {
           out.push({
             type: 'html',
@@ -236,26 +292,34 @@ function transformWikilinks(tree: Node, ctx: TransformCtx) {
           });
           ctx.stats.unresolved++;
         };
-        if (!exists) {
+        if (!inAssets && !pageSlug) {
           missing(ext === '.pdf' ? '未找到 PDF 文件' : '未找到 xmind 文件');
         } else if (bang !== '!') {
-          // 非嵌入引用 → 附件原文件链接
+          // 非嵌入：无片段时内容页直达优先；带 #page 片段或无内容页时指向原文件
           ctx.stats.links++;
-          const page = pdfPageOf(frag);
-          const url = `/assets/${encodeHref(name)}` + (page ? `#page=${page}` : '');
-          out.push({
-            type: 'link',
-            url,
-            children: [{ type: 'text', value: alias || name.replace(/\.(pdf|xmind)$/i, '') }],
-          } as unknown as Node);
+          if (pageSlug && !frag) {
+            out.push({
+              type: 'link',
+              url: `/${encodeHref(pageSlug)}/`,
+              children: [{ type: 'text', value: alias || stem }],
+            } as unknown as Node);
+          } else {
+            out.push({
+              type: 'link',
+              url: rawUrl(true)!,
+              children: [{ type: 'text', value: alias || stem }],
+            } as unknown as Node);
+          }
         } else if (ext === '.pdf') {
           // ![[x.pdf]] / ![[x.pdf#page=3]] / ![[x.pdf|标题]] → iframe 嵌入 + 新窗口打开链接
-          out.push(makePdfEmbed(name, alias, frag));
+          out.push(makePdfEmbed(rawUrl(true)!, alias || stem));
           ctx.stats.images++;
         } else {
-          // ![[x.xmind]] → 构建期解包转 mermaid mindmap，交客户端渲染；失败降级 garden-missing
+          // ![[x.xmind]] → 构建期解包转 mermaid mindmap（正文嵌入保持轻量主题融合），
+          // 一等公民内容页则由 xmind-embed-viewer 直接渲染；失败降级 garden-missing
           try {
-            out.push({ type: 'html', value: xmindEmbedHtml(ctx.maps.assetsDir, name) });
+            const abs = inAssets ? join(ctx.maps.assetsDir, name) : join(ctx.maps.docsDir, pageSlug!);
+            out.push({ type: 'html', value: xmindEmbedHtml(abs) });
             ctx.stats.images++;
           } catch (err) {
             console.warn(`[remark-garden] xmind 解析失败 ${name}: ${(err as Error).message}`);

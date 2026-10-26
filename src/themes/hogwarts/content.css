@@ -829,7 +829,7 @@
 .pdf-embed__frame {
   display: block;
   width: 100%;
-  height: min(72vh, 560px);
+  height: var(--pdf-frame-h, min(72vh, 560px));
   border: none;
   background: var(--code-bg-block); /* 阅读区恒暗，与代码块同律 */
 }

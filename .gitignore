@@ -21,3 +21,6 @@ dist/
 
 # Astro 静态资源（predev/prebuild 由 docs/assets 再生，不入库）
 public/assets/
+
+# 内容区 pdf/xmind 原文件托管（sync-assets 生成，只增不删）
+public/files/

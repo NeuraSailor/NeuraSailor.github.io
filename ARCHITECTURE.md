@@ -37,17 +37,18 @@ dist/（纯静态）
 | 步骤 | 责任文件 | 说明 |
 |---|---|---|
 | vault → docs/ | 人工（仓库外） | 内容层一字不动，`[[wikilink]]`、`![[图片]]`、`> [!callout]` 原样保留 |
-| assets 同步 | `scripts/sync-assets.mjs` | `docs/assets` → `public/assets` 整目录复制，挂 predev/prebuild（只增不删；附 basename 重复警告） |
+| assets 同步 | `scripts/sync-assets.mjs` | `docs/assets` → `public/assets` 整目录复制 + 内容区 pdf/xmind → `public/files/<相对路径>`（一等公民原文件托管），挂 predev/prebuild（只增不删；附 basename 重复警告） |
+| 一等公民收集 | `src/lib/binary-content.ts` | 遍历 docs/（排除 assets/ 与点目录）收集 `.pdf`/`.xmind` → 独立路由页 `/路径/名字.pdf/`（`[...slug].astro` 合流出页，`Binary.astro` 布局）+ 侧栏（`Sidebar.astro` 合流 slug） |
 | 内容收集 | `src/content.config.ts` | glob `docs/**/*.md`（排除根 index、`.history`、`.obsidian`）；`generateId` 保留原始大小写与中文路径、折叠 `/index`——entry.id 即路由 |
 | remark 管线 | `astro.config.mjs` | 顺序 **remarkMath → remarkGfm → remarkBreaks → remarkGarden**（Math 先于 Breaks，否则 `$` 块公式被 `<br>` 切碎） |
 | rehype 管线 | `astro.config.mjs` | `rehype-katex`（strict:false，output:htmlAndMathml）构建期预渲染 + shiki 双主题 |
 | 标题/侧栏公式 | `src/lib/katex-text.ts` | 构建期渲染（output:html，无 MathML 副本——标题场景可接受） |
-| 运行时增强 | `src/scripts/site.ts` | mermaid@11（CDN）渲染（含 xmind 转出的 mindmap）、源码存档 `dataset.src`、明暗/皮肤切换时重渲染 |
+| 运行时增强 | `src/scripts/site.ts` | mermaid@11（CDN）渲染（含 xmind 转出的 mindmap）、xmind-embed-viewer（一等公民 xmind 页直接渲染，region cn）懒加载、源码存档 `dataset.src`、明暗/皮肤切换时重渲染 mermaid |
 | 收尾审计 | `scripts/linkcheck.mjs` | 本地扫 dist 全部 href/src，0 断链为准（注意：不覆盖 `.garden-missing` span） |
 
 ### remark-garden 内部顺序（唯一转换入口）
 
-mermaid 围栏 → MkDocs `!!!` 归一化（仅根级、内容限缩进块）→ **wikilink（先于 $ 配对**，防公式型文件名被切碎；`.pdf`/`.xmind` 附件在此分流：嵌入 → `.pdf-embed` iframe / 构建期转 mermaid mindmap，非嵌入 → 原文件链接，缺文件或解析失败 → garden-missing）→ Obsidian 段落级 `$` 配对 → `==高亮==` → `<mark>` → 图片按 basename 扁平到 `/assets/`（依赖全局唯一，已验证）→ `.md` 相对内链解析 → `$` 残骸抢救 → 空公式清理 → 残骸拆分 → callout → `<aside>/<details>`（canon 11 型）
+mermaid 围栏 → MkDocs `!!!` 归一化（仅根级、内容限缩进块）→ **wikilink（先于 $ 配对**，防公式型文件名被切碎；`.pdf`/`.xmind` 附件在此分流：assets 附件池原文件优先、内容区一等公民兜底——嵌入 → `.pdf-embed` iframe / 构建期转 mermaid mindmap，非嵌入无片段 → 内容页 `/路径/名字.pdf/` 直达，缺文件或解析失败 → garden-missing）→ Obsidian 段落级 `$` 配对 → `==高亮==` → `<mark>` → 图片按 basename 扁平到 `/assets/`（依赖全局唯一，已验证）→ `.md` 相对内链解析 → `$` 残骸抢救 → 空公式清理 → 残骸拆分 → callout → `<aside>/<details>`（canon 11 型）
 
 未解析引用降级为 `.garden-missing` span（诚实降级，六皮肤均有样式）。
 
@@ -77,7 +78,7 @@ mermaid 围栏 → MkDocs `!!!` 归一化（仅根级、内容限缩进块）→
 
 - **命令链**：`npm run build`（prebuild 同步 assets → astro build）→ `dist/`；`npm run linkcheck` 审计 dist；`npm run deploy` 在 dist 内 `git init` 强推 gh-pages。
 - **CI**（`.github/workflows/ci.yml`，唯一 workflow）：push main/master 或手动 → Node 22 → npm ci → build → linkcheck → peaceiris/actions-gh-pages@v4（force_orphan 全量重建）。
-- **依赖卫生**：无幽灵依赖；mermaid@11 是 CDN 运行时依赖（非 npm 包），首渲染依赖 jsdelivr 可达；fflate 仅构建期使用（xmind 解包）。
+- **依赖卫生**：mermaid@11 是 CDN 运行时依赖（非 npm 包），首渲染依赖 jsdelivr 可达；xmind-embed-viewer 为 npm 运行时依赖（控制器经 Vite 打包按需加载，渲染器本体在 XMind 托管 iframe，region cn → www.xmind.cn）；fflate 仅构建期使用（xmind 解包）。
 - ⚠ **发布现状（v3.9 审计时点）**：V3 全部提交仅在 `source` 分支；`main` 停在 2026-07-29、`gh-pages` 停在 2026-09-09 的 MkDocs 部署——**线上仍是旧 MkDocs 站，Astro 版从未上线**。上线动作：合并 source→main 触发 CI，或本地 `npm run deploy`。
 
 ## 6. 仓库根地图

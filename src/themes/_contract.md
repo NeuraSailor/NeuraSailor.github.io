@@ -84,10 +84,16 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
   折叠 chevron（`details.callout[open]`）、按压反馈；亮暗各一套类型色
 - `.garden-missing`（未解析引用的诚实降级）
 - `pre.mermaid`（透明底、居中、横向滚动）
-- `.pdf-embed`（PDF 嵌入容器，v4.0：`.pdf-embed__open` 顶部打开链接 + 
-  `.pdf-embed__frame` iframe；每皮肤按设计语言给容器框与标题栏感，
-  可点目标 ≥44×44、:active 按压态）；xmind 嵌入复用 `pre.mermaid`
-  （构建期转 mermaid mindmap，见 `src/lib/xmind-to-mermaid.ts`），零新增样式
+- `.pdf-embed`（附件阅读容器，v4.0 嵌入 + v4.1 一等公民内容页共用：
+  `.pdf-embed__open` 顶部打开/下载链接 + `.pdf-embed__frame` iframe/挂载点；
+  高度用 `var(--pdf-frame-h, min(72vh, 560px))`——嵌入用默认值，
+  内容页由页面侧设 `--pdf-frame-h: calc(100vh - 300px)` 全高；
+  每皮肤按设计语言给容器框与标题栏感，可点目标 ≥44×44、:active 按压态）；
+  xmind 两轨：正文嵌入复用 `pre.mermaid`（构建期转 mindmap，见
+  `src/lib/xmind-to-mermaid.ts`）；一等公民内容页 = `.pdf-embed` 外壳 +
+  `[data-xmind-src]` 挂载点（复用 `.pdf-embed__frame` 类取高度），
+  由 site.ts `initXmind()` 挂 xmind-embed-viewer（官方渲染器，皮肤只包壳）；
+  皮肤层均零新增选择器
 - `.katex-display` 横向滚动、`.katex-error` 安静降级（源码文本）
 - `.code-copy`（JS 注入的复制按钮）：`is-copied`/`is-error` 两态
 

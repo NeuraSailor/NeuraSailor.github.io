@@ -453,6 +453,51 @@ async function rerenderMermaid() {
   await renderMermaid();
 }
 
+/* ---------- xmind 一等公民页（官方 embed-viewer 直接渲染，控制器懒加载） ---------- */
+let xmindViewerCtor: any = null;
+
+async function initXmind() {
+  const nodes = document.querySelectorAll<HTMLElement>(
+    '.xmind-embed__frame[data-xmind-src]:not([data-ready])',
+  );
+  if (!nodes.length) return;
+  try {
+    if (!xmindViewerCtor) {
+      xmindViewerCtor = (await import('xmind-embed-viewer')).XMindEmbedViewer;
+    }
+  } catch (err) {
+    console.warn('[initXmind] viewer 控制器加载失败', err);
+    return; // 控制器加载失败：顶部下载/新窗口链接兜底
+  }
+  for (const el of nodes) {
+    el.dataset.ready = '1';
+    try {
+      const res = await fetch(el.dataset.xmindSrc!);
+      if (!res.ok) {
+        console.warn('[initXmind] 原文件加载失败', res.status, el.dataset.xmindSrc);
+        continue;
+      }
+      const buf = await res.arrayBuffer();
+      const viewer = new xmindViewerCtor({
+        el,
+        region: 'cn', // 国内图库（www.xmind.cn），渲染器本体在 XMind 托管 iframe 中
+        styles: { width: '100%', height: '100%' },
+      });
+      viewer.addEventListener('sheets-load', () => {
+        try {
+          viewer.setFitMap();
+        } catch {
+          /* 自适配失败保持默认缩放 */
+        }
+      });
+      viewer.load(buf);
+    } catch (err) {
+      console.warn('[initXmind] 挂载失败', el.dataset.xmindSrc, err);
+      /* 单个文件失败不影响其它 */
+    }
+  }
+}
+
 /* ---------- 快捷键：⌘K / Ctrl+K ---------- */
 function initShortcuts() {
   window.addEventListener('keydown', (e) => {
@@ -476,6 +521,7 @@ function init() {
   initBacktop();
   initCountUp();
   renderMermaid();
+  initXmind();
 }
 
 /* View Transitions 交换 <html> 前把当前外观写进新文档：

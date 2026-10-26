@@ -40,6 +40,7 @@ Obsidian vault → 同步 → docs/*.md → Astro 构建（只读）
 - `docs/` 保留 Obsidian 原生语法：`[[wikilink]]`、`![[图片|尺寸]]`、`> [!callout]` 折叠标记
 - 构建期由 `src/plugins/remark-garden.ts` 统一转换：wikilink 解析（同名优先同目录）、图片按 basename 扁平到 `/assets/`（文件名已验证全局唯一）、callout → `<aside>/<details>`（canon 11 型）、MkDocs `!!!` 归一化（仅根级、内容限缩进块）、mermaid 围栏转客户端渲染、`==高亮==` → `<mark>`、`.md` 相对内链解析
 - PDF/xmind 附件分流（v4.0）：`![[x.pdf]]`/`![[x.pdf#page=3]]`/`![[x.pdf|标题]]` → `.pdf-embed`（打开链接 + iframe），`[[x.pdf]]` 非嵌入 → 原文件链接；`![[x.xmind]]` → 构建期解包转 mermaid mindmap（`src/lib/xmind-to-mermaid.ts`，fflate 解包，仅支持 content.json 新格式），复用客户端 mermaid 渲染链；文件不存在或解析失败 → `.garden-missing`
+- PDF/xmind 一等公民内容（v4.1）：docs/ 内容区（非 assets/）的 `.pdf`/`.xmind` 自动获得独立路由页 `/路径/名字.pdf/`（带扩展名，与同名 md 共存；Binary 布局 + 侧栏收录 + Pagefind 标题索引），原文件托管 `/files/<相对路径>`（sync-assets 生成）；xmind 页由 xmind-embed-viewer（官方，region cn，渲染器在 XMind 托管 iframe）直接渲染，正文 `![[嵌入]]` 仍走 mermaid 转换；wikilink 无片段时内容页直达优先
 - 数学管线：`remarkMath`（必须在 `remarkBreaks` **之前**，否则 `$` 块公式被 `<br>` 切碎）+ `rehype-katex` 构建期预渲染（`strict:false`）；Obsidian 式段落级 `$` 配对与残骸抢救都在 remark-garden 内
 - **URL 保留原始大小写**：content collection 的 `generateId` 必须保持自定义（Astro 默认会 slugify 成小写+连字符，破坏外链）
 - Astro 的 markdown 渲染有内容摘要缓存：改 remark 插件后需 `rm -rf .astro node_modules/.astro` 再构建
@@ -51,7 +52,7 @@ src/
 ├── site.config.ts      # 站点配置（defaultSkin：默认皮肤唯一决定点）
 ├── content.config.ts   # glob loader 读 docs/，自定义 generateId
 ├── pages/              # index.astro（首页着陆页）+ [...slug].astro（全部内容页）
-├── layouts/            # Base.astro（全局壳，皮肤 link 注入与防闪白）/ Article.astro（文章页）
+├── layouts/            # Base.astro（全局壳，皮肤 link 注入与防闪白）/ Article.astro（文章页）/ Binary.astro（pdf/xmind 内容页）
 ├── components/         # Toolbar/Sidebar/TabBar/Toc/SearchPalette/SidebarNode（零内嵌样式）
 ├── styles/base.css     # 共享结构层：reset + 结构令牌（间距/布局/z）+ 布局骨架
 ├── themes/             # 皮肤层（一目录一皮肤，_contract.md 为完整契约）
@@ -63,7 +64,7 @@ src/
 │   ├── developer-terminal/ # 开发者终端（终端风等宽）
 │   └── <皮肤>/         #   skin(令牌)/chrome(控件)/content(正文)/motion(动效)/index.css
 ├── scripts/site.ts     # 全站交互（astro:page-load 感知；initSkin 皮肤切换）
-└── lib/                # nav-tree / stats / themes(皮肤注册表自动发现) / katex-text / xmind-to-mermaid
+└── lib/                # nav-tree / stats / themes(皮肤注册表自动发现) / katex-text / xmind-to-mermaid / binary-content(一等公民 pdf/xmind)
 ```
 
 ### 主题系统（格式与内容分离）
