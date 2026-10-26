@@ -84,6 +84,10 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
   折叠 chevron（`details.callout[open]`）、按压反馈；亮暗各一套类型色
 - `.garden-missing`（未解析引用的诚实降级）
 - `pre.mermaid`（透明底、居中、横向滚动）
+- `.pdf-embed`（PDF 嵌入容器，v4.0：`.pdf-embed__open` 顶部打开链接 + 
+  `.pdf-embed__frame` iframe；每皮肤按设计语言给容器框与标题栏感，
+  可点目标 ≥44×44、:active 按压态）；xmind 嵌入复用 `pre.mermaid`
+  （构建期转 mermaid mindmap，见 `src/lib/xmind-to-mermaid.ts`），零新增样式
 - `.katex-display` 横向滚动、`.katex-error` 安静降级（源码文本）
 - `.code-copy`（JS 注入的复制按钮）：`is-copied`/`is-error` 两态
 

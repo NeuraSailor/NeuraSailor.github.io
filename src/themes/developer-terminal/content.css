@@ -791,3 +791,53 @@
 [data-theme='dark'] .md-content pre.astro-code span {
   color: var(--shiki-dark, #f4f2ff) !important;
 }
+
+/* ---------- PDF 嵌入 = PDF.EXE 阅读子窗（v4.0 内容管线产物） ---------- */
+.pdf-embed {
+  margin: var(--sp-5) calc(var(--sp-2) + 3px);
+  border: 2px solid var(--nes-blue);
+  outline: 1px solid var(--nes-blue);
+  outline-offset: 3px;
+  background: var(--code-bg-block);
+  box-shadow: 4px 4px 0 0 var(--hard-shadow-color, #0d0826);
+}
+
+[data-theme='light'] .pdf-embed {
+  box-shadow: 4px 4px 0 0 #d8d4f0;
+}
+
+.pdf-embed__open {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border-bottom: 2px solid var(--nes-blue);
+  color: var(--nes-gold);
+  font-family: var(--font-mono);
+  font-size: var(--text-subhead);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 75ms linear;
+}
+
+.pdf-embed__open::before {
+  content: '>'; /* '>' 金字命令语言 */
+  font-weight: 700;
+}
+
+.pdf-embed__open:hover {
+  background: rgba(74, 144, 217, 0.18);
+}
+
+.pdf-embed__open:active {
+  transform: scaleX(1.02) scaleY(0.95); /* 挤压拉伸（非等比） */
+}
+
+.pdf-embed__frame {
+  display: block;
+  width: 100%;
+  height: min(72vh, 560px);
+  border: none;
+  background: var(--code-bg-block);
+}

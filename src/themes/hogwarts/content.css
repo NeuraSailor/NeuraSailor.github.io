@@ -779,3 +779,57 @@
 [data-theme='dark'] .md-content pre.astro-code span {
   color: var(--shiki-dark, #e0d0b0) !important;
 }
+
+/* ---------- PDF 嵌入（v4.0 内容管线产物） ---------- */
+.pdf-embed {
+  margin: var(--sp-5) 0;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(184, 146, 46, 0.4);
+  background: rgba(184, 146, 46, 0.08);
+  overflow: hidden;
+}
+
+.pdf-embed__open {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border-bottom: 1px solid rgba(184, 146, 46, 0.35);
+  color: var(--hw-gold-dim);
+  font-size: var(--text-subhead);
+  text-decoration: none;
+  background: linear-gradient(to right, var(--hw-gold), var(--hw-gold)) no-repeat;
+  background-size: 0% 1.5px;
+  background-position: 0% 100%;
+  transition:
+    background-size var(--dur-morph) var(--ease-soft),
+    color var(--dur-morph) var(--ease-soft);
+}
+
+.pdf-embed__open::before {
+  content: '';
+  flex: none;
+  width: 15px;
+  height: 15px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.pdf-embed__open:hover {
+  background-size: 100% 1.5px; /* 金下划线扫入 */
+  color: var(--hw-gold-bright);
+}
+
+.pdf-embed__open:active {
+  transform: translateY(1px);
+}
+
+.pdf-embed__frame {
+  display: block;
+  width: 100%;
+  height: min(72vh, 560px);
+  border: none;
+  background: var(--code-bg-block); /* 阅读区恒暗，与代码块同律 */
+}

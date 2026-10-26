@@ -576,3 +576,48 @@
 [data-theme='dark'] .md-content pre.astro-code span {
   color: var(--shiki-dark, inherit) !important;
 }
+
+/* ---------- PDF 嵌入（v4.0 内容管线产物） ---------- */
+.pdf-embed {
+  margin: var(--sp-5) 0;
+  border-top: 2px solid var(--label); /* booktabs 顶粗规 */
+  border-bottom: 1px solid var(--separator); /* 底细规 */
+}
+
+.pdf-embed__open {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: var(--sp-3) var(--sp-2);
+  color: var(--accent);
+  font-size: var(--text-subhead);
+  text-decoration: none;
+}
+
+.pdf-embed__open::before {
+  content: '';
+  flex: none;
+  width: 15px;
+  height: 15px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.pdf-embed__open:hover {
+  text-decoration: underline; /* hover 只加下划线 */
+}
+
+.pdf-embed__open:active {
+  opacity: 0.7;
+}
+
+.pdf-embed__frame {
+  display: block;
+  width: 100%;
+  height: min(72vh, 560px);
+  border: none;
+  border-top: 1px solid var(--separator);
+  background: var(--surface);
+}

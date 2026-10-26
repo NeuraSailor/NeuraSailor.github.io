@@ -12,10 +12,11 @@
 import { visit } from 'unist-util-visit';
 import GithubSlugger from 'github-slugger';
 import { remark } from 'remark';
-import { readdirSync, statSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import type { Plugin } from 'unified';
 import type { Node, Parent } from 'unist';
+import { xmindToMermaidSheets } from '../lib/xmind-to-mermaid.ts';
 
 /* ---------- 常量与映射 ---------- */
 
@@ -56,6 +57,7 @@ interface PageMaps {
   byPath: Map<string, string>;
   byBasename: Map<string, string[]>;
   assetNames: Set<string>;
+  assetsDir: string;
 }
 
 let cachedMaps: PageMaps | null = null;
@@ -103,7 +105,7 @@ function buildMaps(docsDir: string): PageMaps {
     for (const f of readdirSync(assetsDir)) assetNames.add(f);
   }
 
-  cachedMaps = { byPath, byBasename, assetNames };
+  cachedMaps = { byPath, byBasename, assetNames, assetsDir };
   return cachedMaps;
 }
 
@@ -153,6 +155,40 @@ function makeImageNode(name: string, alias: string | undefined): Node {
   return img;
 }
 
+/* ---------- PDF / xmind 附件（文件存在于 docs/assets 才生效，否则 garden-missing） ---------- */
+
+function pdfPageOf(frag: string): number | null {
+  const m = /^(?:page=)?(\d+)$/.exec(frag);
+  return m ? Number(m[1]) : null;
+}
+
+function makePdfEmbed(name: string, alias: string, frag: string): Node {
+  const page = pdfPageOf(frag);
+  const url = `/assets/${encodeHref(name)}` + (page ? `#page=${page}` : '');
+  const label = escapeHtml(alias || name.replace(/\.pdf$/i, ''));
+  return {
+    type: 'html',
+    value:
+      `<div class="pdf-embed">` +
+      `<a class="pdf-embed__open" href="${escapeHtml(url)}" target="_blank" rel="noopener" title="在新标签页打开">${label}</a>` +
+      `<iframe class="pdf-embed__frame" src="${escapeHtml(url)}" loading="lazy" title="${label}"></iframe>` +
+      `</div>`,
+  };
+}
+
+function xmindEmbedHtml(assetsDir: string, name: string): string {
+  const data = readFileSync(join(assetsDir, name));
+  const sheets = xmindToMermaidSheets(new Uint8Array(data));
+  // 多张表时逐表出图并加 sheet 标题（单一表不加，避免噪音）；样式复用既有 pre.mermaid
+  const multi = sheets.length > 1;
+  return sheets
+    .map((s, i) => {
+      const head = multi ? `<p><strong>${escapeHtml(s.title || `Sheet ${i + 1}`)}</strong></p>` : '';
+      return `${head}<pre class="mermaid">${escapeHtml(s.mermaid)}</pre>`;
+    })
+    .join('');
+}
+
 function transformWikilinks(tree: Node, ctx: TransformCtx) {
   // 收集所有含 [[ 的文本节点及其父节点
   const hits: { node: Node & { value: string }; parent: Parent }[] = [];
@@ -177,17 +213,57 @@ function transformWikilinks(tree: Node, ctx: TransformCtx) {
       const [rawTarget, ...aliasParts] = inner.split('|');
       const alias = aliasParts.join('|').trim();
       const target = rawTarget.trim();
-      const ext = extname(target).toLowerCase();
+      // 目标可带 #片段（[[页面#标题]] / ![[x.pdf#page=3]]）：先拆出纯文件部分再判扩展名
+      const hashIdx = target.indexOf('#');
+      const filePart = (hashIdx >= 0 ? target.slice(0, hashIdx) : target).trim();
+      const frag = hashIdx >= 0 ? target.slice(hashIdx + 1).trim() : '';
+      const ext = extname(filePart).toLowerCase();
       const isImage = bang === '!' || IMG_EXT.has(ext);
       // ![[页面]] 嵌入：无图片扩展名时先按页面解析（Obsidian 笔记嵌入语义），
-      // 命中内链，避免被当图片降级成 garden-missing
+      // 命中内链，避免被当图片降级成 garden-missing（pdf/xmind 走附件分流，不当页面）
       const pageSlug =
-        bang === '!' && !IMG_EXT.has(ext)
-          ? resolvePage(target.split('#')[0]!.trim(), ctx)
+        bang === '!' && !IMG_EXT.has(ext) && ext !== '.pdf' && ext !== '.xmind'
+          ? resolvePage(filePart, ctx)
           : null;
 
-      if (isImage && !pageSlug) {
-        const name = target.replace(/^assets\//, '').split('/').pop()!;
+      if (ext === '.pdf' || ext === '.xmind') {
+        const name = filePart.replace(/^assets\//, '').split('/').pop()!;
+        const exists = ctx.maps.assetNames.has(name);
+        const missing = (why: string) => {
+          out.push({
+            type: 'html',
+            value: `<span class="garden-missing garden-link" title="${why}">${escapeHtml(alias || filePart)}</span>`,
+          });
+          ctx.stats.unresolved++;
+        };
+        if (!exists) {
+          missing(ext === '.pdf' ? '未找到 PDF 文件' : '未找到 xmind 文件');
+        } else if (bang !== '!') {
+          // 非嵌入引用 → 附件原文件链接
+          ctx.stats.links++;
+          const page = pdfPageOf(frag);
+          const url = `/assets/${encodeHref(name)}` + (page ? `#page=${page}` : '');
+          out.push({
+            type: 'link',
+            url,
+            children: [{ type: 'text', value: alias || name.replace(/\.(pdf|xmind)$/i, '') }],
+          } as unknown as Node);
+        } else if (ext === '.pdf') {
+          // ![[x.pdf]] / ![[x.pdf#page=3]] / ![[x.pdf|标题]] → iframe 嵌入 + 新窗口打开链接
+          out.push(makePdfEmbed(name, alias, frag));
+          ctx.stats.images++;
+        } else {
+          // ![[x.xmind]] → 构建期解包转 mermaid mindmap，交客户端渲染；失败降级 garden-missing
+          try {
+            out.push({ type: 'html', value: xmindEmbedHtml(ctx.maps.assetsDir, name) });
+            ctx.stats.images++;
+          } catch (err) {
+            console.warn(`[remark-garden] xmind 解析失败 ${name}: ${(err as Error).message}`);
+            missing('xmind 解析失败');
+          }
+        }
+      } else if (isImage && !pageSlug) {
+        const name = filePart.replace(/^assets\//, '').split('/').pop()!;
         if (ctx.maps.assetNames.has(name)) {
           out.push(makeImageNode(name, alias));
           ctx.stats.images++;
@@ -199,38 +275,34 @@ function transformWikilinks(tree: Node, ctx: TransformCtx) {
           ctx.stats.unresolved++;
         }
       } else if (pageSlug) {
-        const [pagePart, ...anchorParts] = target.split('#');
-        const anchor = anchorParts.join('#').trim();
         ctx.stats.links++;
-        const url = `/${encodeHref(pageSlug)}/` + (anchor ? `#${ctx.slugger.slug(anchor)}` : '');
+        const url = `/${encodeHref(pageSlug)}/` + (frag ? `#${ctx.slugger.slug(frag)}` : '');
         out.push({
           type: 'link',
           url,
-          children: [{ type: 'text', value: alias || pagePart.split('/').pop()! }],
+          children: [{ type: 'text', value: alias || filePart.split('/').pop()! }],
         } as unknown as Node);
       } else {
-        const [pagePart, ...anchorParts] = target.split('#');
-        const anchor = anchorParts.join('#').trim();
         ctx.stats.links++;
-        if (!pagePart && anchor) {
+        if (!filePart && frag) {
           out.push({
             type: 'link',
-            url: `#${ctx.slugger.slug(anchor)}`,
-            children: [{ type: 'text', value: alias || anchor }],
+            url: `#${ctx.slugger.slug(frag)}`,
+            children: [{ type: 'text', value: alias || frag }],
           } as unknown as Node);
         } else {
-          const slug = resolvePage(pagePart, ctx);
+          const slug = resolvePage(filePart, ctx);
           if (slug) {
-            const url = `/${encodeHref(slug)}/` + (anchor ? `#${ctx.slugger.slug(anchor)}` : '');
+            const url = `/${encodeHref(slug)}/` + (frag ? `#${ctx.slugger.slug(frag)}` : '');
             out.push({
               type: 'link',
               url,
-              children: [{ type: 'text', value: alias || pagePart.split('/').pop()! }],
+              children: [{ type: 'text', value: alias || filePart.split('/').pop()! }],
             } as unknown as Node);
           } else {
             out.push({
               type: 'html',
-              value: `<span class="garden-missing garden-link">${escapeHtml(alias || pagePart)}</span>`,
+              value: `<span class="garden-missing garden-link">${escapeHtml(alias || filePart)}</span>`,
             });
             ctx.stats.unresolved++;
           }
