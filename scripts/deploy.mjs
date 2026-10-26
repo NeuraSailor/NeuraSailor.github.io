@@ -19,7 +19,11 @@ if (!existsSync(join(dist, 'index.html'))) {
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
 run('git init -b gh-pages-temp', dist);
 run('git add -A', dist);
-run(`git -c user.name="deploy" -c user.email="deploy@local" commit -m "deploy ${stamp}" --quiet`, dist);
+// 无变更时（如上次 push 失败后重跑）不中断，复用现有提交继续 push
+run(
+  `git -c user.name="deploy" -c user.email="deploy@local" commit -m "deploy ${stamp}" --quiet || echo "[deploy] 无新增变更，复用现有提交"`,
+  dist,
+);
 run('git push --force "https://github.com/NeuraSailor/NeuraSailor.github.io.git" gh-pages-temp:gh-pages', dist);
 rmSync(join(dist, '.git'), { recursive: true, force: true });
 console.log(`[deploy] 已推送 gh-pages（${stamp}）`);
