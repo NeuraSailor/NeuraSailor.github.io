@@ -18,6 +18,8 @@
  */
 
 /* ===================== 环境探测（模块级，跨页面存活） ===================== */
+import { guideBind, guideSetup, guideTeardown, guideUnbind } from './guide';
+
 const RM = matchMedia('(prefers-reduced-motion: reduce)');
 const FINE = matchMedia('(pointer: fine)');
 const MOBILE = matchMedia('(max-width: 900px)');
@@ -66,21 +68,6 @@ interface Spark {
   vr: number;
 }
 let sparks: Spark[] = [];
-
-/* ---------- 公式爆炸：DOM 克隆网格碎片 ---------- */
-interface Shard {
-  el: HTMLElement;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  rot: number;
-  vr: number;
-  born: number;
-  life: number;
-  src: HTMLElement;
-}
-let shards: Shard[] = [];
 
 /* ---------- 便签拖拽（抓胶带甩出去，松手果冻归位） ---------- */
 interface StickerDrag {
@@ -808,102 +795,6 @@ function exitGravity() {
 }
 
 /* ============================================================
-   FormulaBoom —— 公式爆炸（点击展示公式，碎片飞散后果冻重组）
-   ============================================================ */
-
-function onFormulaClick(e: MouseEvent) {
-  if (RM.matches || gravity) return;
-  const target = e.target as HTMLElement | null;
-  if (!target?.closest || target.closest('a')) return; // 链接内不炸
-  const formula = target.closest('.katex-display') as HTMLElement | null;
-  if (!formula || formula.style.visibility === 'hidden') return;
-  explodeFormula(formula);
-}
-
-/** 克隆原式为网格碎片：每片 = overflow:hidden 小窗 + 完整克隆偏移到对应单元格（真实字形） */
-function explodeFormula(el: HTMLElement) {
-  if (shards.length > 60) return;
-  const rect = el.getBoundingClientRect();
-  if (rect.width < 40 || rect.height < 16) return;
-  const cs = getComputedStyle(el);
-  const cols = rect.width < 300 ? 3 : 4;
-  const rows = rect.height < 60 ? 2 : 3;
-  const cw = rect.width / cols;
-  const ch = rect.height / rows;
-
-  el.style.visibility = 'hidden';
-  el.dataset.pgBoom = '1';
-  const now = performance.now();
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const ghost = document.createElement('div');
-      ghost.className = 'pg-shard';
-      ghost.style.cssText = `position:fixed;left:0;top:0;width:${cw}px;height:${ch}px;overflow:hidden;pointer-events:none;z-index:74;will-change:transform;color:${cs.color};font-size:${cs.fontSize};`;
-      const inner = el.cloneNode(true) as HTMLElement;
-      inner.style.cssText = `position:absolute;margin:0;left:${-col * cw}px;top:${-row * ch}px;width:${rect.width}px;`;
-      ghost.appendChild(inner);
-      document.body.appendChild(ghost);
-
-      const cx = col - (cols - 1) / 2;
-      const cy = row - (rows - 1) / 2;
-      shards.push({
-        el: ghost,
-        x: rect.left + col * cw,
-        y: rect.top + row * ch,
-        vx: cx * (0.9 + Math.random()) * 1.7 + (Math.random() - 0.5),
-        vy: cy * 0.5 - (0.9 + Math.random() * 2.2),
-        rot: 0,
-        vr: (Math.random() - 0.5) * 0.02,
-        born: now,
-        life: 650 + Math.random() * 280,
-        src: el,
-      });
-    }
-  }
-  burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
-}
-
-function updateShards(now: number, dtf: number) {
-  if (!shards.length) return;
-  const expired: Shard[] = [];
-  shards = shards.filter((s) => {
-    const age = now - s.born;
-    if (age >= s.life) {
-      s.el.remove();
-      expired.push(s);
-      return false;
-    }
-    s.vy += 0.13 * dtf; // 碎片受重力
-    s.vx *= Math.pow(0.985, dtf);
-    s.x += s.vx * dtf;
-    s.y += s.vy * dtf;
-    s.rot += s.vr * dtf;
-    const k = 1 - age / s.life;
-    s.el.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${s.rot}rad) scale(${0.55 + 0.45 * k})`;
-    s.el.style.opacity = String(Math.min(1, k * 2.4));
-    return true;
-  });
-  // 同源碎片全部落幕后，原文果冻回归
-  for (const s of expired) {
-    if (s.src.isConnected && !shards.some((o) => o.src === s.src)) {
-      s.src.style.visibility = '';
-      delete s.src.dataset.pgBoom;
-      jelly(s.src);
-    }
-  }
-}
-
-function teardownShards() {
-  for (const s of shards) s.el.remove();
-  shards = [];
-  for (const el of document.querySelectorAll<HTMLElement>('[data-pg-boom]')) {
-    el.style.visibility = '';
-    delete el.dataset.pgBoom;
-  }
-}
-
-/* ============================================================
    StickerDrag —— 便签拖拽（只有胶带命中区可抓；纯点击不接管）
    ============================================================ */
 
@@ -1024,7 +915,6 @@ function tick(t: number) {
 
   updateField(t, dtf);
   updateSparks(t, dtf, ctx);
-  updateShards(t, dtf);
   drawInk(t);
   updateMagnets(t);
   syncGravity();
@@ -1139,6 +1029,7 @@ function setupPage() {
   if (!RM.matches) decorateSections();
   collectMagnets();
   watchTheme();
+  guideSetup();
 }
 
 /** 清掉本页全部痕迹（canvas / IO / 打标 / 磁吸 / 彩蛋 / 重力会话） */
@@ -1155,8 +1046,8 @@ function teardownPageState() {
   sparks = [];
   ink = [];
   exitGravity();
-  teardownShards();
   teardownStickerDrag();
+  guideTeardown();
   for (const el of document.querySelectorAll('.pg-celebrate')) el.remove();
   resetMagnets();
   stripKin();
@@ -1183,7 +1074,6 @@ export function mount() {
   bind(document, 'astro:page-load', setupPage);
   bind(document, 'astro:before-swap', teardownPageState);
   bind(document, 'click', onTitlePointer);
-  bind(document, 'click', onFormulaClick);
   bind(document, 'click', onSuppressStickerClick, { capture: true });
   bind(document, 'pointerdown', onStickerDown, { passive: true });
   bind(document, 'pointermove', onStickerMove, { passive: true });
@@ -1191,6 +1081,8 @@ export function mount() {
   bind(document, 'pointercancel', onStickerUp, { passive: true });
   RM.addEventListener?.('change', onMotionPref);
   keep(() => RM.removeEventListener?.('change', onMotionPref));
+
+  guideBind({ burst });
 
   setupPage();
 }
@@ -1201,5 +1093,6 @@ export function unmount() {
   for (const fn of persistentCleanups) fn();
   persistentCleanups = [];
   titleClicks = [];
+  guideUnbind();
   mounted = false;
 }

@@ -617,7 +617,6 @@
   overflow-y: hidden;
   padding: var(--sp-1) 0;
   -webkit-overflow-scrolling: touch;
-  cursor: pointer; /* 游乐场彩蛋：点击公式碎片爆开再重组（engine.ts FormulaBoom） */
 }
 
 .md-content .katex-display > .katex {
@@ -710,4 +709,242 @@
   height: var(--pdf-frame-h, min(72vh, 560px));
   border: none;
   background: var(--bg);
+}
+
+/* ============================================================
+   花园小径（guide.ts 注入：文末「下一条小径」三卡引导）
+   ============================================================ */
+.pg-trail {
+  margin-top: var(--sp-12);
+  padding-top: var(--sp-8);
+  border-top: 1.5px dashed var(--separator);
+}
+
+.pg-trail__label {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--text-caption);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--label-3);
+  margin-bottom: var(--sp-4);
+}
+
+.pg-trail__label::after {
+  content: '';
+  flex: 1;
+  height: 7px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='7' viewBox='0 0 48 7'%3E%3Cpath d='M2 4.5 q6 -4 12 0 t12 0 t12 0' fill='none' stroke='%23a19788' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") left center / 48px 7px repeat-x;
+  opacity: 0.7;
+}
+
+.pg-trail__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+}
+
+.pg-trail__card {
+  position: relative;
+  display: block;
+  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  border: 1.5px solid var(--separator-strong);
+  border-radius: var(--r-sketch);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  text-decoration: none;
+  color: var(--label);
+  overflow: hidden;
+  animation: pg-pop 460ms var(--ease-bounce) both;
+  transition:
+    transform var(--dur-slow) var(--ease-spring),
+    box-shadow var(--dur-slow) var(--ease-spring),
+    border-color var(--dur-base) var(--ease-soft);
+}
+
+.pg-trail__card:nth-child(1) { rotate: -0.7deg; animation-delay: 80ms; }
+.pg-trail__card:nth-child(2) { border-radius: var(--r-sketch-2); rotate: 0.6deg; animation-delay: 160ms; }
+.pg-trail__card:nth-child(3) { rotate: -0.4deg; animation-delay: 240ms; }
+
+/* 胶带（与便签/导航卡同一语言） */
+.pg-trail__card::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  translate: -50% 0;
+  width: 52px;
+  height: 16px;
+  background: rgba(165, 165, 180, 0.5);
+  border: 1px solid rgba(94, 82, 64, 0.14);
+  border-radius: 2px;
+  rotate: -2deg;
+}
+
+.pg-trail__card:hover {
+  transform: translateY(-4px) scale(1.02);
+  rotate: 0deg;
+  border-color: rgba(var(--accent-raw), 0.6);
+  box-shadow: var(--shadow-3);
+  text-decoration: none;
+}
+
+.pg-trail__card:active {
+  transform: scale(0.97);
+  transition-duration: var(--dur-fast);
+}
+
+.pg-trail__tag {
+  display: inline-block;
+  font-size: var(--text-caption);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  border: 1.5px dashed rgba(var(--accent-raw), 0.55);
+  border-radius: var(--r-sketch-sm);
+  padding: 1px 9px;
+}
+
+.pg-trail__name {
+  display: block;
+  margin-top: var(--sp-3);
+  font-weight: 750;
+  font-size: var(--text-subhead);
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.pg-trail__go {
+  display: inline-block;
+  margin-top: var(--sp-3);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--accent);
+  transition: translate var(--dur-spring) var(--ease-spring);
+}
+
+.pg-trail__card:hover .pg-trail__go {
+  translate: 4px 0;
+}
+
+@media (max-width: 900px) {
+  .pg-trail__cards {
+    grid-template-columns: 1fr;
+    gap: var(--sp-3);
+  }
+
+  .pg-trail__card:nth-child(n) {
+    rotate: 0deg;
+  }
+
+  .pg-trail__card:nth-child(2) {
+    rotate: 0.4deg;
+  }
+
+  .pg-trail__card:nth-child(3) {
+    rotate: -0.4deg;
+  }
+}
+
+/* ============================================================
+   继续探索卡（guide.ts 注入：首页，滚动位置记忆入口）
+   ============================================================ */
+.pg-continue {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-4);
+  margin: var(--sp-10) 0 0;
+  padding: var(--sp-5) var(--sp-6);
+  border: 1.5px solid var(--separator-strong);
+  border-radius: var(--r-sketch);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+  text-decoration: none;
+  rotate: -0.3deg;
+  animation: pg-pop 460ms var(--ease-bounce) 120ms both;
+  transition:
+    transform var(--dur-slow) var(--ease-spring),
+    box-shadow var(--dur-slow) var(--ease-spring),
+    border-color var(--dur-base) var(--ease-soft);
+}
+
+.pg-continue::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 36px;
+  width: 52px;
+  height: 16px;
+  background: rgba(165, 165, 180, 0.5);
+  border: 1px solid rgba(94, 82, 64, 0.14);
+  border-radius: 2px;
+  rotate: -2deg;
+}
+
+.pg-continue:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--accent-raw), 0.6);
+  box-shadow: var(--shadow-3);
+}
+
+.pg-continue:active {
+  transform: scale(0.98);
+  transition-duration: var(--dur-fast);
+}
+
+.pg-continue__tag {
+  font-size: var(--text-caption);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  border: 1.5px dashed rgba(var(--accent-raw), 0.55);
+  border-radius: var(--r-sketch-sm);
+  padding: 1px 9px;
+}
+
+.pg-continue__name {
+  font-weight: 800;
+  font-size: var(--text-subhead);
+  color: var(--label);
+  word-break: break-all;
+}
+
+.pg-continue__bar {
+  flex: 1;
+  min-width: 120px;
+  height: 9px;
+  border: 1px dashed var(--separator-strong);
+  border-radius: 99px;
+  background: var(--fill);
+  overflow: hidden;
+}
+
+.pg-continue__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+}
+
+.pg-continue__hint {
+  font-size: var(--text-caption);
+  font-weight: 650;
+  color: var(--label-3);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   侧栏已探索圆点（guide.ts 注入）
+   ============================================================ */
+.pg-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 6px;
+  vertical-align: 0.06em;
+  background: rgba(var(--accent-raw), 0.8);
+  border-radius: var(--r-blob);
 }
