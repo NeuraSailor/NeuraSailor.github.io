@@ -67,6 +67,34 @@ interface Spark {
 }
 let sparks: Spark[] = [];
 
+/* ---------- 公式爆炸：DOM 克隆网格碎片 ---------- */
+interface Shard {
+  el: HTMLElement;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  rot: number;
+  vr: number;
+  born: number;
+  life: number;
+  src: HTMLElement;
+}
+let shards: Shard[] = [];
+
+/* ---------- 便签拖拽（抓胶带甩出去，松手果冻归位） ---------- */
+interface StickerDrag {
+  el: HTMLElement;
+  startX: number;
+  startY: number;
+  vx: number;
+  lastX: number;
+  engaged: boolean;
+  pointerId: number;
+}
+let stickerDrag: StickerDrag | null = null;
+let stickerSuppressClick = false;
+
 let palette: string[] = ['#ef7d51', '#4fae9f', '#d9a545', '#8d7bd0'];
 let inkColor = 'rgba(226, 88, 44, 0.5)';
 let isDark = false;
@@ -780,6 +808,203 @@ function exitGravity() {
 }
 
 /* ============================================================
+   FormulaBoom —— 公式爆炸（点击展示公式，碎片飞散后果冻重组）
+   ============================================================ */
+
+function onFormulaClick(e: MouseEvent) {
+  if (RM.matches || gravity) return;
+  const target = e.target as HTMLElement | null;
+  if (!target?.closest || target.closest('a')) return; // 链接内不炸
+  const formula = target.closest('.katex-display') as HTMLElement | null;
+  if (!formula || formula.style.visibility === 'hidden') return;
+  explodeFormula(formula);
+}
+
+/** 克隆原式为网格碎片：每片 = overflow:hidden 小窗 + 完整克隆偏移到对应单元格（真实字形） */
+function explodeFormula(el: HTMLElement) {
+  if (shards.length > 60) return;
+  const rect = el.getBoundingClientRect();
+  if (rect.width < 40 || rect.height < 16) return;
+  const cs = getComputedStyle(el);
+  const cols = rect.width < 300 ? 3 : 4;
+  const rows = rect.height < 60 ? 2 : 3;
+  const cw = rect.width / cols;
+  const ch = rect.height / rows;
+
+  el.style.visibility = 'hidden';
+  el.dataset.pgBoom = '1';
+  const now = performance.now();
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const ghost = document.createElement('div');
+      ghost.className = 'pg-shard';
+      ghost.style.cssText = `position:fixed;left:0;top:0;width:${cw}px;height:${ch}px;overflow:hidden;pointer-events:none;z-index:74;will-change:transform;color:${cs.color};font-size:${cs.fontSize};`;
+      const inner = el.cloneNode(true) as HTMLElement;
+      inner.style.cssText = `position:absolute;margin:0;left:${-col * cw}px;top:${-row * ch}px;width:${rect.width}px;`;
+      ghost.appendChild(inner);
+      document.body.appendChild(ghost);
+
+      const cx = col - (cols - 1) / 2;
+      const cy = row - (rows - 1) / 2;
+      shards.push({
+        el: ghost,
+        x: rect.left + col * cw,
+        y: rect.top + row * ch,
+        vx: cx * (0.9 + Math.random()) * 1.7 + (Math.random() - 0.5),
+        vy: cy * 0.5 - (0.9 + Math.random() * 2.2),
+        rot: 0,
+        vr: (Math.random() - 0.5) * 0.02,
+        born: now,
+        life: 650 + Math.random() * 280,
+        src: el,
+      });
+    }
+  }
+  burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+}
+
+function updateShards(now: number, dtf: number) {
+  if (!shards.length) return;
+  const expired: Shard[] = [];
+  shards = shards.filter((s) => {
+    const age = now - s.born;
+    if (age >= s.life) {
+      s.el.remove();
+      expired.push(s);
+      return false;
+    }
+    s.vy += 0.13 * dtf; // 碎片受重力
+    s.vx *= Math.pow(0.985, dtf);
+    s.x += s.vx * dtf;
+    s.y += s.vy * dtf;
+    s.rot += s.vr * dtf;
+    const k = 1 - age / s.life;
+    s.el.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${s.rot}rad) scale(${0.55 + 0.45 * k})`;
+    s.el.style.opacity = String(Math.min(1, k * 2.4));
+    return true;
+  });
+  // 同源碎片全部落幕后，原文果冻回归
+  for (const s of expired) {
+    if (s.src.isConnected && !shards.some((o) => o.src === s.src)) {
+      s.src.style.visibility = '';
+      delete s.src.dataset.pgBoom;
+      jelly(s.src);
+    }
+  }
+}
+
+function teardownShards() {
+  for (const s of shards) s.el.remove();
+  shards = [];
+  for (const el of document.querySelectorAll<HTMLElement>('[data-pg-boom]')) {
+    el.style.visibility = '';
+    delete el.dataset.pgBoom;
+  }
+}
+
+/* ============================================================
+   StickerDrag —— 便签拖拽（只有胶带命中区可抓；纯点击不接管）
+   ============================================================ */
+
+const TAPE_H = 14; // 胶带命中区高度（px，从便签顶往下）
+const TAPE_W = 44; // 胶带命中区半宽（px，从中心往两侧）
+const DRAG_THRESHOLD = 6; // 位移阈值：超过才算拖拽，否则放行原生点击
+
+function tapeHit(el: HTMLElement, x: number, y: number): boolean {
+  const r = el.getBoundingClientRect();
+  return (
+    y <= r.top + TAPE_H &&
+    Math.abs(x - (r.left + r.width / 2)) <= TAPE_W
+  );
+}
+
+function onStickerDown(e: PointerEvent) {
+  if (RM.matches || !FINE.matches || MOBILE.matches || gravity || stickerDrag) return;
+  if (e.button !== 0) return;
+  stickerSuppressClick = false; // 新手势开启，旧抑制作废（防无 click 场景泄漏到下一次）
+  const target = e.target as HTMLElement | null;
+  const callout = target?.closest?.('.md-content > .callout') as HTMLElement | null;
+  if (!callout || !tapeHit(callout, e.clientX, e.clientY)) return;
+  stickerDrag = {
+    el: callout,
+    startX: e.clientX,
+    startY: e.clientY,
+    vx: 0,
+    lastX: e.clientX,
+    engaged: false,
+    pointerId: e.pointerId,
+  };
+}
+
+function onStickerMove(e: PointerEvent) {
+  if (!stickerDrag || e.pointerId !== stickerDrag.pointerId) return;
+  const d = stickerDrag;
+  const dx = e.clientX - d.startX;
+  const dy = e.clientY - d.startY;
+
+  if (!d.engaged) {
+    if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+    // 正式接管：抓捕获、清选区（阈值窗口内可能已开始的选择）
+    d.engaged = true;
+    try {
+      d.el.setPointerCapture(d.pointerId);
+    } catch {
+      /* 释放时机极端情况下可能失败，忽略 */
+    }
+    d.el.classList.add('is-dragging');
+    d.el.classList.remove('is-settling');
+    d.el.style.translate = `${dx}px ${dy}px`;
+    getSelection()?.removeAllRanges();
+    return;
+  }
+
+  d.vx = d.vx * 0.7 + (e.clientX - d.lastX) * 0.3;
+  d.lastX = e.clientX;
+  d.el.style.translate = `${dx}px ${dy}px`;
+  const tilt = Math.max(-8, Math.min(8, d.vx * 0.6));
+  d.el.style.rotate = `${tilt.toFixed(2)}deg`;
+}
+
+function onStickerUp(e: PointerEvent) {
+  if (!stickerDrag || e.pointerId !== stickerDrag.pointerId) return;
+  const d = stickerDrag;
+  stickerDrag = null;
+  if (!d.engaged) return; // 未过阈值：放行原生点击（折叠/链接照常）
+
+  stickerSuppressClick = true;
+  window.setTimeout(() => {
+    stickerSuppressClick = false; // 正常路径 click 会立刻消耗；此为兜底（如 pointerup 后无 click）
+  }, 350);
+  d.el.style.translate = '0px 0px';
+  d.el.style.rotate = '';
+  d.el.classList.remove('is-dragging');
+  d.el.classList.add('is-settling'); // 果冻弹簧归位（CSS transition）
+  window.setTimeout(() => {
+    d.el.classList.remove('is-settling');
+    d.el.style.translate = ''; // 归位动画已结束，清内联值
+    jelly(d.el);
+  }, 620);
+}
+
+/** 拖拽刚结束的这一次 click 吞掉（防误折叠 details / 误触发内链） */
+function onSuppressStickerClick(e: MouseEvent) {
+  if (!stickerSuppressClick) return;
+  stickerSuppressClick = false;
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function teardownStickerDrag() {
+  if (!stickerDrag) return;
+  const d = stickerDrag;
+  stickerDrag = null;
+  d.el.classList.remove('is-dragging', 'is-settling');
+  d.el.style.translate = '';
+  d.el.style.rotate = '';
+}
+
+/* ============================================================
    主循环（一条 rAF 驱动全部模块）
    ============================================================ */
 
@@ -799,6 +1024,7 @@ function tick(t: number) {
 
   updateField(t, dtf);
   updateSparks(t, dtf, ctx);
+  updateShards(t, dtf);
   drawInk(t);
   updateMagnets(t);
   syncGravity();
@@ -929,6 +1155,8 @@ function teardownPageState() {
   sparks = [];
   ink = [];
   exitGravity();
+  teardownShards();
+  teardownStickerDrag();
   for (const el of document.querySelectorAll('.pg-celebrate')) el.remove();
   resetMagnets();
   stripKin();
@@ -955,6 +1183,12 @@ export function mount() {
   bind(document, 'astro:page-load', setupPage);
   bind(document, 'astro:before-swap', teardownPageState);
   bind(document, 'click', onTitlePointer);
+  bind(document, 'click', onFormulaClick);
+  bind(document, 'click', onSuppressStickerClick, { capture: true });
+  bind(document, 'pointerdown', onStickerDown, { passive: true });
+  bind(document, 'pointermove', onStickerMove, { passive: true });
+  bind(document, 'pointerup', onStickerUp, { passive: true });
+  bind(document, 'pointercancel', onStickerUp, { passive: true });
   RM.addEventListener?.('change', onMotionPref);
   keep(() => RM.removeEventListener?.('change', onMotionPref));
 

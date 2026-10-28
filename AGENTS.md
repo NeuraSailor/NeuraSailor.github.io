@@ -141,7 +141,9 @@ playground（游乐场，手绘游乐场，可玩性核心，默认皮肤）：
   光标=吸引子、点击=斥力爆发、阅读越深越活跃）、[data-kin] 章节渐进展开
   （engine 运行时打标，unmount 全清）、光标墨迹+磁吸按钮（仅 pointer:fine）、
   h2 到达爆发、[EOF] 彩带（matter.js CDN 优先，失败手写降级）、连点页题三下
-  重力模式；reduced-motion 全静默、document.hidden 暂停、换肤零残留
+  重力模式；公式爆炸（点击 .katex-display 碎片飞散后果冻重组，DOM 克隆网格
+  碎片非像素模拟）、便签拖拽（仅胶带命中区可抓，>6px 阈值接管不误伤折叠/内链，
+  松手弹簧归位）；reduced-motion 全静默、document.hidden 暂停、换肤零残留
 
 ### 客户端交互要点
 

@@ -492,6 +492,25 @@
   border-radius: 2px;
   rotate: -2deg;
   pointer-events: none;
+  cursor: grab; /* 抓着胶带拖走便签（engine.ts StickerDrag） */
+}
+
+/* 便签被拎起（拖拽中） */
+.md-content .callout.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+  z-index: 5;
+  box-shadow: var(--shadow-3);
+  scale: 1.02;
+}
+
+.md-content .callout.is-dragging::before {
+  cursor: grabbing;
+}
+
+/* 松手果冻归位（engine 设置 translate → 0） */
+.md-content .callout.is-settling {
+  transition: translate var(--dur-jelly) var(--ease-bounce);
 }
 
 .md-content .callout__title {
@@ -598,6 +617,7 @@
   overflow-y: hidden;
   padding: var(--sp-1) 0;
   -webkit-overflow-scrolling: touch;
+  cursor: pointer; /* 游乐场彩蛋：点击公式碎片爆开再重组（engine.ts FormulaBoom） */
 }
 
 .md-content .katex-display > .katex {
