@@ -19,6 +19,7 @@
 
 /* ===================== 环境探测（模块级，跨页面存活） ===================== */
 import { guideBind, guideSetup, guideTeardown, guideUnbind } from './guide';
+import { fxOn, onFxChange, settingsBind, settingsUnbind } from './settings';
 
 const RM = matchMedia('(prefers-reduced-motion: reduce)');
 const FINE = matchMedia('(pointer: fine)');
@@ -173,7 +174,7 @@ function flowAngle(x: number, y: number, t: number): number {
 }
 
 function updateField(now: number, dtf: number) {
-  if (!ctx) return;
+  if (!ctx || !fxOn('field')) return;
   const speedBase = 0.34 + journeyP * 0.62; // 阅读越深，园子越活
   const gust = 1 + Math.min(Math.abs(scrollVel) / 55, 1.3); // 滚动=风
   const windX = Math.max(-6, Math.min(6, scrollVel * 0.055));
@@ -233,7 +234,7 @@ function updateField(now: number, dtf: number) {
    ============================================================ */
 
 function burst(x: number, y: number, n = 14) {
-  if (RM.matches) return;
+  if (RM.matches || !fxOn('bursts')) return;
   const now = performance.now();
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2;
@@ -333,7 +334,7 @@ function confettiStrips(count: number) {
 
 /** 彩带庆祝：matter.js 可用则物理纸条，否则手写简化物理（gravity + 阻尼 + 翻转） */
 async function fireConfetti() {
-  if (RM.matches) return;
+  if (RM.matches || !fxOn('confetti')) return;
   const layer = makeCelebrateCanvas();
   if (!layer) return;
   const { el, c } = layer;
@@ -470,7 +471,7 @@ function pushInk(x: number, y: number) {
 }
 
 function drawInk(now: number) {
-  if (!ctx || !FINE.matches || MOBILE.matches) return;
+  if (!ctx || !FINE.matches || MOBILE.matches || !fxOn('cursor')) return;
   ink = ink.filter((p) => now - p.t < 420);
   if (ink.length < 3 || !pointer.active) return;
   ctx.lineCap = 'round';
@@ -497,7 +498,8 @@ function collectMagnets() {
 function updateMagnets(now: number) {
   // 磁吸只跟随「移动中」的光标：光标停下（260ms 无 move）即回弹归位，
   // 避免按钮被静止光标永久吸附（也保住自动化点击的元素稳定性）
-  const live = pointer.active && FINE.matches && !MOBILE.matches && now - pointer.t < 260;
+  const live =
+    pointer.active && FINE.matches && !MOBILE.matches && fxOn('cursor') && now - pointer.t < 260;
   if (!live) {
     for (const el of magnets) {
       const st = magState.get(el);
@@ -649,6 +651,7 @@ function onTitlePointer(e: Event) {
 }
 
 async function enterGravity() {
+  if (RM.matches || !fxOn('gravity')) return;
   const root = document.querySelector('.md-content');
   if (!root) return;
   const candidates = [...root.querySelectorAll<HTMLElement>(':scope > .callout, :scope > pre:not(.mermaid)')].filter(
@@ -811,7 +814,7 @@ function tapeHit(el: HTMLElement, x: number, y: number): boolean {
 }
 
 function onStickerDown(e: PointerEvent) {
-  if (RM.matches || !FINE.matches || MOBILE.matches || gravity || stickerDrag) return;
+  if (RM.matches || !FINE.matches || MOBILE.matches || gravity || stickerDrag || !fxOn('sticker')) return;
   if (e.button !== 0) return;
   stickerSuppressClick = false; // 新手势开启，旧抑制作废（防无 click 场景泄漏到下一次）
   const target = e.target as HTMLElement | null;
@@ -1026,7 +1029,7 @@ function setupPage() {
     startLoop();
   }
 
-  if (!RM.matches) decorateSections();
+  if (!RM.matches && fxOn('choreo')) decorateSections();
   collectMagnets();
   watchTheme();
   guideSetup();
@@ -1084,6 +1087,30 @@ export function mount() {
 
   guideBind({ burst });
 
+  // 特效细分开关（换肤菜单第二层）：实时应用
+  settingsBind();
+  const unFx = onFxChange((key, on) => {
+    if (key === 'choreo') {
+      if (on) {
+        if (!RM.matches && document.querySelector('.md-content')) decorateSections();
+      } else {
+        kinIO?.disconnect();
+        kinIO = null;
+        stripKin();
+      }
+    } else if (key === 'field') {
+      if (on) {
+        if (canvas) seedParticles();
+      } else {
+        particles = [];
+        ctx?.clearRect(0, 0, cssW, cssH);
+      }
+    } else if (key === 'gravity' && !on) {
+      exitGravity();
+    }
+  });
+  keep(unFx);
+
   setupPage();
 }
 
@@ -1094,5 +1121,6 @@ export function unmount() {
   persistentCleanups = [];
   titleClicks = [];
   guideUnbind();
+  settingsUnbind();
   mounted = false;
 }

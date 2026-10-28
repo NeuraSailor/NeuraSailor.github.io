@@ -1437,3 +1437,167 @@ a.nav-item:hover {
     bottom: calc(var(--sp-20, 80px) + env(safe-area-inset-bottom));
   }
 }
+
+/* ============================================================
+   特效细分子菜单（settings.ts：换肤菜单「游乐场」行的滑杆图标 + 第二层面板）
+   ============================================================ */
+.skin-menu__item {
+  position: relative;
+}
+
+/* 滑杆图标：占据行右端（:has 兼容现代浏览器；不兼容时图标贴边但不碍点击） */
+.skin-menu__item:has(.pg-fxgear) {
+  padding-right: 44px;
+}
+
+.pg-fxgear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  translate: 0 -50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 40px;
+  color: var(--label-3);
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  transition:
+    color var(--dur-fast) var(--ease-soft),
+    rotate var(--dur-spring) var(--ease-spring);
+}
+
+.pg-fxgear svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pg-fxgear:hover {
+  color: var(--accent);
+  rotate: -20deg;
+}
+
+.pg-fxgear:focus-visible {
+  outline: 2px dashed var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------- 特效面板（贴纸清单） ---------- */
+.pg-fxmenu {
+  position: fixed;
+  min-width: 208px;
+  max-height: min(26rem, 72vh);
+  overflow-y: auto;
+  padding: var(--sp-2);
+  border: 1.5px solid var(--separator-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-3);
+  z-index: calc(var(--z-toast) + 1);
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96) rotate(-0.8deg);
+  transition:
+    opacity 160ms var(--ease-soft),
+    transform 160ms var(--ease-spring);
+}
+
+.pg-fxmenu.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotate(0deg);
+}
+
+.pg-fxmenu__label {
+  font-size: var(--text-caption);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--label-3);
+  padding: var(--sp-1) var(--sp-3) var(--sp-2);
+}
+
+.pg-fxmenu__group {
+  font-size: var(--text-caption);
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  padding: var(--sp-2) var(--sp-3) var(--sp-1);
+  border-top: 1.5px dashed var(--separator);
+  margin-top: var(--sp-1);
+}
+
+.pg-fxmenu__group:first-of-type {
+  border-top: none;
+  margin-top: 0;
+}
+
+.pg-fxmenu__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-height: 40px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-soft);
+}
+
+.pg-fxmenu__row:hover {
+  background: var(--fill);
+}
+
+.pg-fxmenu__name {
+  font-size: var(--text-footnote);
+  font-weight: 550;
+  color: var(--label);
+}
+
+.pg-fxmenu__row input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 手绘开关：胶囊轨道 + blob 圆钮 */
+.pg-fxmenu__sw {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 22px;
+  border-radius: 99px;
+  border: 1.5px solid var(--separator-strong);
+  background: var(--fill);
+  transition:
+    background-color var(--dur-fast) var(--ease-soft),
+    border-color var(--dur-fast) var(--ease-soft);
+}
+
+.pg-fxmenu__sw::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--r-blob);
+  background: var(--surface);
+  border: 1px solid var(--separator-strong);
+  transition: translate var(--dur-spring) var(--ease-spring);
+}
+
+.pg-fxmenu__row input:checked ~ .pg-fxmenu__sw {
+  background: rgba(var(--accent-raw), 0.85);
+  border-color: var(--accent);
+}
+
+.pg-fxmenu__row input:checked ~ .pg-fxmenu__sw::after {
+  translate: 17px 0;
+  border-color: var(--accent);
+}
+
+.pg-fxmenu__row input:focus-visible ~ .pg-fxmenu__sw {
+  outline: 2px dashed var(--accent);
+  outline-offset: 2px;
+}

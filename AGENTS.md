@@ -137,15 +137,17 @@ playground（游乐场，手绘游乐场，可玩性核心，默认皮肤）：
   （微歪 nth-child 错落）、拍立得相框、蜡笔波浪手绘规（h2 下划线随进入画出）
 - 交互动效：果冻弹簧 --ease-bounce 过冲、按压 squash 非等比、悬停歪脖 rotate、
   进度条=风筝线+蜡笔彗头、激活项弹入
-- 增强引擎 engine.ts + guide.ts（经 SKIN_ENHANCERS 懒加载）：ambient 流场粒子（滚动=风、
+- 增强引擎 engine.ts + guide.ts + settings.ts（经 SKIN_ENHANCERS 懒加载）：ambient 流场粒子（滚动=风、
   光标=吸引子、点击=斥力爆发、阅读越深越活跃）、[data-kin] 章节渐进展开
   （engine 运行时打标，unmount 全清）、光标墨迹+磁吸按钮（仅 pointer:fine）、
   h2 到达爆发、[EOF] 彩带（matter.js CDN 优先，失败手写降级）、连点页题三下
   重力模式；探索护照（读满 85% 盖章集邮 + 左下护照面板）、花园小径（文末
   下一站/骰子漫游/今日手气三卡引导）、继续探索卡（滚动位置记忆）、侧栏已
   探索圆点（localStorage 单键 garden-passport）；便签拖拽（仅胶带命中区可抓，
-  >6px 阈值接管不误伤折叠/内链，松手弹簧归位）；reduced-motion 全静默、
-  document.hidden 暂停、换肤零残留
+  >6px 阈值接管不误伤折叠/内链，松手弹簧归位）；特效细分开关（换肤菜单
+  「游乐场」行滑杆图标 → 第二层 9 项特效面板，即时生效，
+  localStorage garden-playground-fx，site.ts 的 garden:skinmenu 事件扩展点）；
+  reduced-motion 全静默、document.hidden 暂停、换肤零残留
 
 ### 客户端交互要点
 

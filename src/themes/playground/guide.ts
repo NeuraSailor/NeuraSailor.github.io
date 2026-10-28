@@ -10,6 +10,8 @@
  */
 
 /* ===================== 依赖注入（避免与 engine 循环 import） ===================== */
+import { fxOn, onFxChange } from './settings';
+
 export interface GuideFx {
   /** canvas 爆发粒子（engine 主循环绘制） */
   burst: (x: number, y: number, n?: number) => void;
@@ -154,6 +156,7 @@ function onGuideScroll() {
 
 /* ===================== 盖章仪式（右下角砸章 → 飞收进护照） ===================== */
 function stampCeremony() {
+  if (!fxOn('passport')) return;
   refreshPassportBtn();
   if (RM.matches) return;
   const st = document.createElement('div');
@@ -172,6 +175,7 @@ let passportBtn: HTMLElement | null = null;
 let passportPanel: HTMLElement | null = null;
 
 function buildPassportBtn() {
+  if (!fxOn('passport')) return;
   passportBtn = document.createElement('button');
   passportBtn.type = 'button';
   passportBtn.className = 'pg-passport-btn';
@@ -194,6 +198,7 @@ function refreshPassportBtn() {
 }
 
 function buildPassportPanel() {
+  if (!fxOn('passport')) return;
   passportPanel = document.createElement('div');
   passportPanel.className = 'pg-passport';
   passportPanel.setAttribute('role', 'dialog');
@@ -303,6 +308,7 @@ function diceStation(stations: Station[]): Station | null {
 }
 
 function buildTrail() {
+  if (!fxOn('trail')) return;
   const article = document.querySelector('.article');
   if (!article || !document.querySelector('.md-content')) return;
   const stations = readStations();
@@ -331,6 +337,7 @@ function buildTrail() {
 
 /* ===================== 继续探索（首页，滚动位置记忆） ===================== */
 function buildContinue() {
+  if (!fxOn('trail')) return;
   const home = document.querySelector('.home');
   if (!home) return;
   const last = data.last;
@@ -374,6 +381,7 @@ function maybeRestoreScroll() {
 
 /* ===================== 侧栏已探索圆点 ===================== */
 function markNavDots() {
+  if (!fxOn('passport')) return;
   for (const a of document.querySelectorAll<HTMLAnchorElement>('.sidebar a.nav-item')) {
     const href = a.getAttribute('href') ?? '';
     if (href && data.pages[href]?.done && !a.querySelector('.pg-dot')) {
@@ -406,6 +414,30 @@ export function guideBind(fxRef: GuideFx) {
     window.removeEventListener('pagehide', savePassport);
     document.removeEventListener('keydown', onKeydown);
   });
+
+  // 特效细分开关实时应用（trail / passport 两组）
+  const unFx = onFxChange((key, on) => {
+    if (key === 'trail') {
+      if (on) {
+        buildTrail();
+        buildContinue();
+      } else {
+        document.querySelectorAll('.pg-trail, .pg-continue').forEach((el) => el.remove());
+      }
+    } else if (key === 'passport') {
+      if (on) {
+        buildPassportBtn();
+        buildPassportPanel();
+        markNavDots();
+      } else {
+        document.querySelectorAll('.pg-passport, .pg-passport-btn, .pg-stamp, .pg-dot').forEach((el) => el.remove());
+        document.documentElement.classList.remove('has-modal');
+        passportBtn = null;
+        passportPanel = null;
+      }
+    }
+  });
+  cleanups.push(() => unFx());
 }
 
 /** 每页重建（engine.setupPage 调用） */

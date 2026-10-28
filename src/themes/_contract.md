@@ -16,6 +16,8 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
   **换肤选择菜单**（`.skin-menu`，注册表驱动渲染；点击选项 → 翻转
   `data-skin` + 链接启停 + `rerenderMermaid()`，mermaid 主题按皮肤映射；
   Escape / 外点关闭，上下键在选项间移动）
+  - 菜单注入后派发 `garden:skinmenu` 事件（`detail.menu`）——通用扩展点，
+    供皮肤增强脚本装饰菜单（先例：playground 的特效子菜单 `settings.ts`）
 - 注册表 `src/lib/themes.ts`：`import.meta.glob('../themes/*/index.css', {query:'?url'})`
   **自动发现**皮肤目录；`LABELS`/`MERMAID` 表补中文显示名与 mermaid 明暗主题映射
 

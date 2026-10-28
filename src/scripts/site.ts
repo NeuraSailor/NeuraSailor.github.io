@@ -214,6 +214,8 @@ function openSkinMenu(btn: HTMLElement) {
   btn.setAttribute('aria-expanded', 'true');
   requestAnimationFrame(() => menu.classList.add('is-open'));
   (menu.querySelector('.skin-menu__item.is-active') as HTMLElement | null)?.focus();
+  // 通用扩展点：菜单注入完成后广播（如 playground 的特效子菜单装饰，皮肤决策归皮肤 JS）
+  window.dispatchEvent(new CustomEvent('garden:skinmenu', { detail: { menu } }));
 }
 
 function initSkin() {
