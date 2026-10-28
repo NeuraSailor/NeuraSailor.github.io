@@ -1,0 +1,11 @@
+/* ============================================================
+   playground 游乐场主题入口 —— 手绘游乐场（可玩性核心皮肤）
+   由 src/lib/themes.ts 经 import.meta.glob('?url') 自动发现，
+   Base.astro 以 <link data-skin-link> 注入，按 <html data-skin> 启停。
+   JS 增强部分（canvas 流场 / 渐进展开 / 磁吸 / 彩蛋）在同目录
+   engine.ts，经 site.ts 的 SKIN_ENHANCERS 懒加载，纯 CSS 亦可独立成站
+   ============================================================ */
+@import './skin.css';
+@import './chrome.css';
+@import './content.css';
+@import './motion.css';

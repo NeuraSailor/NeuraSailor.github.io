@@ -102,6 +102,41 @@ function applySkin(skin: string) {
     l.disabled = off;
     l.toggleAttribute('disabled', off);
   }
+  void syncEnhancer();
+}
+
+/* ---------- 皮肤增强脚本（可选：皮肤自带的懒加载 JS，如 canvas 引擎） ----------
+   皮肤 = 纯 CSS 是底线；需要 JS 的皮肤在此注册（key = 皮肤 id = 目录名），
+   模块由 Vite 打成独立 chunk，仅当该皮肤激活时才下载执行。
+   增强模块须导出 { mount, unmount }，契约见 src/themes/_contract.md */
+interface SkinEnhancer {
+  mount: () => void;
+  unmount: () => void;
+}
+
+const SKIN_ENHANCERS: Record<string, () => Promise<SkinEnhancer>> = {
+  playground: () => import('../themes/playground/engine'),
+};
+
+let activeEnhancer: SkinEnhancer | null = null;
+let enhancerTarget = ''; // 已挂载或正在加载的目标皮肤（幂等 + 竞态守卫）
+
+async function syncEnhancer() {
+  const skin = document.documentElement.dataset.skin ?? '';
+  if (skin === enhancerTarget) return;
+  enhancerTarget = skin;
+  activeEnhancer?.unmount();
+  activeEnhancer = null;
+  const loader = SKIN_ENHANCERS[skin];
+  if (!loader) return;
+  try {
+    const mod = await loader();
+    if (enhancerTarget !== skin) return; // 加载期间皮肤又切走，本次结果作废
+    activeEnhancer = mod;
+    mod.mount();
+  } catch (err) {
+    console.warn(`[garden] 皮肤增强脚本加载失败：${skin}`, err);
+  }
 }
 
 /* ---------- 皮肤选择菜单（#skinToggle 弹出，注册表驱动） ---------- */
@@ -578,3 +613,4 @@ document.addEventListener('astro:after-swap', () => {
 
 document.addEventListener('astro:page-load', init);
 initShortcuts();
+syncEnhancer(); // 首次加载（皮肤已由防闪白内联脚本写好；换肤路径走 applySkin）

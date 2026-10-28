@@ -4,5 +4,5 @@
  */
 export const SITE = {
   title: 'NeuraSailor',
-  defaultSkin: 'liquid-glass',
+  defaultSkin: 'playground',
 } as const;

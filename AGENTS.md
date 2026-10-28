@@ -4,11 +4,11 @@ This file provides guidance to AI coding agents when working with code in this r
 
 ## Project Overview
 
-个人知识花园，**Astro 5 + 可插拔多皮肤**（liquid-glass 液态玻璃 / neumorphic 新拟态 / latex-paper LaTeX 论文 / anti-design 反设计 / hogwarts 霍格沃兹 / developer-terminal 开发者终端）构建的静态站点。内容源自 Obsidian vault，同步到 `docs/` 目录后由 Astro 构建。旧 MkDocs 栈已于 V3 重构时移除。
+个人知识花园，**Astro 5 + 可插拔多皮肤**（playground 游乐场（默认，可玩性核心）/ liquid-glass 液态玻璃 / neumorphic 新拟态 / latex-paper LaTeX 论文 / anti-design 反设计 / hogwarts 霍格沃兹 / developer-terminal 开发者终端）构建的静态站点。内容源自 Obsidian vault，同步到 `docs/` 目录后由 Astro 构建。旧 MkDocs 栈已于 V3 重构时移除。
 
 > 架构全景、交互生命周期模型与问题登记簿：见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
-liquid-glass 设计规范依据：`C:\Users\WUZHO\.cc-switch\skills\apple-design-skill-main`（Apple HIG 参考 skill）；neumorphic 规范依据 stylekit neumorphism（同色表面 + 双影凸凹三态，禁位移/渐变）；latex-paper 规范依据 stylekit latex-paper（白纸墨字、衬线、零圆角/零阴影、booktabs 三线表、蓝只作链接）；anti-design 规范依据 stylekit anti-design（4px+ 黑框、硬偏移阴影、高饱和原色块、100ms linear 直切）；hogwarts 源自旧 MkDocs 站 hogwarts.css + hogwarts-theme 技能库（奶油纸/烛光密室、暗金、恒暗代码、深色公式框）；developer-terminal 融合 stylekit developer-terminal × pixel-anime（NES 六色 RPG 终端，内容整页会话化）。
+liquid-glass 设计规范依据：`C:\Users\WUZHO\.cc-switch\skills\apple-design-skill-main`（Apple HIG 参考 skill）；neumorphic 规范依据 stylekit neumorphism（同色表面 + 双影凸凹三态，禁位移/渐变）；latex-paper 规范依据 stylekit latex-paper（白纸墨字、衬线、零圆角/零阴影、booktabs 三线表、蓝只作链接）；anti-design 规范依据 stylekit anti-design（4px+ 黑框、硬偏移阴影、高饱和原色块、100ms linear 直切）；hogwarts 源自旧 MkDocs 站 hogwarts.css + hogwarts-theme 技能库（奶油纸/烛光密室、暗金、恒暗代码、深色公式框）；developer-terminal 融合 stylekit developer-terminal × pixel-anime（NES 六色 RPG 终端，内容整页会话化）；playground 手绘游乐场（可玩性核心：手账素描本/霓虹粒子夜园双档，唯一带 JS 增强引擎的皮肤，见 `src/themes/playground/engine.ts` 与 SKIN_ENHANCERS 通道）。
 
 ## Key Commands
 
@@ -56,7 +56,8 @@ src/
 ├── components/         # Toolbar/Sidebar/TabBar/Toc/SearchPalette/SidebarNode（零内嵌样式）
 ├── styles/base.css     # 共享结构层：reset + 结构令牌（间距/布局/z）+ 布局骨架
 ├── themes/             # 皮肤层（一目录一皮肤，_contract.md 为完整契约）
-│   ├── liquid-glass/   #   Apple 液态玻璃（默认）
+│   ├── playground/     #   游乐场（默认，手绘可玩；附 engine.ts 增强脚本）
+│   ├── liquid-glass/   #   Apple 液态玻璃
 │   ├── neumorphic/     #   新拟态
 │   ├── latex-paper/    #   LaTeX 论文（衬线学术排版）
 │   ├── anti-design/    #   反设计（粗野主义原色块）
@@ -74,6 +75,7 @@ src/
   其余 disabled 备用）；`<html data-skin>` + localStorage('garden-skin') + 防闪白内联脚本
 - 切换入口：工具栏 `#skinToggle`（调色板图标）弹出选择菜单，访客可用；mermaid 主题支持按皮肤映射（`lib/themes.ts` 的 `MERMAID` 表，当前未配置，全部走默认 neutral/dark）
 - 新增皮肤：建 `src/themes/<id>/` 目录即可被 `lib/themes.ts` 自动发现（三步流程见契约）
+- **皮肤增强脚本（可选 JS）**：需 JS 的皮肤在 `site.ts` 的 `SKIN_ENHANCERS` 注册（懒加载独立 chunk，仅该皮肤激活时执行，导出 `{ mount, unmount }`，unmount 后共享 DOM 零残留，详见契约）；当前仅 playground（engine.ts）
 - 换默认皮肤：改 `src/site.config.ts` 的 `defaultSkin` 一行重建
 - **改动任何皮肤前先读 `src/themes/_contract.md`**（必须实现的令牌/选择器集/功能段落）
 
@@ -127,6 +129,19 @@ developer-terminal（像素终端，terminal × pixel-anime 融合）：
   :active 挤压拉伸（scaleX1.08/scaleY0.92，禁等比）；callout=RPG 对话框，
   代码=OUTPUT 子窗、公式=CALC 子窗（恒暗），表格=任务日志，进度条=EXP 条
 - 暗色=规范原档 NES 夜间；亮色=白昼会话（文字级四色深化）
+
+playground（游乐场，手绘游乐场，可玩性核心，默认皮肤）：
+- 亮=手账素描本（米白纸/铅笔灰/蜡笔橙红/虚线规/点阵纸底），暗=霓虹粒子夜园
+  （深墨蓝/荧光粉青黄紫/加法混合辉光）；粒子色板走令牌 `--pg-particle-1..4`
+- 手绘签名：素描圆角（--r-sketch 四角不等）、blob 圆按钮、胶带贴纸便签 callout
+  （微歪 nth-child 错落）、拍立得相框、蜡笔波浪手绘规（h2 下划线随进入画出）
+- 交互动效：果冻弹簧 --ease-bounce 过冲、按压 squash 非等比、悬停歪脖 rotate、
+  进度条=风筝线+蜡笔彗头、激活项弹入
+- 增强引擎 engine.ts（经 SKIN_ENHANCERS 懒加载）：ambient 流场粒子（滚动=风、
+  光标=吸引子、点击=斥力爆发、阅读越深越活跃）、[data-kin] 章节渐进展开
+  （engine 运行时打标，unmount 全清）、光标墨迹+磁吸按钮（仅 pointer:fine）、
+  h2 到达爆发、[EOF] 彩带（matter.js CDN 优先，失败手写降级）、连点页题三下
+  重力模式；reduced-motion 全静默、document.hidden 暂停、换肤零残留
 
 ### 客户端交互要点
 

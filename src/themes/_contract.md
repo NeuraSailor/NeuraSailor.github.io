@@ -30,6 +30,22 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
 
 `src/site.config.ts` 改 `defaultSkin` 一行，重建即生效（访客手动选择仍存 localStorage）。
 
+### 皮肤增强脚本（可选 JS）
+
+皮肤默认纯 CSS；确需 JS 的皮肤在 `src/scripts/site.ts` 的 `SKIN_ENHANCERS` 注册
+（key = 皮肤 id）：`playground: () => import('../themes/<id>/engine')`。模块由 Vite
+打成**独立 chunk，仅该皮肤激活时下载执行**；`applySkin`/首载触发 `syncEnhancer`
+（幂等 + 竞态守卫：加载期间皮肤又切走则丢弃）。模块契约：
+
+- 导出 `{ mount(): void; unmount(): void }`
+- mount：document/window 级常驻监听只挂一次；自行监听 `astro:page-load`
+  （每页重建 canvas/IO/打标）与 `astro:before-swap`（停 rAF、断 IO）
+- unmount：rAF / IntersectionObserver / MutationObserver / 监听器 / 注入的
+  canvas 与 class、dataset、style 痕迹**全清**——换走后共享 DOM 零残留
+- 遵守全站约定：IO 用模块级单例 + disconnect 再重建；`prefers-reduced-motion`
+  全静默（不建循环、内容直接可见）；不得在共享组件/布局加皮肤决策
+- 先例：`playground/engine.ts`（流场粒子 / 章节渐进展开 / 磁吸 / 彩蛋）
+
 ## skin.css 必须提供的令牌
 
 共享层 `base.css` 消费（缺一页面即裸奔）：
@@ -126,5 +142,7 @@ content collection）与组件 DOM 不携带任何主题决策；一套 DOM 通�
 pixel-anime 验收（NES 六色 RPG 终端：内容整页会话化——VIEWER.EXE 标题栏/
 cd 面包屑/'>' 金字页题+闪烁光标/命令流 h2/输出正文/[EOF]；2px 蓝框+
 外扩双线+硬偏移阴影+对角像素角块；75ms linear 掉帧感、步进 2px 悬停、
-挤压拉伸按压、角块仅悬停闪烁；恒暗代码/公式子窗；暗色=规范原档、
-亮色=白昼会话深化档）。
+  挤压拉伸按压、角块仅悬停闪烁；恒暗代码/公式子窗；暗色=规范原档、
+  亮色=白昼会话深化档）；`playground` 按手绘游乐场规范验收（素描圆角/虚线规/
+  胶带贴纸便签/果冻弹簧/蜡笔波浪双档；增强引擎须换肤零残留、reduced-motion
+  全静默、断网时 matter.js 彩蛋优雅降级）。

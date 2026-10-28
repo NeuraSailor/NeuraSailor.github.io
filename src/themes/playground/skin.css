@@ -1,0 +1,123 @@
+/* ============================================================
+   skin.css —— 游乐场皮肤令牌（手绘游乐场 / 可玩性核心皮肤）
+   亮色 = 手账素描本：纸感米白 / 铅笔灰 / 蜡笔橙红 / 虚线规 / 贴纸便签
+   暗色 = 霓虹粒子夜园：深墨蓝 / 荧光粉 / 描边发光
+   手绘签名 = 素描圆角（--r-sketch 四角不等的铅笔盒半径）
+   结构令牌（间距 / 布局尺寸 / z 层）在共享层 src/styles/base.css
+   ============================================================ */
+
+:root {
+  /* ---------- 字体（系统栈，零 webfont） ---------- */
+  --font-system: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', 'Segoe UI',
+    'Noto Sans SC', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', Menlo,
+    Consolas, 'Noto Sans Mono CJK SC', monospace;
+
+  /* ---------- 字阶 ---------- */
+  --text-caption: 0.75rem;    /* 12 */
+  --text-footnote: 0.8125rem; /* 13 */
+  --text-subhead: 0.9375rem;  /* 15 */
+  --text-body: 1.0625rem;     /* 17 */
+  --text-title3: 1.25rem;     /* 20 */
+  --text-title2: 1.375rem;    /* 22 */
+  --text-title1: 1.75rem;     /* 28 */
+  --text-large: 2.125rem;     /* 34 */
+
+  /* ---------- 圆角：规整档 + 手绘档 ---------- */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-2xl: 30px;
+  /* 素描圆角：四角不等 = 铅笔盒画出来的贴纸感（皮肤签名，勿改成对称） */
+  --r-sketch: 255px 16px 225px 16px / 16px 225px 16px 255px;
+  --r-sketch-2: 16px 225px 16px 255px / 255px 16px 225px 16px;
+  /* 小号手绘圆角（nav 行 / 高亮块等矮元素；大号值在矮盒上会被等比压扁失效） */
+  --r-sketch-sm: 14px 5px 11px 6px / 6px 11px 5px 14px;
+  --r-blob: 46% 54% 52% 48% / 52% 48% 54% 46%;
+
+  /* ---------- 动效：果冻弹簧是本皮肤的呼吸 ---------- */
+  --ease-bounce: cubic-bezier(0.34, 1.8, 0.64, 1);   /* 过冲果冻 */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* Q 弹 */
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-fast: 160ms;
+  --dur-base: 280ms;   /* 对齐 SearchPalette closeTimer 硬编码 280ms */
+  --dur-slow: 460ms;
+  --dur-jelly: 620ms;
+}
+
+/* ---------- 亮色：手账素描本（默认档） ---------- */
+:root {
+  color-scheme: light;
+
+  --bg: #faf6ee;           /* 米白纸 */
+  --surface: #fffdf6;      /* 便签纸面 */
+  --surface-2: #f5efe3;    /* 压暗一档的纸 */
+
+  --label: #33302a;        /* 暖铅笔炭 */
+  --label-2: #6e675c;
+  --label-3: #a19788;
+  --label-4: #c8bfaf;
+  --separator: rgba(94, 82, 64, 0.22);
+  --separator-strong: rgba(94, 82, 64, 0.42);
+  --fill: rgba(150, 120, 80, 0.09);
+  --fill-2: rgba(150, 120, 80, 0.16);
+
+  --accent: #e2582c;       /* 蜡笔橙红 */
+  --accent-raw: 226, 88, 44;
+  --accent-hover: #c8471e;
+  --on-accent: #fff8f2;
+
+  --code-bg: rgba(150, 120, 80, 0.13);
+  --code-bg-block: #fbf7ec;
+  --code-border: rgba(94, 82, 64, 0.24);
+
+  --shadow-1: 0 1px 2px rgba(90, 70, 40, 0.08), 0 2px 8px rgba(90, 70, 40, 0.07);
+  --shadow-2: 0 2px 4px rgba(90, 70, 40, 0.1), 0 10px 24px rgba(90, 70, 40, 0.11);
+  --shadow-3: 0 4px 10px rgba(90, 70, 40, 0.12), 0 18px 44px rgba(90, 70, 40, 0.17);
+
+  /* 流场粒子色板（engine.ts 运行时读取，明暗各一套） */
+  --pg-particle-1: #ef7d51;   /* 蜡笔橙 */
+  --pg-particle-2: #4fae9f;   /* 蜡笔青 */
+  --pg-particle-3: #d9a545;   /* 芥末黄 */
+  --pg-particle-4: #8d7bd0;   /* 蜡笔紫 */
+  --pg-ink: rgba(226, 88, 44, 0.5);  /* 光标墨迹色 */
+}
+
+/* ---------- 暗色：霓虹粒子夜园 ---------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0f1322;           /* 深墨蓝夜 */
+  --surface: #191e33;
+  --surface-2: #141828;
+
+  --label: #edeff9;
+  --label-2: #9aa3c5;
+  --label-3: #636c92;
+  --label-4: #434b6d;
+  --separator: rgba(150, 160, 200, 0.24);
+  --separator-strong: rgba(150, 160, 200, 0.44);
+  --fill: rgba(140, 150, 200, 0.13);
+  --fill-2: rgba(140, 150, 200, 0.21);
+
+  --accent: #ff6b9d;       /* 霓虹粉 */
+  --accent-raw: 255, 107, 157;
+  --accent-hover: #ff8bb0;
+  --on-accent: #1c0e15;
+
+  --code-bg: rgba(140, 150, 200, 0.16);
+  --code-bg-block: #151a2e;
+  --code-border: rgba(150, 160, 200, 0.28);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.42);
+  --shadow-3: 0 4px 10px rgba(0, 0, 0, 0.45), 0 18px 44px rgba(0, 0, 0, 0.55);
+
+  --pg-particle-1: #ff6b9d;   /* 霓虹粉 */
+  --pg-particle-2: #46e0cd;   /* 荧光青 */
+  --pg-particle-3: #ffd43d;   /* 荧光黄 */
+  --pg-particle-4: #7d6bff;   /* 荧光紫 */
+  --pg-ink: rgba(255, 107, 157, 0.55);
+}

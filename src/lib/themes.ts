@@ -28,6 +28,7 @@ const LABELS: Record<string, string> = {
   'anti-design': '反设计',
   hogwarts: '霍格沃兹',
   'developer-terminal': '像素终端',
+  playground: '游乐场',
 };
 
 /** 各皮肤的 mermaid 主题映射（缺省 neutral/dark） */

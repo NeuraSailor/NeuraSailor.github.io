@@ -5,7 +5,7 @@
 
 ## 0. 一句话
 
-个人知识花园：Obsidian vault 同步到 `docs/`，**Astro 5** 构建为纯静态站（256 篇 md / 494 张图），一套语义 DOM × 六套可插拔皮肤（liquid-glass 默认 / neumorphic / latex-paper / anti-design / hogwarts / developer-terminal），发布到 GitHub Pages（neurasailor.github.io）。
+个人知识花园：Obsidian vault 同步到 `docs/`，**Astro 5** 构建为纯静态站（256 篇 md / 494 张图），一套语义 DOM × 七套可插拔皮肤（playground 默认 / liquid-glass / neumorphic / latex-paper / anti-design / hogwarts / developer-terminal），发布到 GitHub Pages（neurasailor.github.io）。
 
 ## 1. 全景分层
 
@@ -25,7 +25,7 @@ Astro 构建（npm run build，只读消费 docs/）
         ▼
 dist/（纯静态）
   ├ 表现层 = styles/base.css（共享结构层）× themes/<id>/*.css（皮肤，一目录一皮肤）
-  └ 交互层 = scripts/site.ts（生命周期）+ components/*（零内嵌样式）+ mermaid@11（CDN 运行时）
+  └ 交互层 = scripts/site.ts（生命周期）+ components/*（零内嵌样式）+ mermaid@11（CDN 运行时）+ 皮肤增强引擎（themes/playground/engine.ts，SKIN_ENHANCERS 按皮肤懒加载）
         ▼
 发布：CI（push main/master）或 npm run deploy → gh-pages → neurasailor.github.io
 ```
@@ -56,11 +56,12 @@ mermaid 围栏 → MkDocs `!!!` 归一化（仅根级、内容限缩进块）→
 
 - **DOM 不携带皮肤决策**：markup 无皮肤类、组件无 `<style>`；换肤 = 换一套全局 CSS。
 - **加载链**（SSR 固定顺序，顺序决定覆盖权）：`base.css` → `katex.min.css` → 全部皮肤 `<link data-skin-link>`（仅默认启用，其余 disabled + preload，切换零下载等待）→ `#skinRegistry` JSON → 防闪白内联脚本。
-- **切换链**：`#skinToggle` → `.skin-menu`（注册表驱动，`site.ts` 注入）→ `chooseSkin` → `applySkin`（翻 `data-skin` + link 启停双写）→ `storePref('garden-skin')` → `rerenderMermaid()`。
+- **切换链**：`#skinToggle` → `.skin-menu`（注册表驱动，`site.ts` 注入）→ `chooseSkin` → `applySkin`（翻 `data-skin` + link 启停双写 + `syncEnhancer` 增强引擎 mount/unmount）→ `storePref('garden-skin')` → `rerenderMermaid()`。
 - **swap 传递**：`astro:before-swap` 把当前明暗/皮肤/link 启停态预写进新文档（消闪跳）→ `astro:after-swap` 兜底校正并清菜单引用。
 - **注册表**：`src/lib/themes.ts` 用 `import.meta.glob` 自动发现 `src/themes/*/index.css`；`defaultSkin` 唯一决定点在 `src/site.config.ts`。`MERMAID` 映射表机制已接线但当前为空（全部皮肤走默认 neutral/dark）。
 - **新增皮肤三步**（详见 `_contract.md`）：建目录五文件（skin/chrome/content/motion + index.css）→ `LABELS` 注册显示名 → build 绿 + 截图走查。
 - **契约要点**：19 项必需令牌、chrome/content 选择器集、callout 11 型、功能性段落；已知豁免——developer-terminal 允许明暗反向档与 75ms 动效（其设计语言）。
+- **皮肤增强脚本（可选 JS，v4.2 新通道）**：皮肤默认纯 CSS；需 JS 的皮肤在 `site.ts` 的 `SKIN_ENHANCERS` 注册懒加载模块（独立 Vite chunk，仅该皮肤激活时执行；mount/unmount 生命周期 + 竞态守卫，契约见 `_contract.md`）。当前唯一用户：`playground/engine.ts`（canvas 流场 / 章节渐进展开 / 磁吸 / 彩蛋）。
 
 ## 4. 前端交互生命周期
 
@@ -69,6 +70,7 @@ mermaid 围栏 → MkDocs `!!!` 归一化（仅根级、内容限缩进块）→
 1. **模块级常驻**（跨 swap 存活，模块级布尔守卫防重挂）：scroll/resize rAF 节流、系统主题 matchMedia、skin-menu 的 document 级委托、⌘K 快捷键、三个 swap 生命周期钩子。
 2. **astro:page-load 重绑**（`init()`）：themeToggle/skinToggle/sidebar/copy/reveal/backtop/countUp/mermaid——绑定对象都随 swap 重建；三个 IntersectionObserver（toc/reveal/count）为模块级变量 + `disconnect()` 后重建。
 3. **组件自治**：SearchPalette 全部 document 级委托 + `astro:after-swap` 收起，不依赖 page-load（⌘K 经 `#searchToggle.click()` 间接触发它）。
+4. **皮肤增强引擎**（playground，v4.2）：`engine.ts` 自管生命周期——mount 挂常驻监听（一次）+ `html[data-pg-setup]` 防重入；`astro:page-load` 每页重建 canvas/IO/打标，`astro:before-swap` 停 rAF 断 IO；换肤由 `syncEnhancer` 触发 unmount（DOM 零残留）。
 
 **外观状态管线**：localStorage 三键（`garden-theme` / `garden-skin` / `garden-sidebar`）+ `data-theme`/`data-skin` 内存态；恢复链 = Base.astro 内联脚本（首载）→ before-swap 预写新文档 → after-swap 兜底。
 

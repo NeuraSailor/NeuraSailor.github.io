@@ -1,0 +1,200 @@
+/* ============================================================
+   motion.css —— 游乐场动效编排
+   两套渐入：
+   1. [data-reveal]  —— 页面级（site.ts initReveal，与其他皮肤同协议）
+   2. [data-kin]     —— 章节级（engine.ts 运行时打标，阅读旅程渐进展开）
+   属性只动 transform / opacity / filter（GPU 友好），全部带 reduced-motion 降级
+   ============================================================ */
+
+/* ---------- 页面级渐入 ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--dur-slow) var(--ease-soft),
+    transform var(--dur-slow) var(--ease-spring);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- 章节级渐进展开（engine.ts 打 [data-kin]，命中加 .is-kin-in） ----------
+   heading = 标题（上浮 + 去模糊，蜡笔波浪随之画出）
+   sticker = callout 便签（果冻贴上去）
+   block   = 普通块（轻量上浮；正文段落密集，只动 opacity/transform） */
+[data-kin] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity var(--dur-slow) var(--ease-soft),
+    transform var(--dur-jelly) var(--ease-bounce);
+  transition-delay: var(--kin-delay, 0ms);
+}
+
+[data-kin='heading'] {
+  transform: translateY(26px) rotate(-0.6deg);
+  filter: blur(5px);
+  transition-property: opacity, transform, filter;
+}
+
+[data-kin='sticker'] {
+  transform: translateY(26px) scale(0.92) rotate(-3deg);
+  filter: blur(4px);
+  transition-property: opacity, transform, filter;
+}
+
+[data-kin].is-kin-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* h2 蜡笔波浪随进入「画出来」（宽度从 0 展开；无 JS / 无 data-kin 时保持全宽） */
+.md-content h2[data-kin]::after {
+  width: 0;
+  transition: none;
+}
+
+.md-content h2[data-kin].is-kin-in::after {
+  width: 100%;
+  transition: width 650ms var(--ease-soft) 140ms;
+}
+
+/* ---------- keyframes ---------- */
+
+/* 气球贴纸轻浮动（回顶可见时） */
+@keyframes pg-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -4px;
+  }
+}
+
+/* 果冻抖动（连点页题触发，engine 加 .is-jelly） */
+@keyframes pg-jelly {
+  0% {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(1.15, 0.78);
+  }
+  45% {
+    transform: scale(0.88, 1.12);
+  }
+  65% {
+    transform: scale(1.06, 0.94);
+  }
+  82% {
+    transform: scale(0.97, 1.03);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+.is-jelly {
+  animation: pg-jelly 700ms var(--ease-soft) both;
+  transform-origin: 50% 80%;
+}
+
+/* 弹入（激活项点亮的入场） */
+@keyframes pg-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 激活导航项：点亮时弹一下 */
+.nav-item.is-active,
+.tabbar__item.is-active {
+  animation: pg-pop 420ms var(--ease-bounce) both;
+}
+
+/* ---------- View Transitions：旧页轻歪淡出，新页果冻弹入 ---------- */
+::view-transition-old(root) {
+  animation: 150ms var(--ease-soft) both pg-fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 340ms var(--ease-spring) both pg-pop-page;
+  transform-origin: 50% 40%;
+}
+
+@keyframes pg-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pg-pop-page {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.965) rotate(-0.4deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+/* ---------- 主题/皮肤切换过渡 ---------- */
+.theme-transition,
+.theme-transition body,
+.theme-transition .toolbar,
+.theme-transition .sidebar,
+.theme-transition .tabbar,
+.theme-transition .ambient {
+  transition:
+    background-color var(--dur-base) var(--ease-soft),
+    color var(--dur-base) var(--ease-soft),
+    border-color var(--dur-base) var(--ease-soft);
+}
+
+/* ---------- 降级（reduced-motion 全停帧） ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal],
+  [data-kin] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .md-content h2[data-kin]::after {
+    width: 100%;
+    transition: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
